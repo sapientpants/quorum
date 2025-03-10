@@ -1,90 +1,99 @@
-# Quorum - Multi-LLM Round Table Chat
+# Quorum - Multi-LLM Chat
 
-Quorum is a modern web application that enables conversations with multiple LLMs (Large Language Models) and a single human participant in a single, unified chat interface. It creates a "round table" experience where different AI models and you interact together.
+Quorum is a web application that allows you to chat with multiple Large Language Models (LLMs) in a single conversation. This project is built with React, TypeScript, Vite, Tailwind CSS, and Daisy UI.
 
-## 🌟 Features
+## Current Features (Iteration 1)
 
-### Multi-LLM Integration
-- Support for multiple LLM providers (OpenAI, Anthropic, etc.)
-- Configure each LLM with custom parameters (temperature, max tokens, etc.)
+- Simple chat interface with message history
+- OpenAI API integration (GPT-4o)
+- API key management (stored locally in your browser)
+- Error handling for API calls
 
-### Round Table Conversations
-- Create conversations with multiple AI participants and you as the human participant
-- Assign specific LLMs and role descriptions to each AI participant
-- Define personas and expertise for each AI participant in the conversation
-- Automatic round-robin turn-taking between you and the AI participants
+## Upcoming Features
 
-### User-Friendly Interface
-- Clean, modern UI built with React, TypeScript, and TailwindCSS
-- Real-time streaming responses (when supported by the LLM)
-- Light/dark mode theming
-- Responsive design for all devices
+- Support for multiple LLM providers (Anthropic, Cohere, etc.)
+- AI participants with specific roles and personalities
+- Round-robin conversation flow
+- Streaming responses
+- Conversation management (save, load, summarize)
+- And more!
 
-### Security & Privacy
-- Client-side only - no backend required
-- Your API keys never leave your browser
-- Optional local storage for conversation history
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - npm or yarn
-- API keys for the LLMs you want to use
+- OpenAI API key
 
 ### Installation
 
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/quorum.git
-cd quorum
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/quorum.git
+   cd quorum
+   ```
 
-2. Install dependencies
-```bash
-npm install
-# or
-yarn
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn
+   ```
 
-3. Start the development server
-```bash
-npm run dev
-# or
-yarn dev
-```
+3. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
 4. Open your browser and navigate to `http://localhost:5173`
 
-## 🔑 API Keys
+### Usage
 
-Quorum requires API keys to communicate with LLM providers:
+1. Enter your OpenAI API key in the input field at the top of the page
+2. Type your message in the input field at the bottom of the page
+3. Press Enter or click the Send button to send your message
+4. The AI will respond to your message
 
-- **OpenAI**: Get your API key from [OpenAI Platform](https://platform.openai.com/account/api-keys)
-- **Anthropic**: Get your API key from [Anthropic Console](https://console.anthropic.com/)
-- **Other providers**: Follow their respective documentation
+## Development
 
-⚠️ **Important**: Your API keys are stored locally in your browser. Never share them with others.
+### Project Structure
 
-## 🛠️ Technology Stack
+```
+quorum/
+├── docs/             # Project documentation
+├── public/           # Static assets
+├── src/              # Source code
+│   ├── assets/       # Images, fonts, etc.
+│   ├── components/   # React components
+│   ├── services/     # API services
+│   ├── types/        # TypeScript type definitions
+│   ├── App.tsx       # Main application component
+│   └── main.tsx      # Application entry point
+├── .github/          # GitHub workflows
+├── .husky/           # Git hooks
+└── ...               # Configuration files
+```
 
-- **Frontend**: React 19, TypeScript
-- **Styling**: TailwindCSS, DaisyUI
-- **Build Tool**: Vite
-- **Package Manager**: npm/yarn
+### Scripts
 
-## 📝 Development Roadmap
+- `npm run dev` - Start the development server
+- `npm run build` - Build the application for production
+- `npm run lint` - Run ESLint to check for code issues
+- `npm run preview` - Preview the production build locally
+- `npm run test` - Run tests
 
-See the [implementation plan](docs/implementation-plan.md) for detailed information about the development roadmap.
-
-## 📋 Feature List
-
-For a comprehensive list of features, see the [features documentation](docs/features.md).
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Daisy UI](https://daisyui.com/)
+- [OpenAI](https://openai.com/)

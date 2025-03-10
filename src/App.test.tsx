@@ -15,7 +15,15 @@ describe('App', () => {
 
   it('renders the chat input', () => {
     render(<App />)
-    expect(screen.getByPlaceholderText(/Type your message here.../i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/Enter your OpenAI API key above to start chatting.../i)).toBeInTheDocument()
     expect(screen.getByText(/Send/i)).toBeInTheDocument()
+  })
+
+  it('renders the API key input', () => {
+    render(<App />)
+    const apiKeyInput = screen.getByPlaceholderText('Enter your OpenAI API key')
+    expect(apiKeyInput).toBeInTheDocument()
+    expect(apiKeyInput.getAttribute('type')).toBe('password')
+    expect(screen.getByText(/OpenAI API Key/i)).toBeInTheDocument()
   })
 }) 
