@@ -17,10 +17,10 @@
 - **Send message** → LLM responds → display.
 
 ### **Detailed Tasks**
-1. **Initialize the Project**
-   - Create a new React app using Vite with TypeScript.
-   - Set up TailwindCSS and DaisyUI for styling.
-   - Set up basic folder structure (`components`, `hooks`, etc.).
+1. **Initialize the Project** ✅
+   - Create a new React app using Vite with TypeScript. ✅
+   - Set up TailwindCSS and DaisyUI for styling. ✅
+   - Set up basic folder structure (`components`, `hooks`, etc.). ✅
 2. **Build a Simple Layout**
    - Create a main `Chat` component (or `App` component).
    - Add a minimal top bar with the app's title.
@@ -46,6 +46,35 @@
 - User can enter an OpenAI API key.
 - User can send at least one prompt and receive one response from the LLM.
 - Chat UI displays the user's message and the LLM's response.
+
+---
+
+## **Project Infrastructure** ✅
+
+### **Goals** ✅
+- Set up continuous integration and deployment. ✅
+- Ensure code quality through automated checks. ✅
+
+### **High-Level Features** ✅
+- **Automated Testing**: Run tests on code changes. ✅
+- **Code Quality**: Enforce coding standards through linting. ✅
+- **Pre-commit Hooks**: Prevent committing code with issues. ✅
+
+### **Detailed Tasks** ✅
+1. **GitHub Actions Setup** ✅
+   - Create workflow for linting. ✅
+   - Create workflow for building and testing. ✅
+2. **Local Development Environment** ✅
+   - Set up pre-commit hooks with Husky. ✅
+   - Configure lint-staged for running linters and tests on staged files. ✅
+3. **Testing Infrastructure** ✅
+   - Set up Vitest for unit testing. ✅
+   - Create initial tests for components. ✅
+
+### **Exit Criteria** ✅
+- GitHub Actions workflows run on push and pull requests. ✅
+- Pre-commit hooks prevent committing code with linting errors. ✅
+- Basic test suite is in place and passing. ✅
 
 ---
 
