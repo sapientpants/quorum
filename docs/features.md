@@ -145,11 +145,6 @@
 
 *(These features are not part of the initial implementation but could be considered for future versions.)*
 
-1. **Multi-User Collaboration** (Future consideration)  
-   - Enable multiple human users to participate in the same round table conversation.
-   - Implement user authentication and real-time synchronization.
-   - Add permissions for who can add/remove LLM participants or change settings.
-
 ---
 
 ## 8. Security Considerations
@@ -179,9 +174,6 @@
 
 2. **Import Previous Session** (Optional)  
    - Enable users to load a saved conversation (JSON) back into the interface to pick up where they left off.
-
-3. **Shareable Links** (Optional)  
-   - If you want to let users share a conversation, consider generating a shareable link (though this may require a backend or specialized serverless storage).
 
 ---
 
