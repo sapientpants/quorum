@@ -14,7 +14,7 @@ interface ParticipantsState {
 
 export const useParticipantsStore = create<ParticipantsState>()(
   persist(
-    (set) => ({
+    (set): ParticipantsState => ({
       participants: [
         createParticipant({
           id: 'user',
@@ -24,32 +24,32 @@ export const useParticipantsStore = create<ParticipantsState>()(
       ],
       activeParticipantId: null,
 
-      addParticipant: (participant) => 
-        set((state) => ({
+      addParticipant: (participant: Omit<Participant, 'id'>) => 
+        set((state: ParticipantsState) => ({
           participants: [...state.participants, createParticipant({
             ...participant,
             id: crypto.randomUUID()
           })]
         })),
 
-      removeParticipant: (id) =>
-        set((state) => ({
-          participants: state.participants.filter((p) => p.id !== id),
+      removeParticipant: (id: string) =>
+        set((state: ParticipantsState) => ({
+          participants: state.participants.filter((p: Participant) => p.id !== id),
           activeParticipantId: state.activeParticipantId === id ? null : state.activeParticipantId
         })),
 
-      updateParticipant: (id, updates) =>
-        set((state) => ({
-          participants: state.participants.map((p) =>
+      updateParticipant: (id: string, updates: Partial<Omit<Participant, 'id' | 'type'>>) =>
+        set((state: ParticipantsState) => ({
+          participants: state.participants.map((p: Participant) =>
             p.id === id ? { ...p, ...updates } : p
           )
         })),
 
-      setActiveParticipant: (id) =>
+      setActiveParticipant: (id: string | null) =>
         set({ activeParticipantId: id }),
 
-      reorderParticipants: (fromIndex, toIndex) =>
-        set((state) => {
+      reorderParticipants: (fromIndex: number, toIndex: number) =>
+        set((state: ParticipantsState) => {
           const newParticipants = [...state.participants]
           const [removed] = newParticipants.splice(fromIndex, 1)
           newParticipants.splice(toIndex, 0, removed)
