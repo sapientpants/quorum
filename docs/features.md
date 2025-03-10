@@ -13,7 +13,7 @@
 
 3. **First-time Setup**  
    - Optionally provide a field for the user to enter their display name.  
-   - Provide input fields for each LLM's API key (OpenAI, Anthropic, Cohere, etc.), with an explanation of each key's purpose.
+   - Provide input fields for each LLM's API key (OpenAI, Anthropic, Grok, etc.), with an explanation of each key's purpose.
 
 ---
 
@@ -43,7 +43,7 @@
    - Optionally, allow the user to choose an avatar or color for their messages.
 
 2. **LLM Participants**  
-   - A list of supported LLMs (OpenAI GPT, Anthropic Claude, Cohere, etc.).  
+   - A list of supported LLMs (OpenAI GPT, Anthropic Claude, Grok, etc.).  
    - Each LLM participant can be toggled on/off.  
    - Fields to configure each LLM participant:  
      - **Name** (e.g., "GPT" vs. "Claude"),  

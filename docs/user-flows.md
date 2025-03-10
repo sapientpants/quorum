@@ -24,7 +24,7 @@ This document outlines the key user flows that implement the features described 
 ### 1.3 Initial Setup
 1. System prompts user to enter display name (optional)
 2. System presents API key setup screen with:
-   - Input fields for each supported LLM (OpenAI, Anthropic, Cohere, etc.)
+   - Input fields for each supported LLM (OpenAI, Anthropic, Grok, etc.)
    - Help text explaining how to obtain each key
    - Links to provider documentation
    - Storage preference toggle (localStorage vs. session-only)
