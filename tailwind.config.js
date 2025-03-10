@@ -7,9 +7,5 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [require("daisyui")],
-  daisyui: {
-    themes: true,
-    darkTheme: "business",
-  },
+  plugins: [],
 } 
