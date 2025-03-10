@@ -1,5 +1,7 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: all;
+}
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -68,4 +70,21 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* Custom styles for Quorum */
+.btn-primary {
+  color: hsl(var(--p-content)) !important;
+}
+
+.btn-error {
+  color: hsl(var(--er-content)) !important;
+}
+
+.btn-outline.btn-error {
+  color: hsl(var(--er)) !important;
+}
+
+.btn-outline.btn-error:hover {
+  color: hsl(var(--er-content)) !important;
 }

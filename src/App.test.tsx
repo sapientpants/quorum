@@ -1,6 +1,11 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import App from './App'
+
+// Mock the ApiKeyManager component
+vi.mock('./components/ApiKeyManager', () => ({
+  default: () => <div data-testid="api-key-manager">API Key Manager</div>
+}))
 
 describe('App', () => {
   it('renders the app title', () => {
@@ -15,15 +20,11 @@ describe('App', () => {
 
   it('renders the chat input', () => {
     render(<App />)
-    expect(screen.getByPlaceholderText(/Enter your OpenAI API key above to start chatting.../i)).toBeInTheDocument()
     expect(screen.getByText(/Send/i)).toBeInTheDocument()
   })
 
-  it('renders the API key input', () => {
+  it('renders the API key manager', () => {
     render(<App />)
-    const apiKeyInput = screen.getByPlaceholderText('Enter your OpenAI API key')
-    expect(apiKeyInput).toBeInTheDocument()
-    expect(apiKeyInput.getAttribute('type')).toBe('password')
-    expect(screen.getByText(/OpenAI API Key/i)).toBeInTheDocument()
+    expect(screen.getByTestId('api-key-manager')).toBeInTheDocument()
   })
 }) 

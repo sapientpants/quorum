@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import ChatList from './ChatList'
 import ChatInput from './ChatInput'
-import ApiKeyInput from './ApiKeyInput'
+import ApiKeyManager from './ApiKeyManager'
 import type { Message } from '../types/chat'
 import { nanoid } from 'nanoid'
 import { callOpenAI } from '../services/openai'
@@ -16,8 +16,9 @@ function Chat() {
     }
   ])
   const [isLoading, setIsLoading] = useState(false)
-  const [apiKey, setApiKey] = useState('')
+  const [apiKeys, setApiKeys] = useState<Record<string, string>>({})
   const [error, setError] = useState<string | null>(null)
+  const [activeProvider, setActiveProvider] = useState<string>('openai')
 
   async function handleSendMessage(text: string) {
     if (!text.trim()) return
@@ -25,9 +26,9 @@ function Chat() {
     // Clear any previous errors
     setError(null)
 
-    // Check if API key is provided
-    if (!apiKey) {
-      setError('Please enter your OpenAI API key to continue')
+    // Check if API key is provided for the active provider
+    if (!apiKeys[activeProvider]) {
+      setError(`Please enter your ${activeProvider} API key to continue`)
       return
     }
 
@@ -43,10 +44,10 @@ function Chat() {
     setIsLoading(true)
     
     try {
-      // Call OpenAI API
+      // Call OpenAI API (for now, we'll expand this in the next iteration)
       const responseText = await callOpenAI(
         [...messages, userMessage], 
-        apiKey,
+        apiKeys[activeProvider],
         'gpt-4o',
         0.7,
         1000
@@ -58,30 +59,62 @@ function Chat() {
         senderId: 'assistant',
         text: responseText,
         timestamp: Date.now(),
-        provider: 'openai',
+        provider: activeProvider,
         model: 'gpt-4o',
         role: 'Assistant'
       }
       
       setMessages(prev => [...prev, aiMessage])
     } catch (err) {
-      console.error('Error calling OpenAI:', err)
-      setError(err instanceof Error ? err.message : 'An error occurred while calling the OpenAI API')
+      console.error(`Error calling ${activeProvider}:`, err)
+      setError(err instanceof Error ? err.message : `An error occurred while calling the ${activeProvider} API`)
     } finally {
       setIsLoading(false)
     }
   }
 
-  function handleApiKeyChange(newApiKey: string) {
-    setApiKey(newApiKey)
+  function handleApiKeyChange(provider: string, apiKey: string) {
+    setApiKeys(prev => ({
+      ...prev,
+      [provider]: apiKey
+    }))
+    
+    // If this is the first key being added, set it as active
+    if (Object.keys(apiKeys).length === 0) {
+      setActiveProvider(provider)
+    }
+    
     setError(null) // Clear any API key related errors
   }
+
+  // Get available providers (those with API keys)
+  const availableProviders = Object.keys(apiKeys).filter(provider => apiKeys[provider])
 
   return (
     <div className="container mx-auto p-4 flex flex-col h-[calc(100vh-64px)]">
       <div className="mb-4">
-        <ApiKeyInput onApiKeyChange={handleApiKeyChange} />
+        <ApiKeyManager onApiKeyChange={handleApiKeyChange} />
       </div>
+      
+      {/* Provider selector (only show if we have multiple providers) */}
+      {availableProviders.length > 1 && (
+        <div className="mb-4">
+          <label className="label">
+            <span className="label-text">Active Provider</span>
+          </label>
+          <div className="btn-group">
+            {availableProviders.map(provider => (
+              <button
+                key={provider}
+                className={`btn btn-sm ${provider === activeProvider ? 'bg-base-300' : ''}`}
+                onClick={() => setActiveProvider(provider)}
+              >
+                {provider.charAt(0).toUpperCase() + provider.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       
       {error && (
         <div className="alert alert-error mb-4">
@@ -100,7 +133,10 @@ function Chat() {
         <ChatInput 
           onSendMessage={handleSendMessage} 
           isLoading={isLoading} 
-          placeholder={!apiKey ? "Enter your OpenAI API key above to start chatting..." : "Type your message here..."}
+          placeholder={!apiKeys[activeProvider] 
+            ? `Please add a ${activeProvider} API key to start chatting...` 
+            : "Type your message here..."
+          }
         />
       </div>
     </div>
