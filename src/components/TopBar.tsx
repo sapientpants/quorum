@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Button } from '@/components/ui/Button'
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@/components/ui/Dropdown'
+import { Button } from '../components/ui/Button'
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '../components/ui/Dropdown'
 import { Icon } from '@iconify/react'
 
 export function TopBar() {
   const location = useLocation()
   const [theme, setTheme] = React.useState<string>(localStorage.getItem('theme') || 'dark')
+  const [isOpen, setIsOpen] = React.useState(false)
   
   function toggleTheme() {
     const newTheme = theme === 'light' ? 'dark' : 'light'
@@ -70,7 +71,7 @@ export function TopBar() {
               )}
             </Button>
 
-            <Dropdown>
+            <Dropdown isOpen={isOpen} onOpenChange={setIsOpen}>
               <DropdownTrigger>
                 <Button variant="ghost" size="icon" className="text-white/80 hover:text-white hover:bg-white/10">
                   <Icon icon="solar:settings-linear" className="w-5 h-5" />

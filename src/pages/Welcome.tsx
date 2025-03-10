@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Icon } from '@iconify/react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '../components/ui/Button'
 
 export function Welcome() {
   const navigate = useNavigate()
