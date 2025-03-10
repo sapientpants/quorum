@@ -1,4 +1,3 @@
-import React from 'react'
 import type { Message } from '../types/chat'
 import ChatMessage from './ChatMessage'
 import ChatScrollAnchor from './ChatScrollAnchor'
