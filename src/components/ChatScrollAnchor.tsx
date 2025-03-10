@@ -1,6 +1,7 @@
+import * as React from 'react'
 import { useEffect, useRef } from 'react'
 
-function ChatScrollAnchor() {
+export function ChatScrollAnchor() {
   const anchorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -12,4 +13,5 @@ function ChatScrollAnchor() {
   return <div ref={anchorRef} />
 }
 
+// Add default export
 export default ChatScrollAnchor 

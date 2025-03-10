@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { useState, useEffect } from 'react'
 
 interface ApiKeyInputProps {
@@ -5,7 +6,7 @@ interface ApiKeyInputProps {
   initialApiKey?: string
 }
 
-function ApiKeyInput({ onApiKeyChange, initialApiKey = '' }: ApiKeyInputProps) {
+export function ApiKeyInput({ onApiKeyChange, initialApiKey = '' }: ApiKeyInputProps) {
   const [apiKey, setApiKey] = useState(initialApiKey)
   const [isVisible, setIsVisible] = useState(false)
   
@@ -67,4 +68,5 @@ function ApiKeyInput({ onApiKeyChange, initialApiKey = '' }: ApiKeyInputProps) {
   )
 }
 
+// Add default export
 export default ApiKeyInput 

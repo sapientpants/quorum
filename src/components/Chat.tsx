@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { useState, useEffect } from 'react'
 import ChatList from './ChatList'
 import ChatInput from './ChatInput'
@@ -13,7 +14,7 @@ import {
   supportsStreaming
 } from '../services/llm'
 
-function Chat() {
+export function Chat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -378,4 +379,5 @@ function Chat() {
   )
 }
 
+// Add default export
 export default Chat 

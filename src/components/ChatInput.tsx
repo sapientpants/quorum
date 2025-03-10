@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { useState, KeyboardEvent } from 'react'
 
 interface ChatInputProps {
@@ -7,7 +8,7 @@ interface ChatInputProps {
   disabled?: boolean
 }
 
-function ChatInput({ 
+export function ChatInput({ 
   onSendMessage, 
   isLoading = false, 
   placeholder = "Type your message here...",
@@ -55,4 +56,5 @@ function ChatInput({
   )
 }
 
+// Add default export
 export default ChatInput 

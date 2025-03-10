@@ -1,11 +1,12 @@
 import type { Message } from '../types/chat'
+import * as React from 'react'
 
 interface ChatMessageProps {
   message: Message
   onRetry?: (messageId: string) => void
 }
 
-function ChatMessage({ message, onRetry }: ChatMessageProps) {
+export function ChatMessage({ message, onRetry }: ChatMessageProps) {
   const isUser = message.senderId === 'user'
   const isSystem = message.senderId === 'system'
   const isError = message.status === 'error'
@@ -111,4 +112,5 @@ function ChatMessage({ message, onRetry }: ChatMessageProps) {
   )
 }
 
+// Add default export
 export default ChatMessage 

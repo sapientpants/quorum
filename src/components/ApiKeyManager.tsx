@@ -14,7 +14,7 @@ interface ApiKeyManagerProps {
   storageOption?: ApiKeyStorageOptions
 }
 
-function ApiKeyManager({ 
+export function ApiKeyManager({ 
   onApiKeyChange, 
   initialApiKeys = [], 
   storageOption = { storage: 'local' } 
@@ -375,4 +375,5 @@ function ApiKeyManager({
   )
 }
 
+// Add default export
 export default ApiKeyManager 

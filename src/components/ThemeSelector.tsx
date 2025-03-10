@@ -44,7 +44,7 @@ interface ThemeSelectorProps {
   onThemeChange?: (theme: string) => void
 }
 
-function ThemeSelector({ 
+export function ThemeSelector({ 
   currentTheme = 'business', 
   onThemeChange 
 }: ThemeSelectorProps) {
@@ -114,4 +114,5 @@ function ThemeSelector({
   )
 }
 
+// Add default export
 export default ThemeSelector 

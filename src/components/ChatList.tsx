@@ -1,3 +1,4 @@
+import * as React from 'react'
 import ChatMessage from './ChatMessage'
 import ChatScrollAnchor from './ChatScrollAnchor'
 import type { Message } from '../types/chat'
@@ -8,7 +9,7 @@ interface ChatListProps {
   onRetry?: (messageId: string) => void
 }
 
-function ChatList({ messages, isLoading = false, onRetry }: ChatListProps) {
+export function ChatList({ messages, isLoading = false, onRetry }: ChatListProps) {
   return (
     <div className="space-y-4">
       {messages.map(message => (
@@ -30,4 +31,5 @@ function ChatList({ messages, isLoading = false, onRetry }: ChatListProps) {
   )
 }
 
+// Add default export
 export default ChatList 

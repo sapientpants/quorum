@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button } from '../components/ui/Button'
-import { ApiKeyManager } from '../components/ApiKeyManager'
+import ApiKeyManager from '../components/ApiKeyManager'
 import ThemeSelector from '../components/ThemeSelector'
 
 export function Settings() {
