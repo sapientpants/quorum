@@ -53,9 +53,10 @@ export class AnthropicClient implements LLMClient {
     const anthropicMessages = messages
       .filter(m => m.senderId !== 'system')
       .map(message => {
+        // Anthropic only supports 'user' or 'assistant' roles
         const role = message.senderId === 'user' ? 'user' : 'assistant'
         return {
-          role,
+          role: role as 'user' | 'assistant',
           content: message.text
         }
       })

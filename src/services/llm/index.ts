@@ -3,7 +3,8 @@ export {
   sendMessageToLLM,
   getAvailableModels,
   getDefaultModel,
-  getSupportedProviders
+  getSupportedProviders,
+  supportsStreaming
 } from './llmService'
 
 // Export LLM client interface
