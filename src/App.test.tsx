@@ -1,31 +1,21 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import App from './App'
+import { App } from './App'
 
-// Mock the ApiKeyManager component
-vi.mock('./components/ApiKeyManager', () => ({
-  default: () => <div data-testid="api-key-manager">API Key Manager</div>
+// Mock the RouterProvider and createBrowserRouter
+vi.mock('react-router-dom', () => ({
+  RouterProvider: () => <div data-testid="router-provider">Router Provider</div>,
+  createBrowserRouter: vi.fn(() => ({})),
+}))
+
+// Mock the useTheme hook
+vi.mock('@/hooks/useTheme', () => ({
+  useTheme: () => ({ theme: 'light', setTheme: vi.fn() }),
 }))
 
 describe('App', () => {
-  it('renders the app title', () => {
+  it('renders the router provider', () => {
     render(<App />)
-    expect(screen.getByText(/Quorum - Multi-LLM Chat/i)).toBeInTheDocument()
-  })
-
-  it('renders the welcome message', () => {
-    render(<App />)
-    expect(screen.getByText(/Welcome to Quorum!/i)).toBeInTheDocument()
-  })
-
-  it('renders the chat input', () => {
-    render(<App />)
-    expect(screen.getByPlaceholderText(/Please select a provider/i)).toBeInTheDocument()
-  })
-
-  it('renders the API key manager', () => {
-    render(<App />)
-    // Look for any element that might be part of the API key manager
-    expect(screen.getByText(/Select Provider/i)).toBeInTheDocument()
+    expect(screen.getByTestId('router-provider')).toBeInTheDocument()
   })
 }) 

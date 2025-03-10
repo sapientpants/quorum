@@ -1,16 +1,23 @@
-import './App.css'
-import TopBar from './components/TopBar'
-import Chat from './components/Chat'
+import * as React from 'react'
+import { RouterProvider } from 'react-router-dom'
+import { router } from './routes'
+import { useTheme } from '@/hooks/useTheme'
 
-function App() {
+export function App() {
+  const { theme } = useTheme()
+
+  React.useEffect(() => {
+    const root = window.document.documentElement
+    root.classList.remove('light', 'dark')
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      root.classList.add(systemTheme)
+    } else {
+      root.classList.add(theme)
+    }
+  }, [theme])
+
   return (
-    <div className="flex flex-col min-h-screen bg-base-100">
-      <TopBar title="Quorum - Multi-LLM Chat" />
-      <main className="flex-grow">
-        <Chat />
-      </main>
-    </div>
+    <RouterProvider router={router} />
   )
 }
-
-export default App

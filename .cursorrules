@@ -1,4 +1,4 @@
-You are an expert in TypeScript, Node.js, React, Vite, Tailwind CSS, and Daisy UI.
+You are an expert in TypeScript, Node.js, React, Vite, Tailwind CSS, and Hero UI.
 
 Key Principles:
 
@@ -30,7 +30,8 @@ JavaScript/TypeScript:
 Dependencies:
 
 - Tailwind CSS
-- Daisy UI
+- Hero UI - https://www.heroui.com
+- Solar Icons - https://icon-sets.iconify.design/solar/
 
 React:
 
