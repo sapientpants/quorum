@@ -1,32 +1,15 @@
-import { useState } from 'react'
+import React from 'react'
 import './App.css'
+import TopBar from './components/TopBar'
+import Chat from './components/Chat'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">
-        Hello daisyUI + Tailwind!
-      </h1>
-      
-      <div className="flex gap-4 mb-4">
-        <button className="btn btn-primary">Primary Button</button>
-        <button className="btn btn-secondary">Secondary Button</button>
-        <button className="btn btn-accent">Accent Button</button>
-      </div>
-      
-      <div className="card w-96 bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title">Card Title</h2>
-          <p>This is a daisyUI card component with some content.</p>
-          <div className="card-actions justify-end">
-            <button className="btn btn-primary" onClick={() => setCount((count) => count + 1)}>
-              Count is {count}
-            </button>
-          </div>
-        </div>
-      </div>
+    <div className="flex flex-col min-h-screen bg-base-100">
+      <TopBar title="Quorum - Multi-LLM Chat" />
+      <main className="flex-grow">
+        <Chat />
+      </main>
     </div>
   )
 }

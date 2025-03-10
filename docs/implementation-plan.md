@@ -21,25 +21,32 @@
    - Create a new React app using Vite with TypeScript. ✅
    - Set up TailwindCSS and DaisyUI for styling. ✅
    - Set up basic folder structure (`components`, `hooks`, etc.). ✅
-2. **Build a Simple Layout**
-   - Create a main `Chat` component (or `App` component).
-   - Add a minimal top bar with the app's title.
-3. **API Key Input**
+2. **Build a Simple Layout** ✅
+   - Create a main `Chat` component (or `App` component). ✅
+   - Add a minimal top bar with the app's title. ✅
+3. **Create Chat UI Components** ✅
+   - Implement `ChatMessage` component for individual messages. ✅
+   - Implement `ChatList` component to display conversation history. ✅
+   - Implement `ChatInput` component for user input. ✅
+   - Add `ChatScrollAnchor` for auto-scrolling to latest messages. ✅
+   - Add basic message state management. ✅
+4. **API Key Input**
    - Create a small form (or text input) for the OpenAI API key.
    - Store the key in React state (`useState`) and optionally in `localStorage`.
-4. **Message Input + Send Mechanism**
-   - Text field for user messages.
-   - "Send" button (or pressing Enter) triggers an API call to OpenAI.
-5. **OpenAI Integration**
+5. **Message Input + Send Mechanism** ✅
+   - Text field for user messages. ✅
+   - "Send" button (or pressing Enter) triggers an API call to OpenAI. ✅
+   - Add loading states and visual feedback. ✅
+6. **OpenAI Integration**
    - Implement a function `callOpenAI(messages, apiKey)` that:
      - Sends the conversation to `https://api.openai.com/v1/chat/completions`.
      - Returns the response text.
    - Handle basic error cases (invalid key, network errors).
-6. **Display Messages**
-   - Maintain a `messages` array in React state.
-   - Each entry has `senderId`, `text`, `timestamp`.
-   - Render this list in the chat area with simple styling.
-7. **Test & Validate**
+7. **Display Messages** ✅
+   - Maintain a `messages` array in React state. ✅
+   - Each entry has `id`, `senderId`, `text`, `timestamp`, etc. ✅
+   - Render this list in the chat area with proper styling. ✅
+8. **Test & Validate**
    - Manually verify that entering a valid OpenAI key, typing a user message, and receiving an LLM response works.
 
 ### **Exit Criteria**

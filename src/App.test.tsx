@@ -3,21 +3,19 @@ import { render, screen } from '@testing-library/react'
 import App from './App'
 
 describe('App', () => {
-  it('renders the heading', () => {
+  it('renders the app title', () => {
     render(<App />)
-    expect(screen.getByText(/Hello daisyUI \+ Tailwind!/i)).toBeInTheDocument()
+    expect(screen.getByText(/Quorum - Multi-LLM Chat/i)).toBeInTheDocument()
   })
 
-  it('renders the buttons', () => {
+  it('renders the welcome message', () => {
     render(<App />)
-    expect(screen.getByText(/Primary Button/i)).toBeInTheDocument()
-    expect(screen.getByText(/Secondary Button/i)).toBeInTheDocument()
-    expect(screen.getByText(/Accent Button/i)).toBeInTheDocument()
+    expect(screen.getByText(/Welcome to Quorum! This is where your conversation will appear./i)).toBeInTheDocument()
   })
 
-  it('renders the card', () => {
+  it('renders the chat input', () => {
     render(<App />)
-    expect(screen.getByText(/Card Title/i)).toBeInTheDocument()
-    expect(screen.getByText(/This is a daisyUI card component with some content./i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/Type your message here.../i)).toBeInTheDocument()
+    expect(screen.getByText(/Send/i)).toBeInTheDocument()
   })
 }) 
