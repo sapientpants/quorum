@@ -18,11 +18,18 @@ vi.mock('../services/apiKeyService', () => ({
   clearApiKeys: vi.fn()
 }))
 
+// Get the mocked functions with proper typing
+const mockedLoadApiKeys = vi.mocked(loadApiKeys)
+const mockedSaveApiKeys = vi.mocked(saveApiKeys)
+const mockedClearApiKeys = vi.mocked(clearApiKeys)
+
 describe('ApiKeyManager', () => {
   const onApiKeyChangeMock = vi.fn()
   
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset mock implementations
+    mockedLoadApiKeys.mockReturnValue([])
     // Clear localStorage/sessionStorage
     localStorage.clear()
     sessionStorage.clear()
@@ -61,7 +68,7 @@ describe('ApiKeyManager', () => {
     expect(onApiKeyChangeMock).toHaveBeenCalledWith('anthropic', 'test-api-key')
     
     // Check that saveApiKeys was called
-    expect(saveApiKeys).toHaveBeenCalled()
+    expect(mockedSaveApiKeys).toHaveBeenCalled()
   })
   
   it('loads saved API keys on mount', () => {
@@ -71,7 +78,7 @@ describe('ApiKeyManager', () => {
       { id: '2', provider: 'anthropic', key: 'anthropic-key', label: 'Anthropic Key', isVisible: false }
     ]
     
-    loadApiKeys.mockReturnValueOnce(mockApiKeys)
+    mockedLoadApiKeys.mockReturnValueOnce(mockApiKeys)
     
     render(<ApiKeyManager onApiKeyChange={onApiKeyChangeMock} />)
     
@@ -87,7 +94,7 @@ describe('ApiKeyManager', () => {
     fireEvent.click(screen.getByText('Session Only'))
     
     // Check that clearApiKeys was called
-    expect(clearApiKeys).toHaveBeenCalledWith({ storage: 'local' })
+    expect(mockedClearApiKeys).toHaveBeenCalledWith({ storage: 'local' })
     
     // Check that the storage type explanation changed
     expect(screen.getByText('Keys will be saved only for this session and cleared when you close the browser')).toBeInTheDocument()
