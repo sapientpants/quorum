@@ -177,55 +177,123 @@
 - **Round Table Setup**: UI for arranging the order of participants.
 
 ### **Detailed Tasks**
-1. **Participant Data Model**
-   - Define a data structure for participants:
-     ```js
-     [
-       { id: 'user', name: 'You', type: 'human' },
-       { 
-         id: 'gpt_expert', 
-         name: 'Dr. GPT', 
-         type: 'llm', 
-         provider: 'openai',
-         model: 'gpt-4o', 
-         roleDescription: 'AI Expert', 
-         systemPrompt: 'You are an AI expert...',
-         settings: { temperature: 0.7, max_tokens: 1000 }
-       },
-       { 
-         id: 'claude_writer', 
-         name: 'Claude', 
-         type: 'llm', 
-         provider: 'anthropic',
-         model: 'claude-3.7-sonnet', 
-         roleDescription: 'Creative Writer', 
-         systemPrompt: 'You are a creative writer...',
-         settings: { temperature: 0.9, max_tokens: 1500 }
+1. **Participant Data Model** ✅
+   - Define TypeScript interfaces and types for participants ✅
+     ```ts
+     interface BaseParticipant {
+       id: string
+       name: string
+       type: 'human' | 'llm'
+     }
+
+     interface LLMParticipant extends BaseParticipant {
+       provider: 'openai' | 'anthropic' | 'grok'
+       model: string
+       roleDescription: string
+       systemPrompt: string
+       settings: {
+         temperature: number
+         maxTokens: number
        }
-     ]
+     }
      ```
+   - Implement Zod schemas for runtime validation ✅
+   - Create helper functions for participant creation ✅
+   - Set up Zustand store for participant management ✅
+     - CRUD operations for participants ✅
+     - Support for reordering participants ✅
+     - Active participant tracking ✅
+     - Persistent storage ✅
+
 2. **Participant Configuration UI**
-   - Create a form for adding/editing AI participants.
-   - Fields for name, provider, model, role description, and system prompt.
-   - Advanced settings panel for model-specific parameters.
+   - Create `ParticipantForm` component:
+     ```ts
+     interface ParticipantFormProps {
+       initialData?: Partial<Participant>
+       onSubmit: (data: Omit<Participant, 'id'>) => void
+       onCancel: () => void
+     }
+     ```
+   - Implement form fields:
+     - Name input
+     - Provider selection (OpenAI, Anthropic, Grok)
+     - Model selection based on provider
+     - Role description textarea
+     - System prompt textarea with examples
+     - Advanced settings panel (temperature, tokens)
+   - Add form validation using Zod schemas
+   - Create responsive layout with Tailwind CSS
+   - Add loading states and error handling
+
 3. **Round Table Setup UI**
-   - Interface for arranging the order of participants.
-   - Ability to save/load different round table configurations.
-   - Option to create themed round tables.
-4. **Basic Round-Robin Logic**
-   - Implement a simple turn-taking mechanism.
-   - After the user sends a message, trigger the next AI participant in sequence.
-5. **Enhanced Message Display**
-   - Show participant name, role, and avatar with each message.
-   - Visual distinction between different participants.
+   - Create `RoundTable` component:
+     ```ts
+     interface RoundTableProps {
+       participants: Participant[]
+       activeParticipantId: string | null
+       onReorder: (fromIndex: number, toIndex: number) => void
+       onParticipantClick: (id: string) => void
+     }
+     ```
+   - Implement circular layout for participants
+   - Add drag-and-drop reordering using `@dnd-kit/core`
+   - Create participant avatars with status indicators
+   - Add animations for turn transitions
+   - Implement responsive design for different screen sizes
+
+4. **Participant Management Panel**
+   - Create `ParticipantList` component:
+     ```ts
+     interface ParticipantListProps {
+       participants: Participant[]
+       onEdit: (id: string) => void
+       onDelete: (id: string) => void
+       onReorder: (fromIndex: number, toIndex: number) => void
+     }
+     ```
+   - Add participant CRUD operations
+   - Implement drag-and-drop reordering
+   - Add confirmation dialogs for deletion
+   - Create responsive mobile-first design
+
+5. **Round Table Configuration**
+   - Create configuration interface:
+     ```ts
+     interface RoundTableConfig {
+       id: string
+       name: string
+       description: string
+       participants: string[] // participant IDs in order
+       settings: {
+         turnTimeoutSeconds: number
+         autoAdvance: boolean
+         requireConfirmation: boolean
+       }
+     }
+     ```
+   - Add ability to save/load different configurations
+   - Implement configuration persistence
+   - Add import/export functionality
+
 6. **Testing**
-   - Test creating different AI participants with various roles.
-   - Verify that system prompts influence AI responses appropriately.
+   - Write unit tests for:
+     - Participant store operations
+     - Form validation
+     - Component rendering
+     - Drag-and-drop functionality
+   - Add integration tests for:
+     - Complete participant creation flow
+     - Round table interactions
+     - Configuration management
+   - Implement E2E tests for critical user journeys
 
 ### **Exit Criteria**
-- User can create and configure multiple AI participants.
-- Each AI participant has a distinct role and personality.
-- Basic round-robin conversation works with the configured participants.
+- Users can create and configure multiple AI participants with different roles
+- Round table UI displays participants in a circular layout with proper turn indicators
+- Drag-and-drop reordering works smoothly
+- Configurations can be saved and loaded
+- All components are responsive and work on mobile devices
+- Test coverage meets minimum requirements
 
 ---
 
