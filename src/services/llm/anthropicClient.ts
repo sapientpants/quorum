@@ -2,6 +2,35 @@ import type { Message } from '../../types/chat'
 import type { LLMClient, StreamingOptions } from './llmClient'
 import type { LLMSettings, AnthropicModel } from '../../types/api'
 
+// Provider-specific error types
+export class AnthropicError extends Error {
+  constructor(message: string, public code?: string, public details?: unknown) {
+    super(message)
+    this.name = 'AnthropicError'
+  }
+}
+
+export class AnthropicAuthError extends AnthropicError {
+  constructor(message = 'Invalid or missing API key') {
+    super(message, 'auth_error')
+    this.name = 'AnthropicAuthError'
+  }
+}
+
+export class AnthropicRateLimitError extends AnthropicError {
+  constructor(message = 'Rate limit exceeded') {
+    super(message, 'rate_limit_error')
+    this.name = 'AnthropicRateLimitError'
+  }
+}
+
+export class AnthropicModelError extends AnthropicError {
+  constructor(message = 'Invalid model or model not available') {
+    super(message, 'model_error')
+    this.name = 'AnthropicModelError'
+  }
+}
+
 interface AnthropicMessage {
   role: 'user' | 'assistant'
   content: string
@@ -75,7 +104,11 @@ export class AnthropicClient implements LLMClient {
     streamingOptions?: StreamingOptions
   ): Promise<string> {
     if (!apiKey) {
-      throw new Error('Anthropic API key is required')
+      throw new AnthropicAuthError()
+    }
+
+    if (!this.availableModels.includes(model as AnthropicModel)) {
+      throw new AnthropicModelError(`Model ${model} is not available. Available models: ${this.availableModels.join(', ')}`)
     }
     
     const { messages: anthropicMessages, system } = this.convertToAnthropicMessages(messages)
@@ -86,43 +119,153 @@ export class AnthropicClient implements LLMClient {
       system,
       max_tokens: settings?.maxTokens || 1000,
       temperature: settings?.temperature,
-      top_p: settings?.topP
+      top_p: settings?.topP,
+      stream: !!streamingOptions
     }
     
     try {
-      // Anthropic streaming is not implemented yet
-      return await this.standardResponse(requestBody, apiKey)
-    } catch (error) {
-      if (streamingOptions?.onError && error instanceof Error) {
-        streamingOptions.onError(error)
+      if (this.supportsStreaming() && streamingOptions) {
+        return await this.streamResponse(requestBody, apiKey, streamingOptions)
+      } else {
+        return await this.standardResponse(requestBody, apiKey)
       }
-      console.error('Error calling Anthropic API:', error)
-      throw error
+    } catch (error) {
+      // Convert generic errors to Anthropic-specific errors
+      const anthropicError = this.handleError(error)
+      
+      if (streamingOptions?.onError) {
+        streamingOptions.onError(anthropicError)
+      }
+      
+      throw anthropicError
     }
   }
 
-  private async standardResponse(requestBody: AnthropicRequest, apiKey: string): Promise<string> {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify(requestBody)
-    })
-    
+  private handleError(error: unknown): AnthropicError {
+    if (error instanceof AnthropicError) {
+      return error
+    }
+
+    const errorMessage = error instanceof Error ? error.message : String(error)
+
+    // Handle common error cases
+    if (errorMessage.includes('401') || errorMessage.includes('403')) {
+      return new AnthropicAuthError('Invalid or expired API key')
+    }
+    if (errorMessage.includes('429')) {
+      return new AnthropicRateLimitError('Too many requests. Please try again later')
+    }
+    if (errorMessage.includes('404')) {
+      return new AnthropicModelError('The requested model is not available')
+    }
+
+    // Generic error case
+    return new AnthropicError(
+      'An error occurred while calling the Anthropic API: ' + errorMessage,
+      'unknown_error',
+      error
+    )
+  }
+
+  private async streamResponse(
+    requestBody: AnthropicRequest,
+    apiKey: string,
+    streamingOptions: StreamingOptions
+  ): Promise<string> {
+    let response: Response
+    try {
+      response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({ ...requestBody, stream: true })
+      })
+    } catch (error) {
+      throw this.handleError(error)
+    }
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(`Anthropic API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`)
+      throw this.handleError(new Error(`${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`))
     }
-    
+
+    if (!response.body) {
+      throw new AnthropicError('No response body from Anthropic')
+    }
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let fullText = ''
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const chunk = decoder.decode(value)
+        const lines = chunk.split('\n').filter(line => line.trim() !== '')
+
+        for (const line of lines) {
+          if (!line.startsWith('data:') || line.includes('[DONE]')) continue
+
+          try {
+            const data = JSON.parse(line.slice(5))
+            const content = data.delta?.text || ''
+
+            if (content) {
+              fullText += content
+              if (streamingOptions.onToken) {
+                streamingOptions.onToken(content)
+              }
+            }
+          } catch (e) {
+            console.warn('Error parsing streaming response line:', e)
+          }
+        }
+      }
+    } catch (error) {
+      throw this.handleError(error)
+    } finally {
+      reader.releaseLock()
+    }
+
+    if (streamingOptions.onComplete) {
+      streamingOptions.onComplete(fullText)
+    }
+
+    return fullText
+  }
+
+  private async standardResponse(requestBody: AnthropicRequest, apiKey: string): Promise<string> {
+    let response: Response
+    try {
+      response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify(requestBody)
+      })
+    } catch (error) {
+      throw this.handleError(error)
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw this.handleError(new Error(`${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`))
+    }
+
     const data: AnthropicResponse = await response.json()
-    
+
     if (!data.content || data.content.length === 0) {
-      throw new Error('No response from Anthropic')
+      throw new AnthropicError('No response from Anthropic')
     }
-    
+
     return data.content[0].text
   }
 
@@ -139,6 +282,6 @@ export class AnthropicClient implements LLMClient {
   }
 
   supportsStreaming(): boolean {
-    return false // Anthropic streaming not implemented yet
+    return typeof ReadableStream !== 'undefined' && typeof TextDecoder !== 'undefined'
   }
 } 
