@@ -1,54 +1,90 @@
-# React + TypeScript + Vite
+# Quorum - Multi-LLM Round Table Chat
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Quorum is a modern web application that enables conversations with multiple LLMs (Large Language Models) and a single human participant in a single, unified chat interface. It creates a "round table" experience where different AI models and you interact together.
 
-Currently, two official plugins are available:
+## 🌟 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Multi-LLM Integration
+- Support for multiple LLM providers (OpenAI, Anthropic, etc.)
+- Configure each LLM with custom parameters (temperature, max tokens, etc.)
 
-## Expanding the ESLint configuration
+### Round Table Conversations
+- Create conversations with multiple AI participants and you as the human participant
+- Assign specific LLMs and role descriptions to each AI participant
+- Define personas and expertise for each AI participant in the conversation
+- Automatic round-robin turn-taking between you and the AI participants
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### User-Friendly Interface
+- Clean, modern UI built with React, TypeScript, and TailwindCSS
+- Real-time streaming responses (when supported by the LLM)
+- Light/dark mode theming
+- Responsive design for all devices
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Security & Privacy
+- Client-side only - no backend required
+- Your API keys never leave your browser
+- Optional local storage for conversation history
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
+- API keys for the LLMs you want to use
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/quorum.git
+cd quorum
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+2. Install dependencies
+```bash
+npm install
+# or
+yarn
 ```
+
+3. Start the development server
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+## 🔑 API Keys
+
+Quorum requires API keys to communicate with LLM providers:
+
+- **OpenAI**: Get your API key from [OpenAI Platform](https://platform.openai.com/account/api-keys)
+- **Anthropic**: Get your API key from [Anthropic Console](https://console.anthropic.com/)
+- **Other providers**: Follow their respective documentation
+
+⚠️ **Important**: Your API keys are stored locally in your browser. Never share them with others.
+
+## 🛠️ Technology Stack
+
+- **Frontend**: React 19, TypeScript
+- **Styling**: TailwindCSS, DaisyUI
+- **Build Tool**: Vite
+- **Package Manager**: npm/yarn
+
+## 📝 Development Roadmap
+
+See the [implementation plan](docs/implementation-plan.md) for detailed information about the development roadmap.
+
+## 📋 Feature List
+
+For a comprehensive list of features, see the [features documentation](docs/features.md).
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

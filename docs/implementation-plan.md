@@ -5,7 +5,7 @@
 ### **Goals**
 - Stand up a minimal React app that runs fully client-side.
 - Allow the user to input an OpenAI API key.
-- Enable a simple conversation with one LLM (e.g., GPT-3.5-turbo).
+- Enable a simple conversation with one LLM (e.g., GPT-4o).
 - Display conversation messages in a chat UI.
 
 ### **High-Level Features**
@@ -18,17 +18,18 @@
 
 ### **Detailed Tasks**
 1. **Initialize the Project**
-   - Create a new React app (using Create React App, Vite, Next.js, etc.).
+   - Create a new React app using Vite with TypeScript.
+   - Set up TailwindCSS and DaisyUI for styling.
    - Set up basic folder structure (`components`, `hooks`, etc.).
 2. **Build a Simple Layout**
    - Create a main `Chat` component (or `App` component).
-   - Add a minimal top bar with the app’s title.
+   - Add a minimal top bar with the app's title.
 3. **API Key Input**
    - Create a small form (or text input) for the OpenAI API key.
    - Store the key in React state (`useState`) and optionally in `localStorage`.
 4. **Message Input + Send Mechanism**
    - Text field for user messages.
-   - “Send” button (or pressing Enter) triggers an API call to OpenAI.
+   - "Send" button (or pressing Enter) triggers an API call to OpenAI.
 5. **OpenAI Integration**
    - Implement a function `callOpenAI(messages, apiKey)` that:
      - Sends the conversation to `https://api.openai.com/v1/chat/completions`.
@@ -44,240 +45,241 @@
 ### **Exit Criteria**
 - User can enter an OpenAI API key.
 - User can send at least one prompt and receive one response from the LLM.
-- Chat UI displays the user’s message and the LLM’s response.
+- Chat UI displays the user's message and the LLM's response.
 
 ---
 
-## **Iteration 2: Multi-LLM Integration (Manual Switching)**
+## **Iteration 2: Multi-LLM Integration**
 
 ### **Goals**
-- Support multiple LLM providers (e.g., OpenAI GPT and Anthropic Claude), but still single-user.
-- User can switch which LLM to call.
-- Still keep the conversation display basic.
+- Support multiple LLM providers (e.g., OpenAI, Anthropic, Cohere, etc.).
+- Implement API key management for multiple providers.
+- Enable the user to interact with different LLMs in the same conversation.
 
 ### **High-Level Features**
-- **Multi-LLM**: At least two providers (OpenAI, Anthropic).
-- **Multiple API keys**: One for each provider.
-- UI toggle or dropdown to select which LLM to query.
+- **API Key Management**: UI for managing multiple API keys.
+- **Multi-LLM Support**: Integration with multiple LLM providers.
+- **Enhanced Message Display**: Visual distinction between different LLM responses.
 
 ### **Detailed Tasks**
 1. **Refactor API Key Management**
-   - Create a dedicated component or section in the UI to manage multiple keys (e.g., `OpenAI Key`, `Anthropic Key`).
-   - Store them in `useState` or optionally in `localStorage`.
-2. **Add Support for Anthropic API Calls**
-   - Implement a function `callAnthropic(messages, apiKey)` with Anthropic’s conversation API.
-   - Handle typical errors or response parsing.
-3. **Modify Chat Input Flow**
-   - Add a UI element (dropdown, buttons, or tabs) to choose which LLM to send the prompt to.
-   - Based on user selection, call the respective function (`callOpenAI` or `callAnthropic`).
-4. **Messages Data Structure**
-   - Retain the same shape (`senderId`, `text`) but now `senderId` can be `'openai'` or `'anthropic'` as well.
-   - Keep track of which LLM responded last.
-5. **Basic UI Enhancements**
-   - Different color or label for messages from different LLMs (e.g., “GPT says…”, “Claude says…”).
-6. **Testing & Validation**
-   - Verify that the user can switch providers mid-conversation.
-   - Check error handling for each LLM separately.
+   - Create a dedicated component or section in the UI to manage multiple keys.
+   - Implement storage options (localStorage vs. session-only).
+   - Add key visibility controls (masking, showing only last few characters).
+   - Add validation for different API key formats.
+2. **Add Support for Multiple LLM Providers**
+   - Implement functions for each provider:
+     - `callOpenAI(messages, apiKey, model, options)`
+     - `callAnthropic(messages, apiKey, model, options)`
+     - `callCohere(messages, apiKey, model, options)`
+     - etc.
+   - Handle provider-specific request formats and error responses.
+3. **Messages Data Structure**
+   - Enhance the message structure to include provider and model information:
+     ```js
+     { 
+       senderId: 'gpt', 
+       text: 'Hi there!', 
+       timestamp: 1234568,
+       provider: 'openai',
+       model: 'gpt-4o'
+     }
+     ```
+4. **UI Enhancements**
+   - Different styling for messages from different LLMs.
+   - Display model information with each message.
+5. **Testing & Validation**
+   - Test with multiple API keys from different providers.
+   - Verify error handling for each provider.
 
 ### **Exit Criteria**
-- Users can enter two API keys (OpenAI, Anthropic).
-- Users can send queries to either LLM at will.
-- Conversation still displayed in a single feed with correct labels.
+- User can configure and use multiple LLM providers.
+- Messages from different LLMs are visually distinct.
+- API keys are securely stored according to user preference.
 
 ---
 
-## **Iteration 3: Multi-User and Basic “Round Table” Logic**
+## **Iteration 3: Participant Configuration and Round Table Setup**
 
 ### **Goals**
-- Introduce the concept of multiple human participants (e.g., “Alice” and “Bob”).
-- Provide a “round table” chat interface that can handle multiple named users, plus multiple LLMs.
-- **Manual** approach for “round table”: user chooses which participant is speaking next.
-
-> (If you want real-time multi-user over the network, you’d need a backend or WebSocket-based approach. This iteration assumes multiple participants on the same client or a single user controlling multiple “human” placeholders.)
+- Implement the concept of AI participants with specific roles and personalities.
+- Create a round table interface for configuring AI participants.
+- Enable basic round-robin conversation flow.
 
 ### **High-Level Features**
-- **Participant Management**: A small UI for listing participants (Alice, Bob, GPT, Claude, etc.).
-- **Multiple Human Message Inputs**: Let the user pick which “human” is talking when they type.
-- **Display distinct participant messages** in the same conversation feed.
+- **Participant Management**: UI for configuring AI participants.
+- **Role Configuration**: Interface for assigning roles and system prompts.
+- **Round Table Setup**: UI for arranging the order of participants.
 
 ### **Detailed Tasks**
-1. **Extend Data Model for Participants**
-   - `participants` array: 
+1. **Participant Data Model**
+   - Define a data structure for participants:
      ```js
      [
-       { id: 'alice', name: 'Alice', type: 'human' },
-       { id: 'bob', name: 'Bob', type: 'human' },
-       { id: 'gpt', name: 'GPT', type: 'llm' },
-       { id: 'claude', name: 'Claude', type: 'llm' }
+       { id: 'user', name: 'You', type: 'human' },
+       { 
+         id: 'gpt_expert', 
+         name: 'Dr. GPT', 
+         type: 'llm', 
+         provider: 'openai',
+         model: 'gpt-4o', 
+         roleDescription: 'AI Expert', 
+         systemPrompt: 'You are an AI expert...',
+         settings: { temperature: 0.7, max_tokens: 1000 }
+       },
+       { 
+         id: 'claude_writer', 
+         name: 'Claude', 
+         type: 'llm', 
+         provider: 'anthropic',
+         model: 'claude-3.7-sonnet', 
+         roleDescription: 'Creative Writer', 
+         systemPrompt: 'You are a creative writer...',
+         settings: { temperature: 0.9, max_tokens: 1500 }
+       }
      ]
      ```
-   - Store in state or a configuration object.
-2. **UI for Participant Selection**
-   - Small panel to show all participants.
-   - For “human” participants, a dropdown or radio button so the user can say “I’m now speaking as Alice” or “I’m now speaking as Bob.”
-3. **Message Input & Send**  
-   - When the user types a message, they must choose which human participant is speaking.
-   - The message is added to `messages` as `{ senderId: 'alice', text: 'Hello', timestamp: ... }`.
-4. **LLM Responses in Round Table**
-   - Continue using a button to ask GPT or Claude to respond to the conversation so far.
-   - Keep the conversation logic the same (the user triggers each LLM response).
-5. **UI Enhancements**
-   - In the message list, clearly show the participant name or ID for each message.
-   - Possibly use distinct icons or colors for each participant.
+2. **Participant Configuration UI**
+   - Create a form for adding/editing AI participants.
+   - Fields for name, provider, model, role description, and system prompt.
+   - Advanced settings panel for model-specific parameters.
+3. **Round Table Setup UI**
+   - Interface for arranging the order of participants.
+   - Ability to save/load different round table configurations.
+   - Option to create themed round tables.
+4. **Basic Round-Robin Logic**
+   - Implement a simple turn-taking mechanism.
+   - After the user sends a message, trigger the next AI participant in sequence.
+5. **Enhanced Message Display**
+   - Show participant name, role, and avatar with each message.
+   - Visual distinction between different participants.
 6. **Testing**
-   - Simulate a conversation with “Alice” and “Bob,” taking turns. Then request GPT’s response, then Claude’s. Verify the conversation feed is consistent.
+   - Test creating different AI participants with various roles.
+   - Verify that system prompts influence AI responses appropriately.
 
 ### **Exit Criteria**
-- Multiple human “identities” can speak in the chat feed.
-- Multiple LLMs can respond in the same feed.
-- The user can see who said what at each turn.
+- User can create and configure multiple AI participants.
+- Each AI participant has a distinct role and personality.
+- Basic round-robin conversation works with the configured participants.
 
 ---
 
-## **Iteration 4: Automatic Round Robin & Basic Orchestration**
+## **Iteration 4: Advanced Round Robin Orchestration**
 
 ### **Goals**
-- Implement optional “round robin” where participants automatically take turns (Alice → GPT → Bob → Claude → etc.).
-- Introduce some basic conversation flow logic (avoid confusion about who’s next).
+- Refine the round-robin conversation flow.
+- Implement robust error handling for LLM responses.
+- Add visual indicators for the conversation flow.
 
 ### **High-Level Features**
-- **Round Robin Mode**: App determines who the “next speaker” is automatically.
-- **Manual Override**: The user can still manually request a response from any participant.
+- **Smooth Round-Robin Flow**: Seamless turn-taking between user and AI participants.
+- **Error Handling**: Graceful recovery from failed API calls.
+- **Visual Indicators**: Clear UI showing whose turn it is.
 
 ### **Detailed Tasks**
-1. **Conversation Flow State**
-   - Add a piece of state called `currentSpeakerIndex` or similar.
-   - After a participant posts a message, the next participant in the list is queued up to speak.
-2. **Auto-trigger LLM Calls**
-   - When the next speaker is an LLM, automatically call the corresponding API as soon as the conversation has updated.  
-   - E.g., after GPT responds, set the next speaker to Bob or Claude. If it’s Claude, automatically call Anthropic next.
-3. **Handle Edge Cases**
-   - If the next speaker is a human, do nothing until the user provides input (or you can simulate “Bob’s input” if it’s a single user controlling all).
-   - Provide a toggle in the UI: “Enable Round Robin Mode” vs. “Manual Mode.”
+1. **Conversation Flow State Management**
+   - Implement a state machine for tracking the conversation flow.
+   - Handle transitions between participants.
+2. **Auto-trigger LLM Responses**
+   - Automatically call the appropriate LLM API when it's an AI participant's turn.
+   - Include the participant's role description and system prompt in the API call.
+3. **Error Handling and Recovery**
+   - Implement retry logic for failed API calls.
+   - Add timeout handling for slow responses.
+   - Provide fallback options if an LLM consistently fails.
 4. **UI Feedback**
-   - Show a label: “Next speaker: GPT” or “Waiting for Bob to speak.”  
-   - Possibly highlight the next speaker in the participant list.
+   - Add loading indicators for in-progress LLM responses.
+   - Show "X is thinking..." messages.
+   - Highlight the current active participant.
+   - Display a preview of the upcoming participant.
 5. **Testing**
-   - Simulate a scenario: round table with 2 humans + 2 LLMs. Check that the conversation cycles in the correct order.
-   - Ensure it doesn’t get stuck or loop infinitely.
+   - Test with intentionally invalid API keys or network disruptions.
+   - Verify that the conversation can recover from errors.
+   - Test with varying response times from different providers.
 
 ### **Exit Criteria**
-- Round-robin conversation works in typical scenarios.
-- User can optionally disable round robin and just manually request LLM responses.
+- Round-robin conversation flows smoothly in normal conditions.
+- System gracefully handles errors and timeouts.
+- User has clear visual feedback about the conversation state.
 
 ---
 
-## **Iteration 5: Advanced Features & Enhancements**
+## **Iteration 5: Advanced Features & UI Enhancements**
 
 ### **Goals**
-- Add features like streaming responses, advanced LLM settings (temperature, etc.), conversation summarization, and improved UI/UX.
+- Implement streaming responses for supported LLMs.
+- Add conversation management features.
+- Polish the UI/UX.
 
 ### **High-Level Features**
-- **Streaming Responses** (if supported by the LLM): Show partial output in real time.
-- **LLM Settings**: Temperature, max tokens, top_p, etc.
-- **Conversation Summarization** (optional).
-- **Basic Theming** (light/dark mode).
-- **Error Handling** improvements.
+- **Streaming Responses**: Real-time display of LLM outputs.
+- **Conversation Management**: Save, load, and summarize conversations.
+- **UI Polish**: Theming, animations, and responsive design.
 
 ### **Detailed Tasks**
-1. **Implement Streaming (e.g., OpenAI)**
-   - Switch from a basic `fetch` to a streaming approach (e.g., using `ReadableStream` in the browser).
-   - Update the UI to display partial responses as they arrive.
-   - Show a “GPT is typing…” indicator until the stream closes.
-2. **LLM Advanced Settings UI**
-   - Add a small gear icon or “Advanced Settings” button next to each LLM participant.
-   - Let the user set `temperature`, `max_tokens`, etc.
-   - Pass these parameters in the request body (for OpenAI) or the equivalent for Anthropic.
-3. **Summarization** (Optional)
-   - If conversation length grows large, add a “Summarize so far” button.
-   - Internally call the chosen LLM with instructions to summarize the conversation.
-   - Replace or append the summary in the message list, possibly removing older messages.
-4. **Theming**
-   - Light mode / dark mode toggle.
-   - Consistent styling for message bubbles, icons, and participant list.
-5. **Error Handling** & **User Feedback**
-   - Improve error messages if the API call fails.
-   - Catch rate limits or invalid key errors and display a user-friendly message.
-6. **Testing**
-   - Check partial response streaming works smoothly.
-   - Validate advanced settings by adjusting temperature and seeing changed output style.
-   - Summarization logic tested on a longer conversation.
+1. **Streaming Response Implementation**
+   - Refactor API calls to use streaming endpoints where available.
+   - Implement UI for displaying partial responses as they arrive.
+   - Add typing indicators during streaming.
+2. **Conversation Management**
+   - Add ability to save/export conversations.
+   - Implement conversation summarization using an LLM.
+   - Add conversation reset and context clearing.
+3. **UI/UX Enhancements**
+   - Implement light/dark mode theming.
+   - Add smooth animations for message appearance.
+   - Ensure responsive design for all screen sizes.
+   - Implement pagination or infinite scroll for long conversations.
+4. **Settings & Customization**
+   - Create a settings panel for global app configuration.
+   - Allow customization of UI elements and behavior.
+5. **Testing**
+   - Test streaming responses with different providers.
+   - Verify conversation export/import functionality.
+   - Test UI across different devices and screen sizes.
 
 ### **Exit Criteria**
-- Streaming works for at least one LLM provider (e.g., OpenAI).
-- Advanced LLM settings are adjustable and persist through conversation.
-- The UI is more polished, with basic theming options.
-- Error states are gracefully handled.
+- Streaming responses work smoothly for supported providers.
+- Users can manage conversations (save, load, summarize).
+- UI is polished, responsive, and customizable.
 
 ---
 
-## **Iteration 6: Multi-User Real-Time Collaboration (Optional)**
-
-*(Only if you want truly separate users connecting from different machines.)*
+## **Iteration 6: Security, Performance, and Final Polishing**
 
 ### **Goals**
-- Introduce real-time sync so multiple remote users see the same conversation in real time.
-- Possibly integrate with a service like Firebase, Supabase, or a custom Node/WebSocket backend.
+- Enhance security around API key handling.
+- Optimize performance for long conversations.
+- Final testing and bug fixing.
 
 ### **High-Level Features**
-- **User Authentication** (lightweight or via a third party).
-- **Shared Conversation State** so that any user’s new message is broadcast to others.
-- **Real-Time LLM Calls**: LLM responses appear for all participants.
-
-### **Detailed Tasks** (High-Level Only)
-1. **Backend/WebSocket Setup**
-   - Decide on a real-time data store (Firebase, Supabase, or custom WebSocket server).
-   - Implement basic routes or real-time channels for “chat rooms.”
-2. **User Login / Identification**
-   - Minimal sign-in flow or generate random user IDs if you want a quick solution.
-3. **Sync Chat Messages**
-   - On user message: push it to the server or real-time channel.
-   - All clients listen for new messages and update their local `messages` state accordingly.
-4. **Sync LLM Responses**
-   - When an LLM is triggered, optionally handle the call on the client or a serverless function.  
-   - The new message is broadcast to all users.
-5. **UI Changes**
-   - Show a “Users Online” indicator or participant list for actual remote users.
-   - Possibly show a “typing” indicator if you want advanced real-time features.
-
-### **Exit Criteria**
-- Multiple browsers can open the chat application, each with distinct user identities.
-- Messages posted by one user show up in real time for all connected users.
-- LLM responses also appear in real time.
-
----
-
-## **Iteration 7: Polishing, Optimization, and Final Checks**
-
-### **Goals**
-- Improve performance, handle large conversations gracefully.
-- Polish UI/UX and finalize the design.
-- Perform final security checks and disclaimers.
-
-### **High-Level Features**
-- **Local Caching** or **Pagination** for large chats.
-- **Performance Tuning** for re-renders.
-- **UI Polish** (responsive design, cross-browser testing).
-- **Security Review** (especially around storing keys).
+- **Security Enhancements**: Improved API key handling.
+- **Performance Optimization**: Efficient rendering of long conversations.
+- **Final Polish**: Bug fixes and documentation.
 
 ### **Detailed Tasks**
-1. **Performance Profiling**
-   - Use React DevTools Profiler to identify any heavy re-renders.
-   - Memoize components if needed.
-2. **Conversation Pagination / Lazy Loading**
-   - If conversation is very long, implement “Load More” or infinite scroll for older messages.
-3. **Cross-Browser Testing**
-   - Test on Chrome, Firefox, Safari, mobile browsers to ensure consistent UI.
-4. **Final UI/UX Tweaks**
-   - Improve layout, spacing, alignment, brand styling.
-   - Possibly add animations for message appearance.
-5. **Security & Privacy** 
-   - Double-check disclaimers about storing API keys locally.
-   - Provide a “Clear All Data” button to remove keys and conversation logs from localStorage.
-6. **Documentation / Help**
-   - Write or refine instructions on how to set up keys, how to run the app, and how to interpret advanced settings.
+1. **Security Enhancements**
+   - Review and improve API key storage security.
+   - Add clear warnings about security implications.
+   - Implement "Clear Data" functionality.
+2. **Performance Optimization**
+   - Memoize components to prevent unnecessary re-renders.
+   - Implement virtualized lists for long conversations.
+   - Optimize API calls and response handling.
+3. **Final Testing**
+   - Cross-browser testing.
+   - Performance testing with long conversations.
+   - Security review.
+4. **Documentation**
+   - Create user documentation.
+   - Add helpful tooltips and onboarding guidance.
+   - Document code for future maintenance.
+5. **Bug Fixing**
+   - Address any remaining issues.
+   - Final polish of UI elements.
 
 ### **Exit Criteria**
-- App is stable, performs well with moderate conversation size.
-- All disclaimers and instructions are in place.
-- All known bugs are resolved or tracked.
+- Application is secure, with clear user guidance on API key handling.
+- Performance is smooth even with long conversations.
+- All known bugs are fixed.
+- Documentation is complete and helpful.
