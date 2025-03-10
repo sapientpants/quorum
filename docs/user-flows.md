@@ -48,21 +48,48 @@ This document outlines the key user flows that implement the features described 
 
 ### 2.2 Testing API Keys
 1. From API Keys screen, user clicks "Test Key" next to a provider
-2. System attempts minimal API call to verify key validity
+2. System makes a minimal API call to verify key validity
 3. System displays success or error message
 4. If error, system provides troubleshooting guidance
 
-### 2.3 Removing API Keys
-1. User navigates to Settings > API Keys
-2. User clicks "Remove" next to a stored key
-3. System prompts for confirmation
-4. User confirms deletion
-5. System removes key from storage
-6. System confirms successful removal
+## 3. Language Selection and Management
 
-## 3. Round Table Configuration
+### 3.1 Automatic Language Detection
+1. User visits the application for the first time
+2. System checks for language preference in the following order:
+   - Looks for a 'preferredLanguage' cookie
+   - Falls back to the browser's `Accept-Language` header
+   - Defaults to English if neither source provides a valid language
+3. System applies the detected language to the UI
 
-### 3.1 Creating a New Round Table
+### 3.2 Manual Language Selection
+1. User navigates to Settings > Preferences
+2. System displays language dropdown with available options:
+   - English
+   - Spanish
+   - French
+   - German
+   - Chinese
+   - Japanese
+   - Arabic
+   - Russian
+   - (Other supported languages)
+3. User selects desired language
+4. System immediately applies the selected language to the UI
+5. System stores the language preference in a cookie for future visits
+
+### 3.3 RTL Language Handling
+1. User selects a right-to-left language (e.g., Arabic)
+2. System:
+   - Changes text direction to RTL
+   - Flips UI layout (menus, buttons, etc.)
+   - Adjusts alignment of text and components
+3. User interacts with the RTL-optimized interface
+4. When user switches back to a LTR language, system reverts to standard layout
+
+## 4. Round Table Configuration
+
+### 4.1 Creating a New Round Table
 1. User clicks "New Round Table" from dashboard or chat interface
 2. System displays participant configuration screen
 3. User toggles desired LLM participants on/off
@@ -77,14 +104,14 @@ This document outlines the key user flows that implement the features described 
 7. System creates new round table session
 8. System redirects to chat interface with configured participants
 
-### 3.2 Saving a Round Table Configuration
+### 4.2 Saving a Round Table Configuration
 1. From participant configuration screen, user clicks "Save as Template"
 2. System prompts for template name
 3. User enters name (e.g., "Expert Panel")
 4. User clicks "Save"
 5. System stores configuration as a reusable template
 
-### 3.3 Loading a Saved Configuration
+### 4.3 Loading a Saved Configuration
 1. User clicks "Load Template" from participant configuration screen
 2. System displays list of saved templates
 3. User selects desired template
@@ -93,9 +120,9 @@ This document outlines the key user flows that implement the features described 
 6. User clicks "Create Round Table"
 7. System creates new session with selected configuration
 
-## 4. Chat Interaction
+## 5. Chat Interaction
 
-### 4.1 Starting a Conversation
+### 5.1 Starting a Conversation
 1. User enters initial message in input field
 2. User clicks "Send" or presses Enter
 3. System displays user message in chat interface
@@ -106,13 +133,13 @@ This document outlines the key user flows that implement the features described 
 8. Process continues until all LLMs have responded
 9. System indicates it's the user's turn again
 
-### 4.2 Continuing the Conversation
+### 5.2 Continuing the Conversation
 1. User sees indicator that it's their turn
 2. User enters next message
 3. Round-robin sequence repeats with all active LLMs
 4. Visual indicators show whose turn it is throughout the process
 
-### 4.3 Modifying Participant Mid-Conversation
+### 5.3 Modifying Participant Mid-Conversation
 1. User clicks on participant settings icon
 2. System displays quick edit panel for that participant
 3. User modifies settings (role, system prompt, etc.)
@@ -120,30 +147,30 @@ This document outlines the key user flows that implement the features described 
 5. System updates participant configuration for subsequent turns
 6. Conversation continues with updated settings
 
-## 5. Conversation Management
+## 6. Conversation Management
 
-### 5.1 Clearing Conversation
+### 6.1 Clearing Conversation
 1. User clicks "Clear Chat" button
 2. System prompts for confirmation
 3. User confirms action
 4. System clears all messages while maintaining participant configuration
 5. User can start a new conversation with same participants
 
-### 5.2 Summarizing Conversation
+### 6.2 Summarizing Conversation
 1. As conversation grows, user clicks "Summarize So Far"
 2. System calls an LLM to generate a summary of the conversation
 3. System inserts summary as a special message in the chat
 4. System optionally compresses older messages to reduce token usage
 5. Conversation continues with summarized context
 
-### 5.3 Exporting Conversation
+### 6.3 Exporting Conversation
 1. User clicks "Export" button
 2. System offers format options (JSON, text transcript)
 3. User selects desired format
 4. System generates export file
 5. Browser downloads file to user's device
 
-### 5.4 Importing Conversation
+### 6.4 Importing Conversation
 1. User clicks "Import" button
 2. System displays file selector
 3. User selects previously exported conversation file
@@ -151,16 +178,16 @@ This document outlines the key user flows that implement the features described 
 5. System loads conversation history and participant configuration
 6. User can continue the imported conversation
 
-## 6. Settings & Customization
+## 7. Settings & Customization
 
-### 6.1 Changing Theme
+### 7.1 Changing Theme
 1. User navigates to Settings > Appearance
 2. User toggles between light/dark mode
 3. User selects color scheme preferences
 4. System applies changes immediately
 5. User clicks "Save as Default" to persist preferences
 
-### 6.2 Adjusting LLM Parameters
+### 7.2 Adjusting LLM Parameters
 1. User navigates to Settings > LLM Defaults
 2. User configures default parameters for each provider:
    - Temperature
@@ -171,15 +198,15 @@ This document outlines the key user flows that implement the features described 
 3. User clicks "Save Defaults"
 4. System applies these defaults to new round table configurations
 
-### 6.3 Managing Saved Templates
+### 7.3 Managing Saved Templates
 1. User navigates to Settings > Saved Templates
 2. System displays list of saved round table configurations
 3. User can rename, delete, or set a template as default
 4. Changes are saved automatically
 
-## 7. Error Handling Flows
+## 8. Error Handling Flows
 
-### 7.1 API Key Error
+### 8.1 API Key Error
 1. System attempts to call LLM API with stored key
 2. API returns authentication error
 3. System displays error message in chat
@@ -188,14 +215,14 @@ This document outlines the key user flows that implement the features described 
 6. User updates key and returns to conversation
 7. User can retry the failed message
 
-### 7.2 Rate Limit Exceeded
+### 8.2 Rate Limit Exceeded
 1. System attempts to call LLM API
 2. API returns rate limit error
 3. System displays appropriate error message
 4. System suggests waiting period before retry
 5. User can manually retry after waiting period
 
-### 7.3 Network Error
+### 8.3 Network Error
 1. System attempts to call LLM API
 2. Network request fails
 3. System displays connection error message
@@ -203,9 +230,9 @@ This document outlines the key user flows that implement the features described 
 5. User clicks "Retry" or waits for automatic retry
 6. When connection is restored, conversation continues
 
-## 8. Security & Privacy Flows
+## 9. Security & Privacy Flows
 
-### 8.1 Clearing Stored Data
+### 9.1 Clearing Stored Data
 1. User navigates to Settings > Privacy
 2. User clicks "Clear All Data"
 3. System displays confirmation with details of what will be removed:
@@ -217,7 +244,7 @@ This document outlines the key user flows that implement the features described 
 5. System removes all data from localStorage/sessionStorage
 6. System confirms successful data removal
 
-### 8.2 Changing Key Storage Preference
+### 9.2 Changing Key Storage Preference
 1. User navigates to Settings > API Keys
 2. User toggles storage preference from localStorage to session-only (or vice versa)
 3. System displays implications of the change

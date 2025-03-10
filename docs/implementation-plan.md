@@ -246,11 +246,13 @@
 - Implement streaming responses for supported LLMs.
 - Add conversation management features.
 - Polish the UI/UX.
+- Add multi-lingual support for the application interface.
 
 ### **High-Level Features**
 - **Streaming Responses**: Real-time display of LLM outputs.
 - **Conversation Management**: Save, load, and summarize conversations.
 - **UI Polish**: Theming, animations, and responsive design.
+- **Multi-lingual Support**: Interface translations based on user preferences.
 
 ### **Detailed Tasks**
 1. **Streaming Response Implementation**
@@ -266,18 +268,32 @@
    - Add smooth animations for message appearance.
    - Ensure responsive design for all screen sizes.
    - Implement pagination or infinite scroll for long conversations.
-4. **Settings & Customization**
+4. **Multi-lingual Support**
+   - Create a language detection service that:
+     - Checks for language preference in cookies first.
+     - Falls back to the browser's language header if no cookie is found.
+     - Defaults to English if neither is available.
+   - Implement an i18n system using a library like i18next or react-intl.
+   - Create translation files for common languages (English, Spanish, French, German, etc.).
+   - Add a language selector in the UI to allow users to manually change the language.
+   - Store the selected language in a cookie for future visits.
+   - Ensure all UI elements, error messages, and tooltips are translatable.
+5. **Settings & Customization**
    - Create a settings panel for global app configuration.
    - Allow customization of UI elements and behavior.
-5. **Testing**
+6. **Testing**
    - Test streaming responses with different providers.
    - Verify conversation export/import functionality.
    - Test UI across different devices and screen sizes.
+   - Test language switching and verify all UI elements are properly translated.
+   - Test language detection from cookies and browser headers.
 
 ### **Exit Criteria**
 - Streaming responses work smoothly for supported providers.
 - Users can manage conversations (save, load, summarize).
 - UI is polished, responsive, and customizable.
+- Application interface is available in multiple languages.
+- Language preferences are correctly detected and applied.
 
 ---
 

@@ -43,6 +43,7 @@ Quorum is a single-page application (SPA) with a client-side only architecture. 
 - **API Communication**: Fetch API with custom adapters for different LLM providers
 - **Form Handling**: React Hook Form with Zod for validation
 - **Routing**: None (single-page application without route changes)
+- **Internationalization**: i18next with react-i18next for multi-lingual support
 
 ## 2. Component Architecture
 
@@ -189,6 +190,7 @@ interface UserPreferences {
   showThinkingIndicators: boolean
   autoSummarize: boolean
   keyStoragePreference: 'localStorage' | 'sessionOnly'
+  language: string // User's preferred language
 }
 ```
 
@@ -261,6 +263,9 @@ interface AppState {
     message: string
     details?: string
   } | null
+  
+  // Language State
+  language: string
 }
 ```
 
@@ -539,7 +544,207 @@ For new LLM providers:
 - Fallback mechanisms for provider-specific features
 - Unified error handling across different providers
 
-## 13. Implementation Plan
+## 13. Multi-lingual Support
+
+### 13.1 Language Detection and Selection
+
+The application will implement a language detection service that follows this priority order:
+1. Check for language preference stored in cookies
+2. Fall back to the browser's `Accept-Language` header
+3. Default to English if neither source provides a valid language preference
+
+```typescript
+function detectUserLanguage(): string {
+  // 1. Check for language cookie
+  const cookieLang = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('preferredLanguage='))
+    ?.split('=')[1]
+  
+  if (cookieLang && isValidLanguage(cookieLang)) {
+    return cookieLang
+  }
+  
+  // 2. Check browser language
+  const browserLang = navigator.language.split('-')[0] // Get primary language code
+  if (isValidLanguage(browserLang)) {
+    return browserLang
+  }
+  
+  // 3. Default to English
+  return 'en'
+}
+
+function isValidLanguage(lang: string): boolean {
+  // Check if the language is in our supported languages list
+  return ['en', 'es', 'fr', 'de', 'zh', 'ja', 'ar', 'ru'].includes(lang)
+}
+```
+
+### 13.2 Internationalization Implementation
+
+The application will use i18next with react-i18next for internationalization:
+
+```typescript
+// i18n configuration
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
+
+// Import translation files
+import enTranslation from './locales/en.json'
+import esTranslation from './locales/es.json'
+// ... other language imports
+
+i18n
+  .use(LanguageDetector) // Detect language from browser
+  .use(initReactI18next) // Initialize react-i18next
+  .init({
+    resources: {
+      en: { translation: enTranslation },
+      es: { translation: esTranslation },
+      // ... other languages
+    },
+    fallbackLng: 'en',
+    detection: {
+      order: ['cookie', 'navigator'],
+      lookupCookie: 'preferredLanguage',
+      caches: ['cookie']
+    },
+    interpolation: {
+      escapeValue: false // React already escapes values
+    }
+  })
+
+export default i18n
+```
+
+### 13.3 Translation Structure
+
+Translation files will be organized in a hierarchical structure to maintain clarity:
+
+```json
+{
+  "common": {
+    "send": "Send",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "loading": "Loading..."
+  },
+  "auth": {
+    "apiKey": "API Key",
+    "enterApiKey": "Enter your API key",
+    "saveKey": "Save key",
+    "keyWarning": "Your API key is stored locally in your browser"
+  },
+  "chat": {
+    "messagePlaceholder": "Type your message here...",
+    "thinking": "{{name}} is thinking...",
+    "errorMessages": {
+      "invalidKey": "Invalid API key",
+      "networkError": "Network error. Please try again."
+    }
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "apiKeys": "API Keys",
+    "privacy": "Privacy"
+  }
+}
+```
+
+### 13.4 Language Selector Component
+
+A language selector component will be implemented in the settings panel:
+
+```typescript
+function LanguageSelector() {
+  const { i18n } = useTranslation()
+  const { preferences, updatePreferences } = useSettings()
+  
+  function handleLanguageChange(language: string) {
+    // Update i18n language
+    i18n.changeLanguage(language)
+    
+    // Update user preferences
+    updatePreferences({ ...preferences, language })
+    
+    // Store in cookie for future visits
+    document.cookie = `preferredLanguage=${language}; max-age=31536000; path=/` // 1 year expiry
+  }
+  
+  return (
+    <div className="form-control">
+      <label className="label">
+        <span className="label-text">{t('settings.language')}</span>
+      </label>
+      <select 
+        className="select select-bordered" 
+        value={i18n.language} 
+        onChange={(e) => handleLanguageChange(e.target.value)}
+      >
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="zh">中文</option>
+        <option value="ja">日本語</option>
+        <option value="ar">العربية</option>
+        <option value="ru">Русский</option>
+      </select>
+    </div>
+  )
+}
+```
+
+### 13.5 RTL Support
+
+For right-to-left languages like Arabic and Hebrew, the application will dynamically adjust the layout:
+
+```typescript
+// In the main App component
+function App() {
+  const { i18n } = useTranslation()
+  const isRTL = ['ar', 'he'].includes(i18n.language)
+  
+  useEffect(() => {
+    // Set the dir attribute on the html element
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr'
+    
+    // Add or remove RTL class for Tailwind CSS
+    if (isRTL) {
+      document.documentElement.classList.add('rtl')
+    } else {
+      document.documentElement.classList.remove('rtl')
+    }
+  }, [isRTL])
+  
+  // Rest of the component
+}
+```
+
+### 13.6 Testing Multi-lingual Support
+
+Testing for multi-lingual support will include:
+
+1. **Unit Tests**:
+   - Verify language detection logic
+   - Test language switching functionality
+   - Validate RTL layout adjustments
+
+2. **Integration Tests**:
+   - Test complete language change flow
+   - Verify persistence of language preference
+   - Test fallback behavior for missing translations
+
+3. **Manual Testing**:
+   - Verify translations in context
+   - Check for layout issues in different languages
+   - Test RTL languages for proper text alignment and UI flow
+
+## 14. Implementation Plan
 
 The implementation plan is structured into specific phases that align with the user flows and UI mockups, with each phase building upon the previous ones.
 
@@ -595,6 +800,9 @@ The implementation plan is structured into specific phases that align with the u
 - Develop template management interface
 - Build help center and documentation components
 - Implement feedback and reporting functionality
+- Implement multi-lingual support with i18next
+- Create language detection and selection functionality
+- Add RTL support for appropriate languages
 
 ### Phase 6: LLM Provider Integration
 - Implement OpenAI adapter with streaming support
@@ -628,7 +836,7 @@ The implementation plan is structured into specific phases that align with the u
 
 Each phase will include dedicated testing to ensure components meet requirements before proceeding to the next phase. The implementation prioritizes core functionality first, followed by enhanced features and optimizations. This approach allows for early feedback on the basic functionality while progressively adding more sophisticated features.
 
-## 14. Conclusion
+## 15. Conclusion
 
 This technical design document outlines the architecture and implementation approach for the Quorum Chat application. By following a client-side only approach with direct API integration, we can create a flexible and powerful interface for interacting with multiple LLMs in a round-table format.
 

@@ -136,8 +136,23 @@
    - Customize fonts, background colors, message bubble styles.
 
 3. **Language & Localization**  
-   - If targeting a global audience, consider providing UI translations.  
-   - Possibly also specify a conversation language if the user primarily wants LLM responses in a specific language.
+   - Multi-lingual support for the application interface with the following features:
+     - **Automatic Language Detection**:
+       - Check for language preference stored in cookies first.
+       - Fall back to the browser's `Accept-Language` header if no cookie is found.
+       - Default to English if neither source provides a valid language preference.
+     - **Language Selection**:
+       - Dropdown menu or selector in the settings panel to manually choose a language.
+       - Store the selected language in a cookie for future visits.
+     - **Supported Languages**:
+       - Initial support for major languages (English, Spanish, French, German, Chinese, Japanese, etc.).
+       - Expandable framework to easily add more languages in the future.
+     - **Translation Coverage**:
+       - All UI elements, buttons, labels, and tooltips.
+       - Error messages and system notifications.
+       - Help text and documentation.
+   - Specify a conversation language preference for LLM responses (separate from UI language).
+   - RTL (Right-to-Left) support for languages like Arabic and Hebrew.
 
 ---
 
