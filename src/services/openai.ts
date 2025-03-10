@@ -1,3 +1,6 @@
+// This file is deprecated and will be removed in a future update.
+// Please use the new LLM service instead.
+
 import type { Message } from '../types/chat'
 
 interface OpenAIMessage {
@@ -61,6 +64,8 @@ export async function callOpenAI(
   temperature = 0.7,
   maxTokens = 1000
 ): Promise<string> {
+  console.warn('callOpenAI is deprecated. Please use sendMessageToLLM from the LLM service instead.')
+  
   if (!apiKey) {
     throw new Error('OpenAI API key is required')
   }

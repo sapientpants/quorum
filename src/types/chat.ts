@@ -1,11 +1,15 @@
+import type { LLMProvider, LLMModel } from './api'
+
 export interface Message {
   id: string
   senderId: string // 'user' or LLM identifier
   text: string
   timestamp: number
-  provider?: string // 'openai', 'anthropic', etc.
-  model?: string // 'gpt-4o', 'claude-3.7-sonnet', etc.
+  provider?: LLMProvider
+  model?: LLMModel
   role?: string // Optional role description for the LLM
+  status?: 'sending' | 'sent' | 'error'
+  error?: Error
 }
 
 export interface ChatProps {

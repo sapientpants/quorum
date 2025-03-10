@@ -1,19 +1,31 @@
-import type { Message } from '../types/chat'
 import ChatMessage from './ChatMessage'
 import ChatScrollAnchor from './ChatScrollAnchor'
+import type { Message } from '../types/chat'
 
 interface ChatListProps {
   messages: Message[]
   isLoading?: boolean
+  onRetry?: (messageId: string) => void
 }
 
-function ChatList({ messages, isLoading = false }: ChatListProps) {
+function ChatList({ messages, isLoading = false, onRetry }: ChatListProps) {
   return (
-    <div className="flex flex-col space-y-4 p-4">
+    <div className="space-y-4">
       {messages.map(message => (
-        <ChatMessage key={message.id} message={message} />
+        <ChatMessage 
+          key={message.id} 
+          message={message} 
+          onRetry={onRetry}
+        />
       ))}
-      <ChatScrollAnchor trackVisibility={isLoading} />
+      
+      {isLoading && (
+        <div className="flex justify-center my-4">
+          <span className="loading loading-dots loading-md"></span>
+        </div>
+      )}
+      
+      <ChatScrollAnchor />
     </div>
   )
 }

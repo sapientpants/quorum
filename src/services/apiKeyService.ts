@@ -27,12 +27,12 @@ export function validateApiKey(provider: string, key: string): ApiKeyValidationR
         }
       }
       break
-    case 'cohere':
-      // Cohere keys are typically long strings
+    case 'grok':
+      // Grok keys are typically long strings
       if (key.length < 30) {
         return { 
           isValid: false, 
-          message: 'Invalid Cohere API key format' 
+          message: 'Invalid Grok API key format' 
         }
       }
       break

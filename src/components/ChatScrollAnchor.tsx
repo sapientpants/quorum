@@ -1,19 +1,15 @@
 import { useEffect, useRef } from 'react'
 
-interface ChatScrollAnchorProps {
-  trackVisibility?: boolean
-}
-
-function ChatScrollAnchor({ trackVisibility = true }: ChatScrollAnchorProps) {
-  const ref = useRef<HTMLDivElement>(null)
+function ChatScrollAnchor() {
+  const anchorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (trackVisibility && ref.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth' })
+    if (anchorRef.current && typeof anchorRef.current.scrollIntoView === 'function') {
+      anchorRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [trackVisibility])
+  })
 
-  return <div ref={ref} />
+  return <div ref={anchorRef} />
 }
 
 export default ChatScrollAnchor 

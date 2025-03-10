@@ -1,49 +1,57 @@
-import { useState, FormEvent } from 'react'
+import { useState, KeyboardEvent } from 'react'
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void
+  onSendMessage: (text: string) => void
   isLoading?: boolean
   placeholder?: string
+  disabled?: boolean
 }
 
 function ChatInput({ 
   onSendMessage, 
   isLoading = false, 
-  placeholder = "Type your message here..." 
+  placeholder = "Type your message here...",
+  disabled = false
 }: ChatInputProps) {
-  const [input, setInput] = useState('')
+  const [message, setMessage] = useState('')
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-    
-    if (!input.trim()) return
-    
-    onSendMessage(input)
-    setInput('')
+  function handleSend() {
+    if (message.trim() && !isLoading && !disabled) {
+      onSendMessage(message)
+      setMessage('')
+    }
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+    <div className="flex items-end gap-2">
+      <textarea
+        className="textarea textarea-bordered flex-grow resize-none"
         placeholder={placeholder}
-        className="input input-bordered flex-grow"
-        disabled={isLoading}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
+        rows={2}
+        disabled={isLoading || disabled}
       />
       <button 
-        type="submit" 
         className="btn btn-primary" 
-        disabled={isLoading || !input.trim()}
+        onClick={handleSend}
+        disabled={!message.trim() || isLoading || disabled}
       >
         {isLoading ? (
-          <span className="loading loading-spinner loading-sm"></span>
+          <span className="loading loading-spinner"></span>
         ) : (
           'Send'
         )}
       </button>
-    </form>
+    </div>
   )
 }
 
