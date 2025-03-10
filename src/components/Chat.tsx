@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { useState, useEffect } from 'react'
 import ChatList from './ChatList'
 import ChatInput from './ChatInput'

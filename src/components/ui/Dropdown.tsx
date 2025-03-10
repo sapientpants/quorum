@@ -6,16 +6,9 @@ interface DropdownProps {
   className?: string
 }
 
-interface DropdownTriggerProps {
-  children: React.ReactNode
-  className?: string
-  onClick?: () => void
-}
-
 interface DropdownMenuProps {
   children: React.ReactNode
   className?: string
-  isOpen: boolean
 }
 
 interface DropdownItemProps {
@@ -25,76 +18,36 @@ interface DropdownItemProps {
 }
 
 export function Dropdown({ children, className }: DropdownProps) {
-  const [isOpen, setIsOpen] = React.useState(false)
-  
-  const toggleDropdown = () => setIsOpen(!isOpen)
-  const closeDropdown = () => setIsOpen(false)
-  
-  React.useEffect(() => {
-    document.addEventListener('click', closeDropdown)
-    return () => document.removeEventListener('click', closeDropdown)
-  }, [])
-  
   return (
-    <div className={cn('relative inline-block', className)} onClick={(e) => e.stopPropagation()}>
-      {React.Children.map(children, (child) => {
-        if (React.isValidElement(child)) {
-          if (child.type === DropdownTrigger) {
-            return React.cloneElement(child as React.ReactElement<DropdownTriggerProps>, {
-              onClick: toggleDropdown
-            })
-          }
-          if (child.type === DropdownMenu) {
-            return React.cloneElement(child as React.ReactElement<DropdownMenuProps>, {
-              isOpen
-            })
-          }
-          return child
-        }
-        return child
-      })}
-    </div>
-  )
-}
-
-export function DropdownTrigger({ children, className, onClick }: DropdownTriggerProps) {
-  return (
-    <div 
-      className={cn('cursor-pointer', className)} 
-      onClick={onClick}
-    >
+    <div className={cn('relative inline-block text-left', className)}>
       {children}
     </div>
   )
 }
 
-export function DropdownMenu({ children, className, isOpen }: DropdownMenuProps) {
-  if (!isOpen) return null
-  
+export function DropdownMenu({ children, className }: DropdownMenuProps) {
   return (
-    <div 
+    <div
       className={cn(
-        'absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50',
+        'absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none',
         className
       )}
     >
-      <div className="py-1">
-        {children}
-      </div>
+      <div className="py-1">{children}</div>
     </div>
   )
 }
 
 export function DropdownItem({ children, className, onClick }: DropdownItemProps) {
   return (
-    <div
+    <button
       className={cn(
-        'block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer',
+        'block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700',
         className
       )}
       onClick={onClick}
     >
       {children}
-    </div>
+    </button>
   )
 } 

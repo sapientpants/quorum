@@ -1,5 +1,4 @@
 import type { Message } from '../types/chat'
-import * as React from 'react'
 
 interface ChatMessageProps {
   message: Message

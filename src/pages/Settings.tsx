@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button } from '../components/ui/Button'
+import { Button } from '../components/ui/button'
 import ApiKeyManager from '../components/ApiKeyManager'
 import ThemeSelector from '../components/ThemeSelector'
 
@@ -196,7 +196,7 @@ export function Settings() {
                   <p className="mb-2">
                     Your data is stored locally in your browser. You can clear all data at any time.
                   </p>
-                  <Button variant="destructive">Clear All Data</Button>
+                  <Button variant="error">Clear All Data</Button>
                 </div>
                 
                 <div>
