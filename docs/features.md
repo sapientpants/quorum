@@ -1,6 +1,32 @@
 # Features
 
-## 1. User Onboarding & Disclaimers
+## 1. User Interface & Design
+
+1. **Modern Dark Theme**
+   - Sleek dark-themed interface with gradient accents and glassmorphism effects.
+   - Responsive design that works on desktop and mobile devices.
+   - Consistent color scheme with purple and blue gradients.
+
+2. **Landing Page**
+   - Hero section with animated elements and clear value proposition.
+   - Feature cards highlighting key capabilities.
+   - "How It Works" section explaining the process.
+   - Call-to-action buttons for getting started.
+
+3. **Navigation**
+   - Unified navbar with links to Chat, Templates, and Help pages.
+   - Theme toggle for light/dark mode.
+   - Settings menu for configuration options.
+
+4. **Component Library**
+   - Custom UI components built with HeroUI.
+   - Solar icons via Iconify for consistent iconography.
+   - Glassmorphism effects for cards and modals.
+   - Gradient buttons and accents for visual appeal.
+
+---
+
+## 2. User Onboarding & Disclaimers
 
 1. **Welcome Screen**  
    - Brief explanation of what the app does ("Chat with multiple LLMs in a round-table conversation").  
@@ -17,7 +43,7 @@
 
 ---
 
-## 2. API Key Management
+## 3. API Key Management
 
 1. **API Key Input Fields**  
    - Text fields for OpenAI key, Anthropic key, etc.  
@@ -36,7 +62,7 @@
 
 ---
 
-## 3. Participant Configuration
+## 4. Participant Configuration
 
 1. **Human Participant**  
    - The user is the only human participant in the conversation.
@@ -64,7 +90,7 @@
 
 ---
 
-## 4. Chat Interface & User Experience
+## 5. Chat Interface & User Experience
 
 1. **Conversation Display**  
    - Real-time updates as new messages arrive.  
@@ -100,7 +126,7 @@
 
 ---
 
-## 5. Conversation Management
+## 6. Conversation Management
 
 1. **Internal Data Structures**  
    - A message list in React state: 
@@ -125,7 +151,7 @@
 
 ---
 
-## 6. Settings & Customization
+## 7. Settings & Customization
 
 1. **LLM Tuning Parameters**  
    - For each LLM participant, allow advanced parameters like temperature, max tokens, top_p, etc.  
@@ -156,13 +182,13 @@
 
 ---
 
-## 7. Future Expansion Possibilities
+## 8. Future Expansion Possibilities
 
 *(These features are not part of the initial implementation but could be considered for future versions.)*
 
 ---
 
-## 8. Security Considerations
+## 9. Security Considerations
 
 1. **API Key Visibility**  
    - Warn users that keys stored in localStorage can be found by anyone with access to the device.  
@@ -181,7 +207,7 @@
 
 ---
 
-## 9. Conversation Logs & Export
+## 10. Conversation Logs & Export
 
 1. **Save/Export Conversation**  
    - Allow users to export the entire chat (including multiple LLM responses) as a JSON file or a text transcript.  
@@ -192,7 +218,7 @@
 
 ---
 
-## 10. Error Handling & User Feedback
+## 11. Error Handling & User Feedback
 
 1. **API Errors**  
    - Handle and display error messages from the LLM provider (e.g., invalid API key, rate limit exceeded, network error).  

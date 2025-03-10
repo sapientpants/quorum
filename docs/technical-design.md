@@ -37,13 +37,15 @@ Quorum is a single-page application (SPA) with a client-side only architecture. 
 - **Build System**: Vite (for fast development and optimized production builds)
 - **Styling**: 
   - Tailwind CSS for utility-first styling
-  - DaisyUI for component styling and theming
+  - HeroUI for component styling and theming
+  - Custom UI components with glassmorphism and gradient effects
+- **Icons**: Solar icons via Iconify
 - **State Management**: React Context API + custom hooks
 - **Storage**: Browser's localStorage and sessionStorage
 - **API Communication**: Fetch API with custom adapters for different LLM providers
 - **Form Handling**: React Hook Form with Zod for validation
-- **Routing**: None (single-page application without route changes)
-- **Internationalization**: i18next with react-i18next for multi-lingual support
+- **Routing**: React Router for navigation between pages
+- **Testing**: Vitest and React Testing Library
 
 ## 2. Component Architecture
 
