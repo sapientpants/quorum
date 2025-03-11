@@ -2,16 +2,15 @@ import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/ui/button'
 import { Icon } from '@iconify/react'
+import { useTheme } from '../hooks/useTheme'
 
 export function TopBar() {
   const navigate = useNavigate()
-  const [theme, setTheme] = React.useState<string>(localStorage.getItem('theme') || 'dark')
+  const { theme, setTheme } = useTheme()
   
   function toggleTheme() {
     const newTheme = theme === 'dark' ? 'light' : 'dark'
     setTheme(newTheme)
-    localStorage.setItem('theme', newTheme)
-    document.documentElement.classList.toggle('dark')
   }
   
   return (
@@ -23,7 +22,14 @@ export function TopBar() {
       
       <div className="flex items-center gap-4">
         <Button variant="ghost" onClick={toggleTheme}>
-          <Icon icon={theme === 'dark' ? 'solar:sun-linear' : 'solar:moon-linear'} className="h-5 w-5" />
+          <Icon
+            icon={
+              theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+                ? 'solar:sun-linear'
+                : 'solar:moon-linear'
+            }
+            className="h-5 w-5"
+          />
         </Button>
         
         <Button variant="ghost" onClick={() => navigate('/settings')}>
