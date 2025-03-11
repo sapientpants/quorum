@@ -1,8 +1,9 @@
 import type { Message } from '../../types/chat'
-import type { LLMSettings } from '../../types/api'
+import type { LLMSettings } from '../../types/llm'
 import { OpenAIClient } from './openaiClient'
 import { AnthropicClient } from './anthropicClient'
 import { GrokClient } from './grokClient'
+import { GoogleClient } from './googleClient'
 
 export interface StreamingOptions {
   onToken?: (token: string) => void
@@ -80,6 +81,9 @@ export function getLLMClient(provider: string): LLMClient {
     case 'grok':
       client = new GrokClient()
       break
+    case 'google':
+      client = new GoogleClient()
+      break
     default:
       throw new Error(`LLM client for provider ${provider} not implemented`)
   }
@@ -88,4 +92,4 @@ export function getLLMClient(provider: string): LLMClient {
   clientCache[provider] = client
   
   return client
-} 
+}

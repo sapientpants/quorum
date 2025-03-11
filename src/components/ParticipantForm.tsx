@@ -3,13 +3,14 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
-import type { Participant, LLMProvider } from '../types/participant'
+import type { Participant } from '../types/participant'
+import type { LLMProvider } from '../types/llm'
+import { PROVIDER_MODELS, SUPPORTED_PROVIDERS } from '../types/llm'
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  provider: z.enum(['openai', 'anthropic', 'grok'] as const),
+  provider: z.enum(['openai', 'anthropic', 'grok', 'google'] as const),
   model: z.string().min(1, 'Model is required'),
-  roleDescription: z.string().min(1, 'Role description is required'),
   systemPrompt: z.string().min(1, 'System prompt is required'),
   settings: z.object({
     temperature: z.number().min(0).max(2),
@@ -25,17 +26,10 @@ interface ParticipantFormProps {
   onCancel: () => void
 }
 
-const providerModels: Record<LLMProvider, string[]> = {
-  openai: ['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo'],
-  anthropic: ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
-  grok: ['grok-1']
-}
-
 const defaultValues: FormData = {
   name: '',
   provider: 'openai',
-  model: 'gpt-4',
-  roleDescription: '',
+  model: 'gpt-4o',
   systemPrompt: '',
   settings: {
     temperature: 0.7,
@@ -45,6 +39,7 @@ const defaultValues: FormData = {
 
 export function ParticipantForm({ initialData, onSubmit, onCancel }: ParticipantFormProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const sortedProviders = [...SUPPORTED_PROVIDERS].sort() as LLMProvider[]
 
   const {
     register,
@@ -60,7 +55,7 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
   })
 
   const selectedProvider = watch('provider') as LLMProvider
-  const models = providerModels[selectedProvider]
+  const models = [...PROVIDER_MODELS[selectedProvider]].sort()
 
   function onFormSubmit(data: FormData) {
     onSubmit({
@@ -98,9 +93,11 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
             className="select select-bordered w-full mt-1"
             {...register('provider')}
           >
-            <option value="openai">OpenAI</option>
-            <option value="anthropic">Anthropic</option>
-            <option value="grok">Grok</option>
+            {sortedProviders.map(provider => (
+              <option key={provider} value={provider}>
+                {provider.charAt(0).toUpperCase() + provider.slice(1)}
+              </option>
+            ))}
           </select>
           {errors.provider && (
             <p className="text-error text-sm mt-1">{errors.provider.message}</p>
@@ -130,21 +127,6 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
 
       {/* Role and System Prompt */}
       <div className="space-y-4">
-        <div>
-          <label htmlFor="roleDescription" className="block text-sm font-medium">
-            Role Description
-          </label>
-          <textarea
-            id="roleDescription"
-            className="textarea textarea-bordered w-full mt-1 h-24"
-            placeholder="Describe the role and expertise of this participant..."
-            {...register('roleDescription')}
-          />
-          {errors.roleDescription && (
-            <p className="text-error text-sm mt-1">{errors.roleDescription.message}</p>
-          )}
-        </div>
-
         <div>
           <label htmlFor="systemPrompt" className="block text-sm font-medium">
             System Prompt

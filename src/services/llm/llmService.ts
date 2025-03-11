@@ -1,5 +1,6 @@
 import type { Message } from '../../types/chat'
-import type { LLMSettings, LLMProvider, LLMModel } from '../../types/api'
+import type { LLMSettings, LLMModel, LLMProvider } from '../../types/llm'
+import { SUPPORTED_PROVIDERS } from '../../types/llm'
 import { getLLMClient, type StreamingOptions } from './llmClient'
 
 /**
@@ -101,5 +102,5 @@ export function supportsStreaming(provider: LLMProvider): boolean {
  * @returns An array of supported providers
  */
 export function getSupportedProviders(): LLMProvider[] {
-  return ['openai', 'anthropic', 'grok']
+  return SUPPORTED_PROVIDERS
 } 

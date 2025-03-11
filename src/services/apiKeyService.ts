@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid'
 import type { ApiKey, ApiKeyValidationResult, ApiKeyStorageOptions } from '../types/api'
+import type { LLMProvider } from '../types/llm'
 import { API_KEY_STORAGE_KEY } from '../types/api'
 
 // Validate API keys for different providers
@@ -80,7 +81,7 @@ export function loadApiKeys(
 }
 
 // Create a new API key object
-export function createApiKey(provider: string, key: string, label?: string): ApiKey {
+export function createApiKey(provider: LLMProvider, key: string, label?: string): ApiKey {
   return {
     id: nanoid(),
     provider,

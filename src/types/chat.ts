@@ -1,4 +1,4 @@
-import type { LLMProvider, LLMModel } from './api'
+import type { LLMProvider, LLMModel } from './llm'
 
 export interface Message {
   id: string

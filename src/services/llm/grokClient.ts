@@ -1,6 +1,6 @@
 import type { Message } from '../../types/chat'
 import type { LLMClient, StreamingOptions } from './llmClient'
-import type { LLMSettings, GrokModel } from '../../types/api'
+import type { LLMSettings, GrokModel } from '../../types/llm'
 
 // Provider-specific error types
 export class GrokError extends Error {
@@ -64,12 +64,12 @@ interface GrokResponse {
 }
 
 export class GrokClient implements LLMClient {
-  private readonly availableModels: GrokModel[] = [
-    'grok-1',
-    'grok-1-mini'
+  private readonly supportedModels: GrokModel[] = [
+    'grok-3',
+    'grok-2'
   ]
 
-  private readonly defaultModel: GrokModel = 'grok-1'
+  private readonly defaultModel: GrokModel = 'grok-3'
 
   // Convert our app's message format to Grok's format
   private convertToGrokMessages(messages: Message[]): GrokMessage[] {
@@ -103,8 +103,8 @@ export class GrokClient implements LLMClient {
       throw new GrokAuthError()
     }
 
-    if (!this.availableModels.includes(model as GrokModel)) {
-      throw new GrokModelError(`Model ${model} is not available. Available models: ${this.availableModels.join(', ')}`)
+    if (!this.supportedModels.includes(model as GrokModel)) {
+      throw new GrokModelError(`Model ${model} is not available. Available models: ${this.supportedModels.join(', ')}`)
     }
     
     const grokMessages = this.convertToGrokMessages(messages)
@@ -263,7 +263,7 @@ export class GrokClient implements LLMClient {
   }
 
   getAvailableModels(): string[] {
-    return this.availableModels
+    return this.supportedModels
   }
 
   getDefaultModel(): string {

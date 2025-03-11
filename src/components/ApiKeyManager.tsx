@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import type { ApiKey, ApiKeyStorageOptions } from '../types/api'
+import type { LLMProvider } from '../types/llm'
 import { 
-  validateApiKey, 
   saveApiKeys, 
   loadApiKeys, 
+  clearApiKeys, 
   createApiKey, 
-  clearApiKeys 
+  validateApiKey 
 } from '../services/apiKeyService'
 
 interface ApiKeyManagerProps {
@@ -20,7 +21,7 @@ export function ApiKeyManager({
   storageOption = { storage: 'local' } 
 }: ApiKeyManagerProps) {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>(initialApiKeys)
-  const [selectedProvider, setSelectedProvider] = useState<string>('openai')
+  const [selectedProvider, setSelectedProvider] = useState<LLMProvider>('openai')
   const [newKeyValue, setNewKeyValue] = useState<string>('')
   const [newKeyLabel, setNewKeyLabel] = useState<string>('')
   const [validationError, setValidationError] = useState<string | null>(null)
@@ -89,18 +90,21 @@ export function ApiKeyManager({
 
   // Add a new API key
   function addApiKey() {
-    setValidationError(null)
+    if (!newKeyValue) {
+      setValidationError('API key is required')
+      return
+    }
     
     // Validate the key
-    const validation = validateApiKey(selectedProvider, newKeyValue)
-    if (!validation.isValid) {
-      setValidationError(validation.message || 'Invalid API key')
+    const validationResult = validateApiKey(selectedProvider, newKeyValue)
+    if (!validationResult.isValid) {
+      setValidationError(validationResult.message || 'Invalid API key')
       return
     }
     
     // Create and add the new key
     const newKey = createApiKey(
-      selectedProvider, 
+      selectedProvider as LLMProvider, 
       newKeyValue, 
       newKeyLabel || undefined
     )
@@ -291,7 +295,7 @@ export function ApiKeyManager({
             <select 
               className="select select-bordered w-full"
               value={selectedProvider}
-              onChange={(e) => setSelectedProvider(e.target.value)}
+              onChange={(e) => setSelectedProvider(e.target.value as LLMProvider)}
             >
               <option value="openai">OpenAI</option>
               <option value="anthropic">Anthropic</option>

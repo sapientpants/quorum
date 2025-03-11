@@ -2,6 +2,8 @@ import * as React from 'react'
 import { Button } from '../components/ui/button'
 import ApiKeyManager from '../components/ApiKeyManager'
 import ThemeSelector from '../components/ThemeSelector'
+import { ParticipantList } from '../components/ParticipantList'
+import { Icon } from '@iconify/react'
 
 export function Settings() {
   const [activeTab, setActiveTab] = React.useState('api-keys')
@@ -76,6 +78,14 @@ export function Settings() {
               API Keys
             </Button>
             <Button 
+              variant={activeTab === 'participants' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('participants')}
+              className="justify-start"
+            >
+              <Icon icon="solar:users-group-rounded-linear" className="mr-2 h-4 w-4" />
+              Participants
+            </Button>
+            <Button 
               variant={activeTab === 'appearance' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('appearance')}
               className="justify-start"
@@ -108,6 +118,17 @@ export function Settings() {
               </p>
               
               <ApiKeyManager onApiKeyChange={handleApiKeyChange} />
+            </div>
+          )}
+          
+          {activeTab === 'participants' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Participants</h2>
+              <p className="mb-6">
+                Manage AI participants for your round table discussions. Create, edit, and organize participants with different roles and personalities.
+              </p>
+              
+              <ParticipantList />
             </div>
           )}
           

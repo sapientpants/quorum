@@ -1,7 +1,7 @@
 import { z } from 'zod'
+import type { LLMProvider } from './llm'
 
 export type ParticipantType = 'human' | 'llm'
-export type LLMProvider = 'openai' | 'anthropic' | 'grok'
 
 export interface BaseParticipant {
   id: string
@@ -17,7 +17,7 @@ export interface LLMParticipant extends BaseParticipant {
   type: 'llm'
   provider: LLMProvider
   model: string
-  roleDescription: string
+  roleDescription?: string
   systemPrompt: string
   settings: {
     temperature: number
@@ -40,9 +40,9 @@ export const humanParticipantSchema = baseParticipantSchema.extend({
 
 export const llmParticipantSchema = baseParticipantSchema.extend({
   type: z.literal('llm'),
-  provider: z.enum(['openai', 'anthropic', 'grok']),
+  provider: z.enum(['openai', 'anthropic', 'grok', 'google']),
   model: z.string(),
-  roleDescription: z.string(),
+  roleDescription: z.string().optional(),
   systemPrompt: z.string(),
   settings: z.object({
     temperature: z.number().min(0).max(2),
@@ -70,8 +70,7 @@ export function createParticipant(data: Partial<Participant> & Pick<Participant,
     name: data.name,
     type: 'llm',
     provider: data.provider || 'openai',
-    model: data.model || 'gpt-4',
-    roleDescription: data.roleDescription || '',
+    model: data.model || 'gpt-4o',
     systemPrompt: data.systemPrompt || '',
     settings: {
       temperature: data.settings?.temperature || 0.7,

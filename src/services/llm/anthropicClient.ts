@@ -1,6 +1,6 @@
 import type { Message } from '../../types/chat'
 import type { LLMClient, StreamingOptions } from './llmClient'
-import type { LLMSettings, AnthropicModel } from '../../types/api'
+import type { LLMSettings, AnthropicModel } from '../../types/llm'
 
 // Provider-specific error types
 export class AnthropicError extends Error {
@@ -61,13 +61,13 @@ interface AnthropicResponse {
 }
 
 export class AnthropicClient implements LLMClient {
-  private readonly availableModels: AnthropicModel[] = [
-    'claude-3-opus',
-    'claude-3-sonnet',
-    'claude-3-haiku'
+  private readonly supportedModels: AnthropicModel[] = [
+    'claude-3.7-sonnet',
+    'claude-3.5-sonnet',
+    'claude-3.5-haiku'
   ]
 
-  private readonly defaultModel: AnthropicModel = 'claude-3-sonnet'
+  private readonly defaultModel: AnthropicModel = 'claude-3.7-sonnet'
 
   // Convert our app's message format to Anthropic's format
   private convertToAnthropicMessages(messages: Message[]): { 
@@ -107,8 +107,8 @@ export class AnthropicClient implements LLMClient {
       throw new AnthropicAuthError()
     }
 
-    if (!this.availableModels.includes(model as AnthropicModel)) {
-      throw new AnthropicModelError(`Model ${model} is not available. Available models: ${this.availableModels.join(', ')}`)
+    if (!this.supportedModels.includes(model as AnthropicModel)) {
+      throw new AnthropicModelError(`Model ${model} is not available. Available models: ${this.supportedModels.join(', ')}`)
     }
     
     const { messages: anthropicMessages, system } = this.convertToAnthropicMessages(messages)
@@ -270,7 +270,7 @@ export class AnthropicClient implements LLMClient {
   }
 
   getAvailableModels(): string[] {
-    return this.availableModels
+    return this.supportedModels
   }
 
   getDefaultModel(): string {

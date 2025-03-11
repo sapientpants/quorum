@@ -3,7 +3,7 @@ import ChatList from './ChatList'
 import ChatInput from './ChatInput'
 import ApiKeyManager from './ApiKeyManager'
 import type { Message } from '../types/chat'
-import type { LLMSettings, LLMProvider, LLMModel } from '../types/api'
+import type { LLMSettings, LLMProvider, LLMModel } from '../types/llm'
 import { nanoid } from 'nanoid'
 import { 
   sendMessageToLLM, 
@@ -293,7 +293,7 @@ export function Chat() {
               step="0.1" 
               className="range range-sm" 
               value={settings.temperature}
-              onChange={(e) => setSettings(prev => ({ ...prev, temperature: parseFloat(e.target.value) }))}
+              onChange={(e) => setSettings((prev: LLMSettings) => ({ ...prev, temperature: parseFloat(e.target.value) }))}
             />
             <div className="flex justify-between text-xs px-2">
               <span>Precise</span>
@@ -314,7 +314,7 @@ export function Chat() {
               step="100" 
               className="range range-sm" 
               value={settings.maxTokens}
-              onChange={(e) => setSettings(prev => ({ ...prev, maxTokens: parseInt(e.target.value) }))}
+              onChange={(e) => setSettings((prev: LLMSettings) => ({ ...prev, maxTokens: parseInt(e.target.value) }))}
             />
             <div className="flex justify-between text-xs px-2">
               <span>Short</span>

@@ -1,6 +1,6 @@
 import type { Message } from '../../types/chat'
 import type { LLMClient, StreamingOptions } from './llmClient'
-import type { LLMSettings, OpenAIModel } from '../../types/api'
+import type { LLMSettings, OpenAIModel } from '../../types/llm'
 
 interface OpenAIMessage {
   role: 'system' | 'user' | 'assistant'
