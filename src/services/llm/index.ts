@@ -1,17 +1,21 @@
-// Export LLM Provider
-export { llmProvider, LLMProvider } from './LLMProvider'
+// Export new functional implementations
+export { createLLMService } from './createLLMService'
+export { createLLMProvider, llmProvider } from './createLLMProvider'
+export { createApiKeyStorage } from './createApiKeyStorage'
+export { createApiKeyValidator } from './createApiKeyValidator'
+export { createApiKeyManager } from './createApiKeyManager'
 
-// Export LLM service class
-export { LLMService } from './llmService'
+// Export legacy class implementations for backward compatibility
+export { ApiKeyManager } from './ApiKeyManager'
 
 // Import types
 import type { Message } from '../../types/chat'
 import type { LLMProvider as ProviderType, LLMSettings } from '../../types/llm'
 import { SUPPORTED_PROVIDERS } from '../../types/llm'
-import type { StreamingOptions } from './types'
-import { getLLMClient } from './llmClient'
+import type { StreamingOptions } from '../../types/llm'
+import { getLLMClient } from './LLMClientFactory'
 import { ApiKeyManager } from './ApiKeyManager'
-import { LLMService } from './llmService'
+import { llmProvider } from './createLLMProvider'
 
 // Legacy exports for backward compatibility
 export const sendMessageToLLM = async (
@@ -24,16 +28,29 @@ export const sendMessageToLLM = async (
 ): Promise<string> => {
   const apiKeyManager = new ApiKeyManager();
   apiKeyManager.setKey(provider, apiKey);
-  const service = new LLMService(apiKeyManager);
-  const response = await service.sendMessage(
+  
+  const response = await llmProvider.sendMessage(
     messages,
-    provider,
-    model || '',
-    '',
-    settings,
+    {
+      id: 'temp',
+      name: provider,
+      type: 'llm',
+      provider,
+      model: model || '',
+      systemPrompt: '',
+      settings: {
+        temperature: settings?.temperature ?? 0.7,
+        maxTokens: settings?.maxTokens ?? 1000
+      }
+    },
     { streaming: streamingOptions }
   );
-  return response.text;
+  
+  if (response.success) {
+    return response.data.text;
+  } else {
+    throw response.error;
+  }
 };
 
 export const getAvailableModels = (provider: ProviderType): string[] => {
@@ -53,7 +70,8 @@ export const supportsStreaming = (provider: ProviderType): boolean => {
 };
 
 // Export LLM client interface
-export type { LLMClient, StreamingOptions, ProviderCapabilities } from './types'
+export type { LLMClient, ProviderCapabilities } from '../../types/llm'
+export type { StreamingOptions } from '../../types/llm'
 export { getLLMClient, registerLLMClient } from './LLMClientFactory'
 
 // Export provider-specific clients
@@ -61,12 +79,14 @@ export { OpenAIClient } from './openaiClient'
 export { AnthropicClient } from './anthropicClient'
 export { GrokClient } from './grokClient'
 export { GoogleClient } from './googleClient'
+export { OpenAIStreamClient } from './openaiStreamClient'
 
 // Export error handling
 export { LLMError, ErrorType } from './LLMError'
 
-// Export API key management
-export { ApiKeyManager } from './ApiKeyManager'
+// Export base client - use type export for the class
+export type { BaseClient } from './clients/BaseClient'
 
-// Export base client
-export { BaseClient } from './clients/BaseClient'
+// Export Result type for error handling
+export type { Result } from '../../types/result'
+export { success, tryCatch } from '../../types/result'

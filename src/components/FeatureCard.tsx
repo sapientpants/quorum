@@ -1,44 +1,47 @@
-import * as React from 'react'
+import { ReactNode } from 'react'
 import { Icon } from '@iconify/react'
 
 interface FeatureCardProps {
-  icon: string
-  iconColor: string
-  badgeText: string
-  badgeColor: string
   title: string
   description: string
+  icon?: string | ReactNode
+  iconColor?: string
+  badgeText?: string
+  badgeColor?: string
+  className?: string
 }
 
-export function FeatureCard({
-  icon,
-  iconColor,
+export function FeatureCard({ 
+  title, 
+  description, 
+  icon, 
+  iconColor = '#9333ea',
   badgeText,
-  badgeColor,
-  title,
-  description
+  badgeColor = '#9333ea',
+  className = '' 
 }: FeatureCardProps) {
   return (
-    <div className="bg-gray-800/40 backdrop-blur-sm border border-white/10 shadow-lg rounded-xl p-6 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-800/80 to-gray-900/80 -z-10"></div>
-      <div className="w-12 h-12 rounded-lg bg-opacity-10 flex items-center justify-center mb-4" style={{ backgroundColor: `${badgeColor}10` }}>
-        <Icon icon={icon} width="24" height="24" style={{ color: iconColor }} />
+    <div className={`card bg-base-100 shadow-xl ${className}`}>
+      <div className="card-body">
+        {badgeText && (
+          <div className="badge" style={{ backgroundColor: badgeColor, color: 'white' }}>
+            {badgeText}
+          </div>
+        )}
+        
+        {icon && typeof icon === 'string' ? (
+          <div className="card-icon">
+            <Icon icon={icon} width="24" height="24" style={{ color: iconColor }} />
+          </div>
+        ) : icon ? (
+          <div className="card-icon">{icon}</div>
+        ) : null}
+        
+        <h2 className="card-title">{title}</h2>
+        <p>{description}</p>
       </div>
-      <div
-        className="text-sm font-medium px-2 py-1 rounded-full inline-block mb-2"
-        style={{
-          backgroundColor: `${badgeColor}10`,
-          color: badgeColor
-        }}
-      >
-        {badgeText}
-      </div>
-      <h3 className="text-xl font-bold text-white mb-2">
-        {title}
-      </h3>
-      <p className="text-gray-300">
-        {description}
-      </p>
     </div>
   )
 }
+
+export default FeatureCard

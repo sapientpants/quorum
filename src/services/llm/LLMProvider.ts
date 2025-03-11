@@ -1,86 +1,98 @@
 import type { Message } from '../../types/chat'
-import type { LLMProvider as ProviderType } from '../../types/llm'
-import type { Participant } from '../../types/participant'
-import { LLMService } from './llmService'
+import type { LLMProvider as ProviderType, LLMSettings } from '../../types/llm'
+import type { StreamingOptions } from '../../types/llm'
+import { createLLMProvider } from './createLLMProvider'
 import { ApiKeyManager } from './ApiKeyManager'
-import type { StreamingOptions } from './types'
+import { 
+  getAvailableModels as getModels, 
+  getDefaultModel as getModel,
+  getSupportedProviders as getProviders,
+  supportsStreaming as checkStreaming
+} from './index'
 
+/**
+ * @deprecated Use createLLMProvider instead
+ */
 export class LLMProvider {
-  private service: LLMService
-  private apiKeyManager: ApiKeyManager
+  private provider = createLLMProvider()
+  private apiKeyManager = new ApiKeyManager()
   
-  constructor() {
-    this.apiKeyManager = new ApiKeyManager()
-    this.service = new LLMService(this.apiKeyManager)
-  }
-  
-  /**
-   * Send a message to an LLM participant
-   */
   async sendMessage(
     messages: Message[],
-    participant: Participant,
-    options?: {
-      streaming?: StreamingOptions
-      abortSignal?: AbortSignal
-    }
+    provider: ProviderType,
+    apiKey: string,
+    model: string,
+    systemPrompt: string = '',
+    settings?: LLMSettings,
+    options?: { streaming?: StreamingOptions }
   ): Promise<Message> {
-    if (participant.type !== 'llm') {
-      throw new Error('Participant must be an LLM')
-    }
+    // Set the API key
+    this.apiKeyManager.setKey(provider, apiKey)
     
-    return this.service.sendMessage(
+    // Send the message
+    const response = await this.provider.sendMessage(
       messages,
-      participant.provider,
-      participant.model,
-      participant.systemPrompt,
-      participant.settings,
+      {
+        id: 'temp',
+        name: provider,
+        type: 'llm',
+        provider,
+        model,
+        systemPrompt,
+        settings: {
+          temperature: settings?.temperature ?? 0.7,
+          maxTokens: settings?.maxTokens ?? 1000
+        }
+      },
       options
     )
+    
+    if (response.success) {
+      return response.data
+    } else {
+      throw response.error
+    }
   }
   
-  /**
-   * Get available models for a provider
-   */
-  async getAvailableModels(provider: ProviderType): Promise<string[]> {
-    return this.service.getAvailableModels(provider)
+  getAvailableModels(provider: ProviderType): string[] {
+    // Use the exported function directly
+    return getModels(provider)
   }
   
-  /**
-   * Check if a provider is configured (has API key)
-   */
-  isProviderConfigured(provider: ProviderType): boolean {
-    return this.apiKeyManager.hasKey(provider)
+  getDefaultModel(provider: ProviderType): string {
+    // Use the exported function directly
+    return getModel(provider)
   }
   
-  /**
-   * Get all supported providers
-   */
   getSupportedProviders(): ProviderType[] {
-    return this.service.getSupportedProviders()
+    // Use the exported function directly
+    return getProviders()
   }
   
-  /**
-   * Get API key manager instance
-   */
+  isProviderConfigured(provider: ProviderType): boolean {
+    return this.provider.isProviderConfigured(provider)
+  }
+  
+  supportsStreaming(provider: ProviderType): boolean {
+    // Use the exported function directly
+    return checkStreaming(provider)
+  }
+  
+  validateApiKey(provider: ProviderType, apiKey: string): Promise<boolean> {
+    return this.provider.validateApiKey(provider, apiKey).then(result => {
+      if (result.success) {
+        return result.data
+      } else {
+        console.error(result.error)
+        return false
+      }
+    }).catch(error => {
+      console.error(error)
+      return false
+    })
+  }
+  
   getApiKeyManager(): ApiKeyManager {
     return this.apiKeyManager
   }
-  
-  /**
-   * Check if a provider supports streaming
-   */
-  supportsStreaming(provider: ProviderType): boolean {
-    return this.service.supportsStreaming(provider)
-  }
-  
-  /**
-   * Validate an API key for a provider
-   */
-  async validateApiKey(provider: ProviderType, apiKey: string): Promise<boolean> {
-    return this.service.validateApiKey(provider, apiKey)
-  }
 }
-
-// Create a singleton instance
-export const llmProvider = new LLMProvider()

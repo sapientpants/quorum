@@ -1,9 +1,12 @@
 import { useState, useCallback } from 'react'
-import { llmProvider } from '../services/llm/LLMProvider'
-import type { LLMProvider } from '../types/llm'
+import { LLMProvider } from '../services/llm/LLMProvider'
+import type { LLMProvider as LLMProviderType } from '../types/llm'
 import type { Message } from '../types/chat'
 import type { Participant } from '../types/participant'
 import { LLMError, ErrorType } from '../services/llm/LLMError'
+
+// Create a singleton instance for backward compatibility
+const llmProvider = new LLMProvider()
 
 export function useLLM() {
   const [isLoading, setIsLoading] = useState(false)
@@ -37,20 +40,23 @@ export function useLLM() {
     try {
       const response = await llmProvider.sendMessage(
         messages,
-        participant,
+        participant.provider,
+        '', // API key is managed by the provider
+        participant.model,
+        participant.systemPrompt,
+        participant.settings,
         {
           streaming: options?.onToken ? {
             onToken: options.onToken,
             onComplete: () => {},
-            onError: (err) => {
+            onError: (err: Error) => {
               const llmError = err instanceof LLMError 
                 ? err 
                 : new LLMError(ErrorType.API_ERROR, err.message)
               setError(llmError)
               options?.onError?.(llmError)
             }
-          } : undefined,
-          abortSignal: options?.abortSignal
+          } : undefined
         }
       )
       
@@ -70,7 +76,7 @@ export function useLLM() {
   }, [])
   
   const validateApiKey = useCallback(async (
-    provider: LLMProvider,
+    provider: LLMProviderType,
     apiKey: string
   ) => {
     try {
@@ -86,11 +92,11 @@ export function useLLM() {
     error,
     sendMessage,
     validateApiKey,
-    getAvailableModels: useCallback((provider: LLMProvider) => 
+    getAvailableModels: useCallback((provider: LLMProviderType) => 
       llmProvider.getAvailableModels(provider), []),
     getSupportedProviders: useCallback(() => 
       llmProvider.getSupportedProviders(), []),
-    supportsStreaming: useCallback((provider: LLMProvider) => 
+    supportsStreaming: useCallback((provider: LLMProviderType) => 
       llmProvider.supportsStreaming(provider), []),
     apiKeyManager: llmProvider.getApiKeyManager()
   }
