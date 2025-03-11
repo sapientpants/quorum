@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { createBrowserRouter, RouteObject } from 'react-router-dom'
 import { AppLayout } from '../components/layouts/AppLayout'
+import { PageLoader } from '../components/ui/PageLoader'
 
 // Lazy-loaded pages
 const Welcome = React.lazy(() => import('../pages/Welcome').then(mod => ({ default: mod.Welcome })))
@@ -9,13 +10,6 @@ const Settings = React.lazy(() => import('../pages/Settings').then(mod => ({ def
 const Help = React.lazy(() => import('../pages/Help').then(mod => ({ default: mod.Help })))
 const Templates = React.lazy(() => import('../pages/Templates').then(mod => ({ default: mod.Templates })))
 const NotFound = React.lazy(() => import('../pages/NotFound').then(mod => ({ default: mod.NotFound })))
-
-// Loading fallback
-const PageLoader = () => (
-  <div className="flex items-center justify-center w-full h-full min-h-[50vh]">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-  </div>
-)
 
 const routes: RouteObject[] = [
   {

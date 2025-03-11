@@ -1,49 +1,10 @@
-import { createContext, useContext, useCallback, ReactNode } from 'react'
-import type { Message } from '../types/chat'
-import type { LLMProvider, LLMModel, LLMSettings } from '../types/llm'
+import { useCallback, ReactNode } from 'react'
 import { useChatState } from '../hooks/useChatState'
 import { useProviderSelection } from '../hooks/useProviderSelection'
 import { useSettings } from '../hooks/useSettings'
 import { useStreamingLLM } from '../hooks/useStreamingLLM'
 import { LLMError } from '../services/llm/LLMError'
-
-/**
- * Chat context value interface
- */
-interface ChatContextValue {
-  // Messages
-  messages: Message[]
-  isLoading: boolean
-  error: string | null
-  
-  // Provider and model selection
-  activeProvider: LLMProvider | null
-  setActiveProvider: (provider: LLMProvider | null) => void
-  activeModel: LLMModel | null
-  setActiveModel: (model: LLMModel | null) => void
-  availableModels: string[]
-  apiKeys: Record<string, string>
-  handleApiKeyChange: (provider: string, apiKey: string) => void
-  isProviderConfigured: (provider: LLMProvider) => boolean
-  isStreamingSupported: () => boolean
-  supportedProviders: LLMProvider[]
-  
-  // Settings
-  settings: LLMSettings
-  setSettings: (settings: LLMSettings) => void
-  useStreaming: boolean
-  setUseStreaming: (useStreaming: boolean) => void
-  
-  // Actions
-  addUserMessage: (text: string) => Message | null
-  sendMessage: (text: string) => Promise<void>
-  handleRetry: (messageId: string) => void
-  clearError: () => void
-  abortStream: () => void
-}
-
-// Create the context with a default undefined value
-const ChatContext = createContext<ChatContextValue | undefined>(undefined)
+import { ChatContext, ChatContextValue } from './ChatContextValue'
 
 /**
  * Chat context provider component
@@ -261,17 +222,4 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       {children}
     </ChatContext.Provider>
   )
-}
-
-/**
- * Hook to use the chat context
- */
-export function useChat() {
-  const context = useContext(ChatContext)
-  
-  if (context === undefined) {
-    throw new Error('useChat must be used within a ChatProvider')
-  }
-  
-  return context
 }

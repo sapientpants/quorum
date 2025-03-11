@@ -1,29 +1,19 @@
 /**
- * Represents a chunk of a streaming response
+ * Represents a response from a streaming LLM API
  */
 export interface StreamingResponse {
   /**
-   * Indicates if this is the final chunk in the stream
+   * Whether the streaming is done
    */
   done: boolean
   
   /**
-   * The token text, if any
+   * The token received from the stream, if any
    */
   token?: string
   
   /**
-   * Error that occurred during streaming, if any
+   * The error that occurred during streaming, if any
    */
   error?: Error
-}
-
-/**
- * Options for streaming responses
- * @deprecated Use AsyncIterable-based streaming instead
- */
-export interface StreamingOptions {
-  onToken?: (token: string) => void
-  onComplete?: (fullText: string) => void
-  onError?: (error: Error) => void
 }

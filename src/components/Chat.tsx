@@ -5,7 +5,7 @@ import ProviderSelector from './ProviderSelector'
 import ModelSelector from './ModelSelector'
 import SettingsPanel from './SettingsPanel'
 import ErrorDisplay from './ErrorDisplay'
-import { useChat } from '../contexts/ChatContext'
+import { useChat } from '../hooks/useChat'
 
 /**
  * Chat component that uses the ChatContext for state management

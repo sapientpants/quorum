@@ -1,10 +1,7 @@
 import { LLMError, ErrorType } from '../services/llm/LLMError'
 
 /**
- * A Result type for consistent error handling
- * 
- * This type represents either a successful result with data
- * or a failure result with an error.
+ * A Result type for handling success and failure cases
  */
 export type Result<T, E = LLMError> = 
   | { success: true; data: T }
@@ -25,7 +22,21 @@ export function failure<E = LLMError>(error: E): Result<never, E> {
 }
 
 /**
- * Safely execute a function and return a Result
+ * Default error transformer
+ */
+export function defaultErrorTransformer(error: unknown): LLMError {
+  if (error instanceof LLMError) {
+    return error
+  }
+  
+  return new LLMError(
+    ErrorType.UNKNOWN,
+    error instanceof Error ? error.message : String(error)
+  )
+}
+
+/**
+ * Try to execute a function and return a Result
  */
 export async function tryCatch<T>(
   fn: () => Promise<T>,
@@ -37,18 +48,4 @@ export async function tryCatch<T>(
   } catch (error) {
     return failure(errorTransformer(error))
   }
-}
-
-/**
- * Default error transformer for tryCatch
- */
-function defaultErrorTransformer(error: unknown): LLMError {
-  if (error instanceof LLMError) {
-    return error
-  }
-  
-  return new LLMError(
-    ErrorType.UNKNOWN,
-    error instanceof Error ? error.message : String(error)
-  )
 }
