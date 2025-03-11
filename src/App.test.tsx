@@ -1,6 +1,23 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { App } from './App'
+
+// Mock window.matchMedia
+beforeAll(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  })
+})
 
 // Mock the react-router-dom components
 vi.mock('react-router-dom', () => ({
@@ -12,6 +29,13 @@ vi.mock('react-router-dom', () => ({
   ),
   Route: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="route">{children}</div>
+  )
+}))
+
+// Mock the ThemeProvider
+vi.mock('./contexts/ThemeContext', () => ({
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="theme-provider">{children}</div>
   )
 }))
 
@@ -54,7 +78,8 @@ vi.mock('./components/Chat', () => ({
 describe('App', () => {
   it('renders the router provider', () => {
     render(<App />)
-    expect(screen.getByTestId('router-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('theme-provider')).toBeInTheDocument()
     expect(screen.getByTestId('chat-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('router-provider')).toBeInTheDocument()
   })
 })

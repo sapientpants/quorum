@@ -1,0 +1,79 @@
+/* Feature Cards Styling */
+@import "tailwindcss";
+
+@layer components {
+  /* Card hover effects */
+  .feature-card {
+    transition: all 0.3s ease;
+    transform: translateY(0);
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Badge styling */
+  .feature-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: white;
+    margin-bottom: 1rem;
+  }
+  
+  /* Icon container */
+  .feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    margin-bottom: 1rem;
+  }
+  
+  /* Card content */
+  .feature-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
+  
+  .feature-description {
+    color: rgb(209, 213, 219);
+    line-height: 1.5;
+  }
+  
+  /* Card glow effect on hover */
+  .card-glow {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-glow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent
+    );
+    transition: all 0.6s ease;
+  }
+  
+  .card-glow:hover::after {
+    left: 100%;
+  }
+}
