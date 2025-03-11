@@ -351,7 +351,7 @@ export function Chat() {
         </div>
       )}
       
-      <div className="flex-grow bg-base-200 rounded-lg p-4 mb-4 overflow-y-auto">
+      <div className="flex-grow bg-base-200 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-700 shadow-md">
         <ChatList 
           messages={messages} 
           isLoading={isLoading} 
@@ -359,7 +359,7 @@ export function Chat() {
         />
       </div>
       
-      <div className="bg-base-100 rounded-lg p-4 shadow-md">
+      <div className="bg-base-100 rounded-lg p-4 shadow-md card-enhanced">
         <ChatInput 
           onSendMessage={handleSendMessage} 
           isLoading={isLoading} 

@@ -8,14 +8,9 @@ vi.mock('react-router-dom', () => ({
   createBrowserRouter: vi.fn(() => ({})),
 }))
 
-// Mock the useTheme hook
-vi.mock('@/hooks/useTheme', () => ({
-  useTheme: () => ({ theme: 'light', setTheme: vi.fn() }),
-}))
-
 describe('App', () => {
   it('renders the router provider', () => {
     render(<App />)
     expect(screen.getByTestId('router-provider')).toBeInTheDocument()
   })
-}) 
+})

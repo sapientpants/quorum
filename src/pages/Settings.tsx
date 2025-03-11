@@ -1,22 +1,15 @@
 import * as React from 'react'
 import { Button } from '../components/ui/button'
 import ApiKeyManager from '../components/ApiKeyManager'
-import ThemeSelector from '../components/ThemeSelector'
 import { ParticipantList } from '../components/ParticipantList'
 import { Icon } from '@iconify/react'
 
 export function Settings() {
   const [activeTab, setActiveTab] = React.useState('api-keys')
-  const [theme, setTheme] = React.useState<string>(localStorage.getItem('theme') || 'business')
   const [displayName, setDisplayName] = React.useState<string>(localStorage.getItem('displayName') || '')
   const [autoAdvance, setAutoAdvance] = React.useState<boolean>(localStorage.getItem('autoAdvance') !== 'false')
   const [showThinking, setShowThinking] = React.useState<boolean>(localStorage.getItem('showThinking') !== 'false')
   const [autoSummarize, setAutoSummarize] = React.useState<boolean>(localStorage.getItem('autoSummarize') === 'true')
-  
-  function handleThemeChange(newTheme: string) {
-    setTheme(newTheme)
-    localStorage.setItem('theme', newTheme)
-  }
   
   function handleDisplayNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setDisplayName(e.target.value)
@@ -49,14 +42,12 @@ export function Settings() {
   
   function handleResetDefaults() {
     // Reset to default settings
-    setTheme('business')
     setDisplayName('')
     setAutoAdvance(true)
     setShowThinking(true)
     setAutoSummarize(false)
     
     // Update localStorage
-    localStorage.setItem('theme', 'business')
     localStorage.setItem('displayName', '')
     localStorage.setItem('autoAdvance', 'true')
     localStorage.setItem('showThinking', 'true')
@@ -152,15 +143,7 @@ export function Settings() {
                 />
               </div>
               
-              <div className="mb-6">
-                <label className="label">
-                  <span className="label-text">Theme</span>
-                </label>
-                <ThemeSelector 
-                  currentTheme={theme} 
-                  onThemeChange={handleThemeChange} 
-                />
-              </div>
+              {/* Theme selector removed */}
               
               <div className="mb-6">
                 <h4 className="font-bold mb-2">Round Table Behavior</h4>
