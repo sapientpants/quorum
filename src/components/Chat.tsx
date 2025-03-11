@@ -81,7 +81,7 @@ export function Chat() {
       timestamp: Date.now()
     }
     
-    setMessages(prev => [...prev, userMessage])
+    setMessages((prev: Message[]) => [...prev, userMessage])
     
     // Add a placeholder for the AI response
     const aiMessageId = nanoid()
@@ -95,7 +95,7 @@ export function Chat() {
       status: 'sending'
     }
     
-    setMessages(prev => [...prev, aiPlaceholder])
+    setMessages((prev: Message[]) => [...prev, aiPlaceholder])
     setIsLoading(true)
     
     try {
@@ -111,18 +111,18 @@ export function Chat() {
           activeModel,
           settings,
           {
-            onToken: (token) => {
-              setMessages(prev => 
-                prev.map(msg => 
+            onToken: (token: string) => {
+              setMessages((prev: Message[]) =>
+                prev.map((msg: Message) =>
                   msg.id === aiMessageId 
                     ? { ...msg, text: msg.text + token } 
                     : msg
                 )
               )
             },
-            onComplete: (fullText) => {
-              setMessages(prev => 
-                prev.map(msg => 
+            onComplete: (fullText: string) => {
+              setMessages((prev: Message[]) =>
+                prev.map((msg: Message) =>
                   msg.id === aiMessageId 
                     ? { ...msg, text: fullText, status: 'sent' } 
                     : msg
@@ -130,9 +130,9 @@ export function Chat() {
               )
               setIsLoading(false)
             },
-            onError: (err) => {
-              setMessages(prev => 
-                prev.map(msg => 
+            onError: (err: Error) => {
+              setMessages((prev: Message[]) =>
+                prev.map((msg: Message) =>
                   msg.id === aiMessageId 
                     ? { 
                         ...msg, 
@@ -159,8 +159,8 @@ export function Chat() {
         )
         
         // Update the AI response
-        setMessages(prev => 
-          prev.map(msg => 
+        setMessages((prev: Message[]) =>
+          prev.map((msg: Message) =>
             msg.id === aiMessageId 
               ? { ...msg, text: responseText, status: 'sent' } 
               : msg
@@ -172,8 +172,8 @@ export function Chat() {
       console.error(`Error calling ${activeProvider}:`, err)
       
       // Update the AI message with error
-      setMessages(prev => 
-        prev.map(msg => 
+      setMessages((prev: Message[]) =>
+        prev.map((msg: Message) =>
           msg.id === aiMessageId 
             ? { 
                 ...msg, 
@@ -191,7 +191,7 @@ export function Chat() {
   }
 
   function handleApiKeyChange(provider: string, apiKey: string) {
-    setApiKeys(prev => ({
+    setApiKeys((prev: Record<string, string>) => ({
       ...prev,
       [provider]: apiKey
     }))
@@ -201,16 +201,16 @@ export function Chat() {
 
   function handleRetry(messageId: string) {
     // Find the message to retry
-    const messageToRetry = messages.find(msg => msg.id === messageId)
+    const messageToRetry = messages.find((msg: Message) => msg.id === messageId)
     if (!messageToRetry || messageToRetry.status !== 'error') return
     
     // Find the last user message before this one
-    const userMessages = messages.filter(msg => msg.senderId === 'user')
+    const userMessages = messages.filter((msg: Message) => msg.senderId === 'user')
     const lastUserMessage = userMessages[userMessages.length - 1]
     
     if (lastUserMessage) {
       // Remove the error message
-      setMessages(prev => prev.filter(msg => msg.id !== messageId))
+      setMessages((prev: Message[]) => prev.filter((msg: Message) => msg.id !== messageId))
       
       // Resend the last user message
       handleSendMessage(lastUserMessage.text)
@@ -237,7 +237,7 @@ export function Chat() {
             <span className="label-text">Select Provider</span>
           </label>
           <div className="btn-group">
-            {supportedProviders.map(provider => (
+            {supportedProviders.map((provider: LLMProvider) => (
               <button
                 key={provider}
                 className={`btn btn-sm ${provider === activeProvider ? 'btn-primary' : 'btn-outline'}`}
@@ -263,7 +263,7 @@ export function Chat() {
               onChange={(e) => setActiveModel(e.target.value)}
             >
               <option value="" disabled>Select a model</option>
-              {availableModels.map(model => (
+              {availableModels.map((model: string) => (
                 <option key={model} value={model}>
                   {model}
                 </option>
