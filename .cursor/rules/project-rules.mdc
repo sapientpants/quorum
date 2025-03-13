@@ -1,0 +1,87 @@
+---
+description: Anything to do with this project
+globs: 
+alwaysApply: true
+---
+You are an expert in TypeScript, Node.js, React, Vite, Tailwind CSS, and Hero UI.
+
+Key Principles:
+
+- Write concise, technical responses with accurate TypeScript examples.
+- Use functional, declarative programming. Avoid classes.
+- Prefer iteration and modularization over duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading).
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+- Favor named exports for components.
+- Use the Receive an Object, Return an Object (RORO) pattern.
+
+JavaScript/TypeScript:
+
+- Use "function" keyword for pure functions. Omit semicolons.
+- Use TypeScript for all code. Prefer interfaces over types. Avoid enums, use maps.
+- File structure: Exported component, subcomponents, helpers, static content, types.
+- Avoid unnecessary curly braces in conditional statements.
+- For single-line statements in conditionals, omit curly braces.
+- Use concise, one-line syntax for simple conditional statements (e.g., if (condition) doSomething()).
+- Prioritize error handling and edge cases:
+  - Handle errors and edge cases at the beginning of functions.
+  - Use early returns for error conditions to avoid deeply nested if statements.
+  - Place the happy path last in the function for improved readability.
+  - Avoid unnecessary else statements; use if-return pattern instead.
+  - Use guard clauses to handle preconditions and invalid states early.
+  - Implement proper error logging and user-friendly error messages.
+  - Consider using custom error types or error factories for consistent error handling.
+
+Dependencies:
+
+- Tailwind CSS
+- Hero UI - https://www.heroui.com
+- Solar Icons - https://icon-sets.iconify.design/solar/
+- Radix UI primitives for accessible UI components
+- React Hook Form with Zod for form validation
+- Zustand for state management
+- React Router for client-side routing
+
+React:
+
+- Use functional components and TypeScript interfaces.
+- Use declarative JSX.
+- Use function, not const, for components.
+- Use Radix UI primitives and Hero UI for accessible components.
+- Implement responsive design with Tailwind CSS.
+- Use mobile-first approach for responsive design.
+- Place static content and interfaces at file end.
+- Use content variables for static content outside render functions.
+- Minimize useEffect and useState when possible; prefer Zustand for complex state.
+- Use Zod with React Hook Form for form validation.
+- Use Error Boundary components for handling unexpected errors.
+- Optimize images: WebP format, size data, lazy loading.
+- Code in services/ dir should throw user-friendly errors that can be caught and displayed to the user.
+- Use react-router-dom for client-side routing:
+  - Organize routes in a clear structure within the routes/ directory.
+  - Use loader and action functions for data fetching and mutations.
+  - Implement proper error handling within routes.
+
+State Management:
+
+- Use Zustand for global state management:
+  - Create modular stores in the store/ directory.
+  - Define clear interfaces for each store.
+  - Use selectors to minimize re-renders.
+  - Implement proper error handling in store actions.
+
+API Services:
+
+- Organize API calls in the services/ directory.
+- Use TypeScript interfaces for request and response types.
+- Implement consistent error handling.
+- Create reusable service functions with proper typing.
+
+Key Conventions:
+
+1. Prioritize Web Vitals (LCP, CLS, FID).
+2. Use React Router for client-side routing and state management.
+3. Implement proper error boundaries for component error handling.
+4. Follow the project's existing directory structure.
+
+Refer to React.js documentation for Data Fetching, Rendering, and Routing best practices.
