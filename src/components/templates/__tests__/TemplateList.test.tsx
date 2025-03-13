@@ -11,7 +11,12 @@ vi.mock('../../../store/templatesStore', () => ({
 // Mock the TemplateCard component
 vi.mock('../TemplateCard', () => ({
   __esModule: true,
-  default: ({ template, onUse, onEdit, onDelete }) => (
+  default: ({ template, onUse, onEdit, onDelete }: { 
+    template: { id: string; name: string; description?: string }; 
+    onUse: (id: string) => void; 
+    onEdit: (id: string) => void; 
+    onDelete: (id: string) => void 
+  }) => (
     <div data-testid={`template-card-${template.id}`}>
       <h3>{template.name}</h3>
       <p>{template.description}</p>
@@ -40,7 +45,10 @@ vi.mock('../TemplateCard', () => ({
 // Mock the DeleteConfirmationModal component
 vi.mock('../../ui/DeleteConfirmationModal', () => ({
   __esModule: true,
-  default: ({ onConfirm, onCancel }) => (
+  default: ({ onConfirm, onCancel }: { 
+    onConfirm: () => void; 
+    onCancel: () => void 
+  }) => (
     <div data-testid="delete-modal">
       <button data-testid="confirm-delete" onClick={onConfirm}>Confirm</button>
       <button data-testid="cancel-delete" onClick={onCancel}>Cancel</button>
@@ -51,7 +59,10 @@ vi.mock('../../ui/DeleteConfirmationModal', () => ({
 // Mock the TemplateForm component
 vi.mock('../TemplateForm', () => ({
   __esModule: true,
-  default: ({ initialData, onCancel }) => (
+  default: ({ initialData, onCancel }: { 
+    initialData?: { id: string; name: string; description?: string; participantIds: string[] } | undefined; 
+    onCancel: () => void 
+  }) => (
     <div data-testid="template-form">
       <p>Template Form {initialData ? 'Edit' : 'Create'}</p>
       <button onClick={onCancel}>Cancel</button>
@@ -95,7 +106,7 @@ describe('TemplateList', () => {
     vi.clearAllMocks()
     
     // Setup the mock store with templates for most tests
-    ;(useTemplatesStore as MockInstance).mockImplementation(selector => {
+    ;(useTemplatesStore as unknown as MockInstance).mockImplementation(selector => {
       if (typeof selector === 'function') {
         return selector({ 
           templates: mockTemplates,
@@ -163,7 +174,7 @@ describe('TemplateList', () => {
   
   it('shows empty state when no templates exist', () => {
     // Override the mock to return empty templates array
-    ;(useTemplatesStore as MockInstance).mockImplementation(selector => {
+    ;(useTemplatesStore as unknown as MockInstance).mockImplementation(selector => {
       if (typeof selector === 'function') {
         return selector({ 
           templates: [],

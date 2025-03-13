@@ -115,7 +115,7 @@ describe('TemplateCard', () => {
     vi.clearAllMocks()
     
     // Setup the mock store with default participants
-    ;(useParticipantsStore as MockInstance).mockImplementation(selector => {
+    ;(useParticipantsStore as unknown as MockInstance).mockImplementation(selector => {
       if (typeof selector === 'function') {
         return selector({ participants: mockParticipants })
       }

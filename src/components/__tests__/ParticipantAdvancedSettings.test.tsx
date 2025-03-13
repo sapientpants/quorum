@@ -9,7 +9,7 @@ vi.mock('react-hook-form', async () => {
     ...actual,
     useForm: () => ({
       register: vi.fn(),
-      handleSubmit: vi.fn(cb => e => {
+      handleSubmit: vi.fn(cb => (e: React.FormEvent<HTMLFormElement> | undefined) => {
         e?.preventDefault?.()
         cb({
           temperature: 0.7,

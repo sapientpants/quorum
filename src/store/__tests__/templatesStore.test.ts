@@ -1,6 +1,7 @@
 import { act } from '@testing-library/react'
 import { vi } from 'vitest'
 import { useTemplatesStore } from '../templatesStore'
+import type { LLMProvider } from '../../types/llm'
 
 // Mock crypto.randomUUID
 const mockRandomUUID = vi.fn().mockReturnValue('test-uuid')
@@ -17,7 +18,10 @@ describe('templatesStore', () => {
   beforeEach(() => {
     // Reset the store state before each test
     act(() => {
-      useTemplatesStore.setState({ templates: [] }, true)
+      // First get the current state
+      const currentState = useTemplatesStore.getState();
+      // Then use a partial update to only reset the templates array
+      useTemplatesStore.setState({ ...currentState, templates: [] });
     })
   })
   
@@ -123,12 +127,39 @@ describe('templatesStore', () => {
     expect(nonExistentTemplate).toBeUndefined()
   })
   
-  test('should get a template with participants', () => {
+  test('should return template with associated participants', () => {
     const templateId = 'test-uuid'
     const participants = [
-      { id: '1', name: 'Participant 1', systemPrompt: 'System 1', roleDescription: '' },
-      { id: '2', name: 'Participant 2', systemPrompt: 'System 2', roleDescription: '' },
-      { id: '3', name: 'Participant 3', systemPrompt: 'System 3', roleDescription: '' }
+      { 
+        id: '1', 
+        name: 'Participant 1', 
+        type: 'llm' as const,
+        provider: 'openai' as LLMProvider,
+        model: 'gpt-4o',
+        systemPrompt: 'System 1', 
+        roleDescription: '',
+        settings: { temperature: 0.7, maxTokens: 1000 }
+      },
+      { 
+        id: '2', 
+        name: 'Participant 2', 
+        type: 'llm' as const,
+        provider: 'openai' as LLMProvider,
+        model: 'gpt-4o',
+        systemPrompt: 'System 2', 
+        roleDescription: '',
+        settings: { temperature: 0.7, maxTokens: 1000 }
+      },
+      { 
+        id: '3', 
+        name: 'Participant 3', 
+        type: 'llm' as const,
+        provider: 'openai' as LLMProvider,
+        model: 'gpt-4o',
+        systemPrompt: 'System 3', 
+        roleDescription: '',
+        settings: { temperature: 0.7, maxTokens: 1000 }
+      }
     ]
     
     // Add a template with participant IDs
@@ -151,7 +182,16 @@ describe('templatesStore', () => {
   
   test('should return empty results for non-existent template ID', () => {
     const participants = [
-      { id: '1', name: 'Participant 1', systemPrompt: 'System 1', roleDescription: '' }
+      { 
+        id: '1', 
+        name: 'Participant 1', 
+        type: 'llm' as const,
+        provider: 'openai' as LLMProvider,
+        model: 'gpt-4o',
+        systemPrompt: 'System 1', 
+        roleDescription: '',
+        settings: { temperature: 0.7, maxTokens: 1000 }
+      }
     ]
     
     const { template, participants: templateParticipants } = store.getTemplateWithParticipants('non-existent', participants)

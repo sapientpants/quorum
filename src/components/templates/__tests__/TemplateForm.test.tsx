@@ -17,14 +17,14 @@ vi.mock('../../../store/templatesStore', () => ({
 vi.mock('react-hook-form', () => {
   return {
     useForm: () => ({
-      register: (name) => ({ 
+      register: (name: string) => ({ 
         name, 
         id: name, 
         onChange: vi.fn(), 
         onBlur: vi.fn(),
         ref: vi.fn()
       }),
-      handleSubmit: vi.fn((fn) => (e) => {
+      handleSubmit: vi.fn((fn) => (e: React.FormEvent<HTMLFormElement> | undefined) => {
         e?.preventDefault?.()
         return fn({ 
           name: 'Test Template', 
@@ -44,7 +44,8 @@ vi.mock('react-hook-form', () => {
       setValue: vi.fn(),
       reset: vi.fn()
     }),
-    Controller: ({ render }) => render({ field: { onChange: vi.fn(), value: '', name: '' } })
+    Controller: ({ render }: { render: (props: { field: { onChange: (value: unknown) => void, value: string, name: string } }) => React.ReactElement }) => 
+      render({ field: { onChange: vi.fn(), value: '', name: '' } })
   }
 })
 
@@ -84,14 +85,14 @@ describe('TemplateForm', () => {
     vi.clearAllMocks()
     
     // Setup the mock stores
-    ;(useParticipantsStore as MockInstance).mockImplementation(selector => {
+    ;(useParticipantsStore as unknown as MockInstance).mockImplementation(selector => {
       if (typeof selector === 'function') {
         return selector({ participants: mockParticipants })
       }
       return { participants: mockParticipants }
     })
     
-    ;(useTemplatesStore as MockInstance).mockReturnValue({
+    ;(useTemplatesStore as unknown as MockInstance).mockReturnValue({
       addTemplate: mockAddTemplate,
       updateTemplate: mockUpdateTemplate
     })
