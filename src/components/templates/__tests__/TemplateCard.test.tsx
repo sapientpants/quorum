@@ -5,29 +5,7 @@ import { useParticipantsStore } from '../../../store/participants'
 
 // Mock the participants store
 vi.mock('../../../store/participants', () => ({
-  useParticipantsStore: vi.fn((selector) => {
-    const participants = [
-      {
-        id: 'user1',
-        name: 'You',
-        type: 'human'
-      },
-      {
-        id: 'ai1',
-        name: 'AI Assistant',
-        type: 'llm',
-        provider: 'openai',
-        model: 'gpt-4o',
-        systemPrompt: 'You are a helpful assistant'
-      }
-    ];
-    
-    if (typeof selector === 'function') {
-      return selector({ participants });
-    }
-    
-    return participants;
-  })
+  useParticipantsStore: vi.fn()
 }))
 
 // Mock react-i18next
@@ -77,6 +55,54 @@ describe('TemplateCard', () => {
         temperature: 0.7,
         maxTokens: 1000
       }
+    },
+    {
+      id: 'ai3',
+      name: 'AI 3',
+      type: 'llm',
+      provider: 'anthropic',
+      model: 'claude-3.5-sonnet',
+      systemPrompt: 'You are Claude 3',
+      settings: {
+        temperature: 0.7,
+        maxTokens: 1000
+      }
+    },
+    {
+      id: 'ai4',
+      name: 'AI 4',
+      type: 'llm',
+      provider: 'anthropic',
+      model: 'claude-3.5-sonnet',
+      systemPrompt: 'You are Claude 4',
+      settings: {
+        temperature: 0.7,
+        maxTokens: 1000
+      }
+    },
+    {
+      id: 'ai5',
+      name: 'AI 5',
+      type: 'llm',
+      provider: 'anthropic',
+      model: 'claude-3.5-sonnet',
+      systemPrompt: 'You are Claude 5',
+      settings: {
+        temperature: 0.7,
+        maxTokens: 1000
+      }
+    },
+    {
+      id: 'ai6',
+      name: 'AI 6',
+      type: 'llm',
+      provider: 'anthropic',
+      model: 'claude-3.5-sonnet',
+      systemPrompt: 'You are Claude 6',
+      settings: {
+        temperature: 0.7,
+        maxTokens: 1000
+      }
     }
   ]
   
@@ -88,9 +114,12 @@ describe('TemplateCard', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     
-    // Setup the mock store
-    ;(useParticipantsStore as unknown as MockInstance).mockReturnValue({
-      participants: mockParticipants
+    // Setup the mock store with default participants
+    ;(useParticipantsStore as MockInstance).mockImplementation(selector => {
+      if (typeof selector === 'function') {
+        return selector({ participants: mockParticipants })
+      }
+      return { participants: mockParticipants }
     })
   })
   
@@ -194,7 +223,7 @@ describe('TemplateCard', () => {
     // Create a template with many participants
     const templateWithManyParticipants = {
       ...mockTemplate,
-      participantIds: ['user1', 'ai1', 'ai2', 'user1', 'ai1', 'ai2']
+      participantIds: ['user1', 'ai1', 'ai2', 'ai3', 'ai4', 'ai5', 'ai6']
     }
     
     render(
@@ -206,7 +235,7 @@ describe('TemplateCard', () => {
       />
     )
     
-    // Should show a +1 indicator for participants beyond the first 5
-    expect(screen.getByText('+1')).toBeInTheDocument()
+    // Should show a +2 indicator for participants beyond the first 5
+    expect(screen.getByText('+2')).toBeInTheDocument()
   })
 }) 

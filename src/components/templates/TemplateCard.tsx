@@ -18,12 +18,15 @@ function TemplateCard({ template, onUse, onEdit, onDelete, onShare }: TemplateCa
   const participants = useParticipantsStore((state) => state.participants)
   
   // Get participants for this template
-  const templateParticipants = template.participantIds
-    .map((id) => participants.find((p) => p.id === id))
+  const validParticipantIds = Array.isArray(template.participantIds) ? template.participantIds : []
+  const validParticipants = Array.isArray(participants) ? participants : []
+  
+  const templateParticipants = validParticipantIds
+    .map((id) => validParticipants.find((p) => p.id === id))
     .filter((p): p is Participant => p !== undefined)
   
   // Format date
-  const formattedDate = new Date(template.updatedAt).toLocaleDateString()
+  const formattedDate = new Date(template.updatedAt || Date.now()).toLocaleDateString()
   
   return (
     <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300">

@@ -11,15 +11,18 @@ interface TemplateListProps {
 
 function TemplateList({ onUseTemplate }: TemplateListProps) {
   const { t } = useTranslation()
-  const templates = useTemplatesStore((state) => state.templates)
+  const templates = useTemplatesStore((state) => state.templates) || []
   const { removeTemplate } = useTemplatesStore()
+  
+  // Ensure templates is an array
+  const validTemplates = Array.isArray(templates) ? templates : []
   
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null)
   const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(null)
   
   const editingTemplate = editingTemplateId 
-    ? templates.find(t => t.id === editingTemplateId) 
+    ? validTemplates.find(t => t.id === editingTemplateId) 
     : null
   
   const handleCreateTemplate = () => {
@@ -61,7 +64,7 @@ function TemplateList({ onUseTemplate }: TemplateListProps) {
         </button>
       </div>
       
-      {templates.length === 0 ? (
+      {validTemplates.length === 0 ? (
         <div className="text-center py-12">
           <h3 className="text-xl font-semibold mb-2">{t('No Templates Yet')}</h3>
           <p className="text-base-content/70 mb-6">
@@ -76,7 +79,7 @@ function TemplateList({ onUseTemplate }: TemplateListProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {templates.map((template) => (
+          {validTemplates.map((template) => (
             <TemplateCard
               key={template.id}
               template={template}

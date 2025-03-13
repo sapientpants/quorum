@@ -57,10 +57,14 @@ describe('RoundTable', () => {
     // Check for the title
     expect(screen.getByText('Round Table')).toBeInTheDocument()
     
-    // Check for all participant names
-    expect(screen.getByText('You')).toBeInTheDocument()
-    expect(screen.getByText('AI Assistant')).toBeInTheDocument()
-    expect(screen.getByText('Domain Expert')).toBeInTheDocument()
+    // Check for all participant names - using getAll to avoid duplicate text issues
+    const youTexts = screen.getAllByText('You')
+    const assistantTexts = screen.getAllByText('AI Assistant')
+    const expertTexts = screen.getAllByText('Domain Expert')
+    
+    expect(youTexts.length).toBeGreaterThan(0)
+    expect(assistantTexts.length).toBeGreaterThan(0)
+    expect(expertTexts.length).toBeGreaterThan(0)
     
     // Verify we have the right number of participant nodes
     const userIcon = screen.getByTestId('icon-solar:user-rounded-linear')
@@ -82,7 +86,10 @@ describe('RoundTable', () => {
     )
     
     // Check that the active participant details are shown
-    expect(screen.getByText('AI Assistant')).toBeInTheDocument()
+    // Get all elements with this text since it appears in multiple places
+    const assistantTexts = screen.getAllByText('AI Assistant')
+    expect(assistantTexts.length).toBeGreaterThan(0)
+    
     expect(screen.getByText('openai')).toBeInTheDocument()
     expect(screen.getByText('gpt-4o')).toBeInTheDocument()
   })
@@ -98,18 +105,22 @@ describe('RoundTable', () => {
       />
     )
     
-    // Find all participant nodes by their names and click one
-    const participantNodes = [
-      screen.getByText('You'),
-      screen.getByText('AI Assistant'),
-      screen.getByText('Domain Expert')
-    ]
+    // Find all participant buttons and click one
+    // We need to find the actual buttons which contain the participant info
+    const buttons = screen.getAllByRole('button')
     
-    // Click the second participant (AI Assistant)
-    fireEvent.click(participantNodes[1])
+    // Filter to find a button with the title attribute
+    const assistantButton = buttons.find(btn => btn.getAttribute('title') === 'AI Assistant')
     
-    // Verify the click handler was called with the correct ID
-    expect(handleClick).toHaveBeenCalledWith('assistant')
+    // Click the assistant button
+    if (assistantButton) {
+      fireEvent.click(assistantButton)
+      
+      // Verify the click handler was called with the correct ID
+      expect(handleClick).toHaveBeenCalledWith('assistant')
+    } else {
+      throw new Error('Could not find assistant button')
+    }
   })
   
   test('displays participant details when active', () => {
@@ -125,7 +136,10 @@ describe('RoundTable', () => {
     )
     
     // Check that the active participant details are shown with role description
-    expect(screen.getByText('Domain Expert')).toBeInTheDocument()
+    // Get all elements with this text since it appears in multiple places
+    const expertTexts = screen.getAllByText('Domain Expert')
+    expect(expertTexts.length).toBeGreaterThan(0)
+    
     expect(screen.getByText('anthropic')).toBeInTheDocument()
     expect(screen.getByText('claude-3-opus')).toBeInTheDocument()
     expect(screen.getByText('Technical expert who provides in-depth analysis')).toBeInTheDocument()

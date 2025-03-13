@@ -94,8 +94,9 @@ describe('ParticipantForm', () => {
     const temperatureInput = screen.getByLabelText(/temperature/i)
     const maxTokensInput = screen.getByLabelText(/max tokens/i)
     
-    await userEvent.clear(temperatureInput)
-    await userEvent.type(temperatureInput, '0.8')
+    // Don't try to clear a range input, just set its value directly
+    fireEvent.change(temperatureInput, { target: { value: '0.8' } })
+    
     await userEvent.clear(maxTokensInput)
     await userEvent.type(maxTokensInput, '2000')
 
@@ -109,6 +110,7 @@ describe('ParticipantForm', () => {
         provider: 'openai',
         model: 'gpt-4o',
         systemPrompt: 'Test Prompt',
+        roleDescription: '',
         type: 'llm',
         settings: {
           temperature: 0.8,

@@ -28,7 +28,7 @@ export const useTemplatesStore = create<TemplatesState>()(
         const template = createTemplate({
           name: templateData.name,
           description: templateData.description,
-          participantIds: templateData.participantIds,
+          participantIds: templateData.participantIds || [],
           defaultConversationStarter: templateData.defaultConversationStarter
         })
         
@@ -70,15 +70,21 @@ export const useTemplatesStore = create<TemplatesState>()(
           return { template: undefined, participants: [] }
         }
         
+        // Make sure allParticipants is an array before using find
+        const validParticipants = Array.isArray(allParticipants) ? allParticipants : []
+        
         const participants = template.participantIds
-          .map((id) => allParticipants.find((p) => p.id === id))
+          .map((id) => validParticipants.find((p) => p.id === id))
           .filter((p): p is Participant => p !== undefined)
         
         return { template, participants }
       }
     }),
     {
-      name: 'templates-storage'
+      name: 'templates-storage',
+      version: 1,
+      // Initialize with empty templates array if storage is empty
+      partialize: (state) => ({ templates: state.templates })
     }
   )
 )

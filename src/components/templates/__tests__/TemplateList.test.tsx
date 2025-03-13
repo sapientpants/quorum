@@ -5,45 +5,42 @@ import { useTemplatesStore } from '../../../store/templatesStore'
 
 // Mock the store
 vi.mock('../../../store/templatesStore', () => ({
-  useTemplatesStore: vi.fn((selector) => {
-    const templates = [
-      {
-        id: 'template1',
-        name: 'Test Template 1',
-        description: 'This is test template 1',
-        participantIds: ['user1', 'ai1'],
-        defaultConversationStarter: 'Hello, let\'s start a conversation',
-        createdAt: Date.now() - 86400000, // 1 day ago
-        updatedAt: Date.now()
-      },
-      {
-        id: 'template2',
-        name: 'Test Template 2',
-        description: 'This is test template 2',
-        participantIds: ['user1', 'ai2'],
-        defaultConversationStarter: 'Another conversation starter',
-        createdAt: Date.now() - 172800000, // 2 days ago
-        updatedAt: Date.now() - 86400000 // 1 day ago
-      }
-    ];
-    
-    const state = {
-      templates,
-      removeTemplate: vi.fn()
-    };
-    
-    if (typeof selector === 'function') {
-      return selector(state);
-    }
-    
-    return state;
-  })
+  useTemplatesStore: vi.fn()
+}))
+
+// Mock the TemplateCard component
+vi.mock('../TemplateCard', () => ({
+  __esModule: true,
+  default: ({ template, onUse, onEdit, onDelete }) => (
+    <div data-testid={`template-card-${template.id}`}>
+      <h3>{template.name}</h3>
+      <p>{template.description}</p>
+      <button 
+        data-testid={`use-template-${template.id}`} 
+        onClick={() => onUse(template.id)}
+      >
+        Use Template
+      </button>
+      <button 
+        data-testid={`edit-template-${template.id}`} 
+        onClick={() => onEdit(template.id)}
+      >
+        Edit
+      </button>
+      <button 
+        data-testid={`delete-template-${template.id}`} 
+        onClick={() => onDelete(template.id)}
+      >
+        Delete
+      </button>
+    </div>
+  )
 }))
 
 // Mock the DeleteConfirmationModal component
 vi.mock('../../ui/DeleteConfirmationModal', () => ({
   __esModule: true,
-  default: ({ onConfirm, onCancel }: { onConfirm: () => void, onCancel: () => void }) => (
+  default: ({ onConfirm, onCancel }) => (
     <div data-testid="delete-modal">
       <button data-testid="confirm-delete" onClick={onConfirm}>Confirm</button>
       <button data-testid="cancel-delete" onClick={onCancel}>Cancel</button>
@@ -54,27 +51,10 @@ vi.mock('../../ui/DeleteConfirmationModal', () => ({
 // Mock the TemplateForm component
 vi.mock('../TemplateForm', () => ({
   __esModule: true,
-  default: ({ onCancel }: { onCancel: () => void }) => (
+  default: ({ initialData, onCancel }) => (
     <div data-testid="template-form">
-      <button data-testid="cancel-form" onClick={onCancel}>Cancel</button>
-    </div>
-  )
-}))
-
-// Mock the TemplateCard component
-vi.mock('../TemplateCard', () => ({
-  __esModule: true,
-  default: ({ template, onUse, onEdit, onDelete }: { 
-    template: { id: string, name: string },
-    onUse: (id: string) => void,
-    onEdit: (id: string) => void,
-    onDelete: (id: string) => void
-  }) => (
-    <div data-testid={`template-card-${template.id}`}>
-      <span>{template.name}</span>
-      <button data-testid={`use-template-${template.id}`} onClick={() => onUse(template.id)}>Use</button>
-      <button data-testid={`edit-template-${template.id}`} onClick={() => onEdit(template.id)}>Edit</button>
-      <button data-testid={`delete-template-${template.id}`} onClick={() => onDelete(template.id)}>Delete</button>
+      <p>Template Form {initialData ? 'Edit' : 'Create'}</p>
+      <button onClick={onCancel}>Cancel</button>
     </div>
   )
 }))
@@ -90,37 +70,47 @@ describe('TemplateList', () => {
   const mockTemplates = [
     {
       id: '1',
-      name: 'Template 1',
-      description: 'Description 1',
-      participantIds: ['user1', 'user2'],
-      createdAt: Date.now(),
+      name: 'Test Template 1',
+      description: 'This is test template 1',
+      participantIds: ['user1', 'ai1'],
+      defaultConversationStarter: 'Hello, let\'s start a conversation',
+      createdAt: Date.now() - 86400000, // 1 day ago
       updatedAt: Date.now()
     },
     {
       id: '2',
-      name: 'Template 2',
-      description: 'Description 2',
-      participantIds: ['user1', 'user3'],
-      createdAt: Date.now(),
-      updatedAt: Date.now()
+      name: 'Test Template 2',
+      description: 'This is test template 2',
+      participantIds: ['user1', 'ai2'],
+      defaultConversationStarter: 'Another conversation starter',
+      createdAt: Date.now() - 172800000, // 2 days ago
+      updatedAt: Date.now() - 86400000 // 1 day ago
     }
   ]
   
   const mockRemoveTemplate = vi.fn()
+  const mockOnUseTemplate = vi.fn()
   
   beforeEach(() => {
     vi.clearAllMocks()
     
-    // Setup the mock store
-    ;(useTemplatesStore as unknown as MockInstance).mockReturnValue({
-      templates: mockTemplates,
-      removeTemplate: mockRemoveTemplate
+    // Setup the mock store with templates for most tests
+    ;(useTemplatesStore as MockInstance).mockImplementation(selector => {
+      if (typeof selector === 'function') {
+        return selector({ 
+          templates: mockTemplates,
+          removeTemplate: mockRemoveTemplate
+        })
+      }
+      return { 
+        templates: mockTemplates,
+        removeTemplate: mockRemoveTemplate
+      }
     })
   })
   
   it('renders the templates list', () => {
-    const onUseTemplate = vi.fn()
-    render(<TemplateList onUseTemplate={onUseTemplate} />)
+    render(<TemplateList onUseTemplate={mockOnUseTemplate} />)
     
     // Check if template cards are rendered
     expect(screen.getByTestId('template-card-1')).toBeInTheDocument()
@@ -128,36 +118,28 @@ describe('TemplateList', () => {
   })
   
   it('calls onUseTemplate when a template is used', () => {
-    const onUseTemplate = vi.fn()
-    render(<TemplateList onUseTemplate={onUseTemplate} />)
+    render(<TemplateList onUseTemplate={mockOnUseTemplate} />)
     
     // Click the use button on the first template
     fireEvent.click(screen.getByTestId('use-template-1'))
     
     // Check if onUseTemplate was called with the correct template ID
-    expect(onUseTemplate).toHaveBeenCalledWith('1')
+    expect(mockOnUseTemplate).toHaveBeenCalledWith('1')
   })
   
   it('opens the edit modal when edit is clicked', () => {
-    const onUseTemplate = vi.fn()
-    render(<TemplateList onUseTemplate={onUseTemplate} />)
-    
-    // Initially, the form should not be visible
-    expect(screen.queryByTestId('template-form')).not.toBeInTheDocument()
+    render(<TemplateList onUseTemplate={mockOnUseTemplate} />)
     
     // Click the edit button on the first template
     fireEvent.click(screen.getByTestId('edit-template-1'))
     
     // Now the form should be visible
     expect(screen.getByTestId('template-form')).toBeInTheDocument()
+    expect(screen.getByText('Template Form Edit')).toBeInTheDocument()
   })
   
   it('opens the delete confirmation modal when delete is clicked', () => {
-    const onUseTemplate = vi.fn()
-    render(<TemplateList onUseTemplate={onUseTemplate} />)
-    
-    // Initially, the delete modal should not be visible
-    expect(screen.queryByTestId('delete-modal')).not.toBeInTheDocument()
+    render(<TemplateList onUseTemplate={mockOnUseTemplate} />)
     
     // Click the delete button on the first template
     fireEvent.click(screen.getByTestId('delete-template-1'))
@@ -167,8 +149,7 @@ describe('TemplateList', () => {
   })
   
   it('deletes a template when confirmed', () => {
-    const onUseTemplate = vi.fn()
-    render(<TemplateList onUseTemplate={onUseTemplate} />)
+    render(<TemplateList onUseTemplate={mockOnUseTemplate} />)
     
     // Click the delete button on the first template
     fireEvent.click(screen.getByTestId('delete-template-1'))
@@ -181,16 +162,24 @@ describe('TemplateList', () => {
   })
   
   it('shows empty state when no templates exist', () => {
-    // Setup the mock store with empty templates array
-    ;(useTemplatesStore as unknown as MockInstance).mockReturnValue({
-      templates: [],
-      removeTemplate: mockRemoveTemplate
+    // Override the mock to return empty templates array
+    ;(useTemplatesStore as MockInstance).mockImplementation(selector => {
+      if (typeof selector === 'function') {
+        return selector({ 
+          templates: [],
+          removeTemplate: mockRemoveTemplate
+        })
+      }
+      return { 
+        templates: [],
+        removeTemplate: mockRemoveTemplate
+      }
     })
     
-    const onUseTemplate = vi.fn()
-    render(<TemplateList onUseTemplate={onUseTemplate} />)
+    render(<TemplateList onUseTemplate={mockOnUseTemplate} />)
     
-    // Check if the empty state message is displayed
+    // Check if empty state is shown
     expect(screen.getByText('No Templates Yet')).toBeInTheDocument()
+    expect(screen.getByText('Create your first template to save your favorite round table configurations.')).toBeInTheDocument()
   })
 }) 

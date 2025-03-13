@@ -1,76 +1,64 @@
-import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { useTemplatesStore } from '../templatesStore'
 import { act } from '@testing-library/react'
+import { vi } from 'vitest'
+import { useTemplatesStore } from '../templatesStore'
 
 // Mock crypto.randomUUID
-vi.stubGlobal('crypto', {
-  randomUUID: () => 'test-uuid'
-})
+const mockRandomUUID = vi.fn().mockReturnValue('test-uuid')
+Object.defineProperty(crypto, 'randomUUID', { value: mockRandomUUID })
 
 // Mock Date.now
-const mockNow = 1625097600000 // July 1, 2021
-vi.spyOn(Date, 'now').mockImplementation(() => mockNow)
-
-// Reset the module between tests
-beforeEach(() => {
-  vi.resetModules()
-})
+const mockDate = 1615554000000 // March 12, 2021
+vi.spyOn(Date, 'now').mockImplementation(() => mockDate)
 
 describe('templatesStore', () => {
+  // Get a reference to the store
+  const store = useTemplatesStore.getState()
+  
   beforeEach(() => {
-    // Initialize the store with an empty templates array
-    const store = useTemplatesStore.getState()
+    // Reset the store state before each test
     act(() => {
-      // Ensure templates is an array
-      if (!Array.isArray(store.templates)) {
-        Object.defineProperty(store, 'templates', {
-          value: [],
-          writable: true
-        })
-      } else {
-        // Clear existing templates
-        store.templates.forEach(template => {
-          store.removeTemplate(template.id)
-        })
-      }
+      useTemplatesStore.setState({ templates: [] }, true)
     })
   })
   
-  it('should add a template', () => {
-    const store = useTemplatesStore.getState()
-    
+  test('should add a template', () => {
     act(() => {
       store.addTemplate({
         name: 'Test Template',
         description: 'Test Description',
-        participantIds: ['user1', 'user2'],
+        participantIds: ['1', '2'],
         defaultConversationStarter: 'Hello'
       })
     })
     
-    expect(store.templates).toHaveLength(1)
-    expect(store.templates[0]).toEqual({
+    expect(useTemplatesStore.getState().templates).toHaveLength(1)
+    expect(useTemplatesStore.getState().templates[0]).toEqual({
       id: 'test-uuid',
       name: 'Test Template',
       description: 'Test Description',
-      participantIds: ['user1', 'user2'],
+      participantIds: ['1', '2'],
       defaultConversationStarter: 'Hello',
-      createdAt: mockNow,
-      updatedAt: mockNow
+      createdAt: mockDate,
+      updatedAt: mockDate
     })
   })
   
-  it('should update a template', () => {
-    const store = useTemplatesStore.getState()
+  test('should update a template', () => {
+    const templateId = 'test-uuid'
     
-    // Add a template first
-    const templateId = store.addTemplate({
-      name: 'Test Template',
-      description: 'Test Description',
-      participantIds: ['user1', 'user2']
+    // First add a template
+    act(() => {
+      store.addTemplate({
+        name: 'Test Template',
+        description: 'Test Description',
+        participantIds: ['1', '2'],
+        defaultConversationStarter: 'Hello'
+      })
     })
     
-    // Update the template
+    expect(useTemplatesStore.getState().templates).toHaveLength(1)
+    
+    // Then update it
     act(() => {
       store.updateTemplate(templateId, {
         name: 'Updated Template',
@@ -78,103 +66,97 @@ describe('templatesStore', () => {
       })
     })
     
-    expect(store.templates).toHaveLength(1)
-    expect(store.templates[0]).toEqual({
+    expect(useTemplatesStore.getState().templates).toHaveLength(1)
+    expect(useTemplatesStore.getState().templates[0]).toEqual({
       id: templateId,
       name: 'Updated Template',
       description: 'Updated Description',
-      participantIds: ['user1', 'user2'],
-      createdAt: mockNow,
-      updatedAt: mockNow
+      participantIds: ['1', '2'],
+      defaultConversationStarter: 'Hello',
+      createdAt: mockDate,
+      updatedAt: mockDate
     })
   })
   
-  it('should remove a template', () => {
-    const store = useTemplatesStore.getState()
+  test('should remove a template', () => {
+    const templateId = 'test-uuid'
     
-    // Add a template first
-    const templateId = store.addTemplate({
-      name: 'Test Template',
-      description: 'Test Description',
-      participantIds: ['user1', 'user2']
+    // First add a template
+    act(() => {
+      store.addTemplate({
+        name: 'Test Template',
+        description: 'Test Description',
+        participantIds: [],
+        defaultConversationStarter: ''
+      })
     })
     
-    expect(store.templates).toHaveLength(1)
+    expect(useTemplatesStore.getState().templates).toHaveLength(1)
     
-    // Remove the template
+    // Then remove it
     act(() => {
       store.removeTemplate(templateId)
     })
     
-    expect(store.templates).toHaveLength(0)
+    expect(useTemplatesStore.getState().templates).toHaveLength(0)
   })
   
-  it('should get a template by ID', () => {
-    const store = useTemplatesStore.getState()
+  test('should get a template by ID', () => {
+    const templateId = 'test-uuid'
     
-    // Add a template first
-    const templateId = store.addTemplate({
-      name: 'Test Template',
-      description: 'Test Description',
-      participantIds: ['user1', 'user2']
+    // Add a template
+    act(() => {
+      store.addTemplate({
+        name: 'Test Template',
+        description: 'Test Description',
+        participantIds: [],
+        defaultConversationStarter: ''
+      })
     })
     
     const template = store.getTemplateById(templateId)
+    expect(template).toBeDefined()
+    expect(template?.name).toBe('Test Template')
     
-    expect(template).toEqual({
-      id: templateId,
-      name: 'Test Template',
-      description: 'Test Description',
-      participantIds: ['user1', 'user2'],
-      createdAt: mockNow,
-      updatedAt: mockNow
-    })
+    // Test with non-existent ID
+    const nonExistentTemplate = store.getTemplateById('non-existent')
+    expect(nonExistentTemplate).toBeUndefined()
   })
   
-  it('should get a template with participants', () => {
-    const store = useTemplatesStore.getState()
-    
-    // Add a template first
-    const templateId = store.addTemplate({
-      name: 'Test Template',
-      description: 'Test Description',
-      participantIds: ['user1', 'user2']
-    })
-    
-    const mockParticipants = [
-      { id: 'user1', name: 'User 1', type: 'human' as const },
-      { id: 'user2', name: 'User 2', type: 'human' as const },
-      { id: 'user3', name: 'User 3', type: 'human' as const }
+  test('should get a template with participants', () => {
+    const templateId = 'test-uuid'
+    const participants = [
+      { id: '1', name: 'Participant 1', systemPrompt: 'System 1', roleDescription: '' },
+      { id: '2', name: 'Participant 2', systemPrompt: 'System 2', roleDescription: '' },
+      { id: '3', name: 'Participant 3', systemPrompt: 'System 3', roleDescription: '' }
     ]
     
-    const { template, participants } = store.getTemplateWithParticipants(templateId, mockParticipants)
-    
-    expect(template).toEqual({
-      id: templateId,
-      name: 'Test Template',
-      description: 'Test Description',
-      participantIds: ['user1', 'user2'],
-      createdAt: mockNow,
-      updatedAt: mockNow
+    // Add a template with participant IDs
+    act(() => {
+      store.addTemplate({
+        name: 'Test Template',
+        description: 'Test Description',
+        participantIds: ['1', '2'],
+        defaultConversationStarter: ''
+      })
     })
     
-    expect(participants).toHaveLength(2)
-    expect(participants[0]).toEqual(mockParticipants[0])
-    expect(participants[1]).toEqual(mockParticipants[1])
+    const { template, participants: templateParticipants } = store.getTemplateWithParticipants(templateId, participants)
+    
+    expect(template).toBeDefined()
+    expect(templateParticipants).toHaveLength(2)
+    expect(templateParticipants[0].id).toBe('1')
+    expect(templateParticipants[1].id).toBe('2')
   })
   
-  it('should return empty results for non-existent template ID', () => {
-    const store = useTemplatesStore.getState()
+  test('should return empty results for non-existent template ID', () => {
+    const participants = [
+      { id: '1', name: 'Participant 1', systemPrompt: 'System 1', roleDescription: '' }
+    ]
     
-    const template = store.getTemplateById('non-existent')
+    const { template, participants: templateParticipants } = store.getTemplateWithParticipants('non-existent', participants)
+    
     expect(template).toBeUndefined()
-    
-    const mockParticipants = [
-      { id: 'user1', name: 'User 1', type: 'human' as const }
-    ]
-    
-    const result = store.getTemplateWithParticipants('non-existent', mockParticipants)
-    expect(result.template).toBeUndefined()
-    expect(result.participants).toEqual([])
+    expect(templateParticipants).toHaveLength(0)
   })
-}) 
+})

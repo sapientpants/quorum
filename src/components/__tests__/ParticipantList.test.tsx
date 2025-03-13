@@ -214,6 +214,6 @@ describe('ParticipantList', () => {
     
     render(<ParticipantList />)
     
-    expect(screen.getByText('No participants yet')).toBeInTheDocument()
+    expect(screen.getByText('No Participants Yet')).toBeInTheDocument()
   })
 }) 

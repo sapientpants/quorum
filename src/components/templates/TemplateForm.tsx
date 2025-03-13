@@ -24,8 +24,11 @@ interface TemplateFormProps {
 
 function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
   const { t } = useTranslation()
-  const participants = useParticipantsStore((state) => state.participants)
+  const participants = useParticipantsStore((state) => state.participants) || []
   const { addTemplate, updateTemplate } = useTemplatesStore()
+  
+  // Ensure participants is an array
+  const validParticipants = Array.isArray(participants) ? participants : []
   
   // Form setup
   const {
@@ -127,7 +130,7 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
         </label>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-2">
-          {participants.map((participant) => (
+          {validParticipants.map((participant) => (
             <div
               key={participant.id}
               className={`border rounded-lg p-3 cursor-pointer transition-all ${
