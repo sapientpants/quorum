@@ -2,6 +2,15 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useThemeContext } from '../contexts/ThemeContext'
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem
+} from '@heroui/react'
 
 export function TopBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -13,19 +22,83 @@ export function TopBar() {
   }
   
   return (
-    <div className="navbar bg-card border-b border-app transition-colors duration-300">
-      <div className="container mx-auto">
-        <div className="flex-1">
+    <Navbar 
+      isBordered
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+      className="bg-card border-b border-app transition-colors duration-300"
+      maxWidth="xl"
+    >
+      <NavbarContent>
+        <NavbarBrand>
           <Link to="/" className="flex items-center gap-2 text-xl font-semibold">
             <Icon icon="solar:chat-round-dots-bold" className="text-purple-500" width="24" height="24" />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-500">Quorum</span>
           </Link>
-        </div>
-        
+        </NavbarBrand>
+      </NavbarContent>
+
+      {/* Desktop Navigation */}
+      <NavbarContent className="hidden md:flex gap-4" justify="center">
+        <NavbarItem isActive={isActive('/chat')}>
+          <Link 
+            to="/chat"
+            className={`flex items-center gap-1.5 ${
+              isActive('/chat')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+          >
+            <Icon icon="solar:chat-line-linear" />
+            Chat
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive={isActive('/templates')}>
+          <Link 
+            to="/templates"
+            className={`flex items-center gap-1.5 ${
+              isActive('/templates')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+          >
+            <Icon icon="solar:bookmark-linear" />
+            Templates
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive={isActive('/settings')}>
+          <Link 
+            to="/settings"
+            className={`flex items-center gap-1.5 ${
+              isActive('/settings')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+          >
+            <Icon icon="solar:settings-linear" />
+            Settings
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive={isActive('/help')}>
+          <Link 
+            to="/help"
+            className={`flex items-center gap-1.5 ${
+              isActive('/help')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+          >
+            <Icon icon="solar:info-circle-linear" />
+            Help
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
+
+      <NavbarContent justify="end">
         {/* Theme toggle button */}
-        <div className="flex-none mr-2">
+        <NavbarItem>
           <button
-            className="p-2 rounded-full bg-card hover:bg-white/10 transition-colors"
+            className="p-2 rounded-full hover:bg-white/10 transition-colors"
             onClick={toggleTheme}
             aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
@@ -36,145 +109,75 @@ export function TopBar() {
               className={theme === 'dark' ? "text-yellow-400" : "text-purple-500"}
             />
           </button>
-        </div>
+        </NavbarItem>
         
-        {/* Mobile menu button */}
-        <div className="flex-none md:hidden">
-          <button
-            className="p-2 rounded-full bg-card hover:bg-white/10 transition-colors"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+        {/* Mobile menu toggle */}
+        <NavbarMenuToggle 
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"} 
+          className="md:hidden" 
+        />
+      </NavbarContent>
+
+      {/* Mobile menu */}
+      <NavbarMenu className="pt-6 bg-card">
+        <NavbarMenuItem isActive={isActive('/chat')}>
+          <Link
+            to="/chat"
+            className={`flex items-center gap-2 py-2 ${
+              isActive('/chat')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+            onClick={() => setIsMenuOpen(false)}
           >
-            <Icon
-              icon={isMenuOpen ? "solar:close-circle-bold" : "solar:hamburger-menu-linear"}
-              width="24"
-              height="24"
-            />
-          </button>
-        </div>
-        
-        {/* Desktop menu */}
-        <div className="flex-none hidden md:flex">
-          <ul className="flex items-center gap-1">
-            <li>
-              <Link
-                to="/chat"
-                className={`px-3 py-2 rounded-md flex items-center transition-colors ${
-                  isActive('/chat')
-                    ? 'bg-white/10 text-white'
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white'
-                }`}
-              >
-                <Icon icon="solar:chat-line-linear" className="mr-1.5" />
-                Chat
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/templates"
-                className={`px-3 py-2 rounded-md flex items-center transition-colors ${
-                  isActive('/templates')
-                    ? 'bg-white/10 text-white'
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white'
-                }`}
-              >
-                <Icon icon="solar:bookmark-linear" className="mr-1.5" />
-                Templates
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/settings"
-                className={`px-3 py-2 rounded-md flex items-center transition-colors ${
-                  isActive('/settings')
-                    ? 'bg-white/10 text-white'
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white'
-                }`}
-              >
-                <Icon icon="solar:settings-linear" className="mr-1.5" />
-                Settings
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/help"
-                className={`px-3 py-2 rounded-md flex items-center transition-colors ${
-                  isActive('/help')
-                    ? 'bg-white/10 text-white'
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white'
-                }`}
-              >
-                <Icon icon="solar:info-circle-linear" className="mr-1.5" />
-                Help
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-      
-      {/* Mobile menu dropdown */}
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-card border-b border-app z-50 shadow-lg">
-          <ul className="p-2 space-y-1">
-            <li>
-              <Link
-                to="/chat"
-                className={`px-4 py-2 rounded-md flex items-center transition-colors ${
-                  isActive('/chat')
-                    ? 'bg-white/10 text-white'
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Icon icon="solar:chat-line-linear" className="mr-2" />
-                Chat
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/templates"
-                className={`px-4 py-2 rounded-md flex items-center transition-colors ${
-                  isActive('/templates')
-                    ? 'bg-white/10 text-white'
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Icon icon="solar:bookmark-linear" className="mr-2" />
-                Templates
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/settings"
-                className={`px-4 py-2 rounded-md flex items-center transition-colors ${
-                  isActive('/settings')
-                    ? 'bg-white/10 text-white'
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Icon icon="solar:settings-linear" className="mr-2" />
-                Settings
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/help"
-                className={`px-4 py-2 rounded-md flex items-center transition-colors ${
-                  isActive('/help')
-                    ? 'bg-white/10 text-white'
-                    : 'hover:bg-white/5 text-gray-300 hover:text-white'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Icon icon="solar:info-circle-linear" className="mr-2" />
-                Help
-              </Link>
-            </li>
-          </ul>
-        </div>
-      )}
-    </div>
+            <Icon icon="solar:chat-line-linear" />
+            Chat
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem isActive={isActive('/templates')}>
+          <Link
+            to="/templates"
+            className={`flex items-center gap-2 py-2 ${
+              isActive('/templates')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <Icon icon="solar:bookmark-linear" />
+            Templates
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem isActive={isActive('/settings')}>
+          <Link
+            to="/settings"
+            className={`flex items-center gap-2 py-2 ${
+              isActive('/settings')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <Icon icon="solar:settings-linear" />
+            Settings
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem isActive={isActive('/help')}>
+          <Link
+            to="/help"
+            className={`flex items-center gap-2 py-2 ${
+              isActive('/help')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <Icon icon="solar:info-circle-linear" />
+            Help
+          </Link>
+        </NavbarMenuItem>
+      </NavbarMenu>
+    </Navbar>
   )
 }
 
