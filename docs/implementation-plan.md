@@ -519,9 +519,9 @@
      - Add CRUD operations for API keys ✅
      - Handle key testing through the store ✅
 
-3. **Theme Customization**
-   - **Main Layout with Theme Selector**
-     - Integrate the top navigation bar with the app title, navigation links, and a theme toggle button.
+3. **Theme Customization** ✅
+   - **Main Layout with Theme Toggle** ✅
+     - Integrate the top navigation bar with the app title, navigation links, and a theme toggle button. ✅
 
 4. **Participant Configuration**
    - **Participant Form**

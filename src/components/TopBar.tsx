@@ -102,7 +102,7 @@ export function TopBar() {
           <LanguageToggle />
         </NavbarItem>
         
-        {/* Theme selector dropdown with error boundary */}
+        {/* Theme toggle button with error boundary */}
         <NavbarItem>
           <ThemeSelectorWithErrorBoundary />
         </NavbarItem>
