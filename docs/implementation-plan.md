@@ -475,191 +475,97 @@
 
 ---
 
-## **Iteration 7: UI Mockup Implementation**
+## **Iteration 7: UI Mockup Implementation (Updated)**
 
 ### **Goals**
-- Implement remaining screens from UI mockups
-- Complete the user flows for all core functionality
-- Add missing features identified in technical design
-
-### **High-Level Features**
-- **API Key Setup Flow**: Complete onboarding experience ✅
-- **Round Table Visualization**: Enhanced participant visualization
-- **Templates System**: Full template management
-- **Settings & Customization**: Complete settings interface
-- **Help & Documentation**: Comprehensive help system
-- **Accessibility**: Full keyboard and screen reader support
+- Implement all screens from the UI mockups with the updated designs.
+- Complete full user flows including onboarding, API key management, round table conversation, template management, settings, help, error notifications, and mobile responsiveness.
 
 ### **Detailed Tasks**
 
-1. **Complete First-Time User Flow** ✅
-   - Create `ApiKeySetup` screen (1.3) ✅
-     ```ts
-     interface ApiKeySetupProps {
-       onComplete: () => void
-       initialKeys?: StoredAPIKeys
-       storageType?: 'local' | 'session' | 'none'
-     }
-     ```
-   - Create `ApiKeyConsentModal` component (1.2) ✅
-     ```ts
-     interface ApiKeyConsentModalProps {
-       onContinue: (storageType: 'local' | 'session' | 'none') => void
-       onCancel: () => void
-     }
-     ```
-   - Add display name input ✅
-   - Add help text and documentation links ✅
-   - Implement provider-specific key validation ✅
-     - Support for OpenAI personal and project keys ✅
-     - Anthropic key validation (sk-ant- prefix) ✅
-     - Grok key validation ✅
-     - Google AI key validation ✅
-   - Add storage preference selection ✅
-     - Local storage option (persists between sessions) ✅
-     - Session storage option (cleared when browser closes) ✅
-     - No storage option (must re-enter each time) ✅
-   - Create smooth transitions between screens ✅
+1. **First-Time User Onboarding**
+   - **Welcome Screen** ✅ (implemented)
+     - Implement layout with app title, round table icon, and tagline.
+     - Include a prominent 'Get Started' button.
+   - **Consent Modal** ✅ (implemented)
+     - Design the modal to display the API Keys & Privacy Notice with clear text.
+     - Provide storage preference options (Local Storage, Session Storage, No Storage) and a confirmation checkbox.
+     - Add Cancel and Continue buttons.
+   - **API Key Setup Screen** ✅ (implemented)
+     - Create input fields for API keys (OpenAI, Anthropic, Grok, Google AI).
+     - Add help links (e.g., "How to get an API key") beside each field.
+     - Style the Continue button with gradient effects matching the design.
 
-2. **Round Table Chat Interface (5.1)**
-   - Implement circular visualization component
-     ```ts
-     interface RoundTableVisualizationProps {
-       participants: Participant[]
-       activeParticipant?: string
-       onParticipantClick: (id: string) => void
-       onParticipantDrag: (sourceId: string, targetId: string) => void
-       size: 'compact' | 'full'
-       showStatus: boolean
-     }
-     ```
-   - Create participant cards with status indicators
-   - Add connection lines between participants
-   - Implement turn management system
-   - Add conversation control buttons
-   - Create mobile-optimized view
+2. **API Key Management**
+   - **API Key Management Screen**
+     - Display masked API keys for each provider with visible labels.
+     - Include action buttons for 'Test Key' and 'Clear'.
+   - **API Key Test Modal**
+     - Present API key validation results, including success messages and a list of available models.
+     - Provide a 'Close' button to dismiss the modal.
 
-3. **Templates Management (6.1-6.5)**
-   - Create templates list view
-     ```ts
-     interface TemplateListProps {
-       templates: RoundTableConfig[]
-       onSelect: (template: RoundTableConfig) => void
-       onEdit: (id: string) => void
-       onDelete: (id: string) => void
-       onShare: (id: string) => void
-     }
-     ```
-   - Build template creation form
-   - Implement template import/export
-   - Add template sharing functionality
-   - Create template preview component
-   - Add collaborative template features
+3. **Theme Customization**
+   - **Main Layout with Theme Selector**
+     - Integrate the top navigation bar with the app title, navigation links, and a theme toggle button.
+   - **Theme Selector Dropdown**
+     - Build a dropdown component listing available themes.
+     - Ensure theme selection updates the UI dynamically.
 
-4. **Settings Interface (7.1-7.4)**
-   - Complete API key management UI ✅
-     - Add storage preference options ✅
-     - Implement key masking and visibility toggle ✅
-     - Add key validation and testing ✅
-     - Support for multiple providers (OpenAI, Anthropic, Grok, Google) ✅
-   - Add appearance settings panel ✅
-   - Implement language selection ✅
-   - Create accessibility options
-   - Build privacy and storage settings ✅
-     - Storage preference management ✅
-     - Data export functionality
-     - Clear stored data options ✅
-   - Add keyboard shortcut configuration
+4. **Participant Configuration**
+   - **Participant Form**
+     - Create a form for adding or editing participants with fields: Name, Provider selection, Model selection, Role description, and System Prompt input.
+   - **Participant List**
+     - Display a list or grid of participant cards showing key details and actions (Edit, Delete).
+   - **Advanced Settings for Participant**
+     - Implement a modal or expandable panel for adjusting advanced settings (e.g., temperature, max tokens).
 
-5. **Help Center (9.1-9.2)**
-   - Create help documentation component
-     ```ts
-     interface HelpCenterProps {
-       activeSection?: string
-       onSectionChange: (section: string) => void
-     }
-     ```
-   - Build searchable help topics
-   - Implement tutorial system
-   - Add keyboard shortcut guide
-   - Create contextual help system
-   - Add API key tutorials
+5. **Round Table Conversation**
+   - **Main Chat Screen with Round Table**
+     - Develop a chat interface that includes a message list and input field.
+     - Create a round table layout displaying participant avatars in a circular arrangement with active/inactive status indicators.
 
-6. **Accessibility Implementation (13.1-13.2)**
-   - Implement keyboard navigation system
-     ```ts
-     interface KeyboardNavigationProps {
-       shortcuts: Record<string, () => void>
-       enabled: boolean
-       showOverlay: boolean
-     }
-     ```
-   - Add screen reader support
-   - Create voice control interface
-   - Build high contrast mode
-   - Add motion reduction options
-   - Implement focus management
+6. **Templates Management**
+   - **Templates List**
+     - Display template cards with information such as Title, Description, and participant summaries.
+     - Add actions for each template: Use, Edit, Share, and Delete.
+   - **Template Form**
+     - Build a form for creating and editing templates with fields for Template Name, Description, Participant selection, and a Default Conversation Starter.
 
-7. **Error Handling and Network Management**
-   - Create error modal component
-   - Implement network status indicator
-   - Add offline mode functionality
-   - Build retry mechanisms
-   - Create low bandwidth mode
-   - Add error boundary components
+7. **Settings Screens**
+   - **Main Settings**
+     - Develop a comprehensive settings menu that navigates to API Keys, Participants, Appearance, LLM Defaults, Language, and Privacy & Storage sections.
+   - **Privacy & Storage**
+     - Create a dedicated screen for managing storage options, including data export and clear stored data actions.
 
-8. **Mobile Optimization**
-   - Create mobile-specific layouts
-   - Implement touch gestures
-   - Add haptic feedback
-   - Optimize performance for mobile
-   - Create PWA configuration
+8. **Error and System Messages**
+   - **API Error Modal**
+     - Implement a modal that displays detailed API error information and suggestions for resolution.
+   - **Network Status Indicator**
+     - Develop a real-time indicator to show network connectivity status and low-bandwidth alerts.
+
+9. **Help and Documentation**
+   - **Help Center**
+     - Build an interface with searchable help topics, categorized documentation, and tutorial videos.
+   - **Keyboard Shortcuts Overlay**
+     - Design an overlay modal to display all keyboard shortcuts for quick reference.
+
+10. **Mobile Responsive Layouts**
+    - **Mobile Round Table View**
+       - Adapt the round table conversation layout for mobile devices, using a touch-friendly circular arrangement and a collapsible menu (hamburger icon).
+    - **Mobile Participant Creation**
+       - Design a mobile-optimized participant creation screen with streamlined input fields and larger touch targets.
 
 ### **Exit Criteria**
-- All UI mockup screens are implemented
-  - First-time onboarding screens (1.1, 1.2, 1.3) ✅
-  - API Key management screens (2.1, 2.2) ✅
-  - Theme customization screens (3.1, 3.2) ✅
-  - Participant configuration screens (4.1, 4.2, 4.3) ✅
-  - Round Table conversation screens (5.1, 5.2, 5.3)
-  - Templates screens (6.1, 6.2)
-  - Settings screens (7.1, 7.2) ✅
-  - Error and system messages (8.1, 8.2)
-  - Help documentation screens (9.1, 9.2)
-  - Mobile responsive layouts (10.1, 10.2)
-- User flows work smoothly on both desktop and mobile
-- Templates system is fully functional
-- Settings and help systems are complete
-- Application is fully accessible
-- Error handling is robust and user-friendly
+- Every screen defined in the UI mockups is fully implemented and styled according to the new designs.
+- User flows for onboarding, API key setup and management, round table conversation, template management, settings, help, and error handling work seamlessly on both desktop and mobile.
+- The interface meets accessibility standards and responsiveness requirements.
 
 ### **Testing Requirements**
-1. **Component Testing**
-   - Test all new components
-   - Fix existing test failures for:
-     - `ApiKeySetup` component tests to handle new UI structure
-     - `Welcome` component tests to properly mock navigation
-   - Verify accessibility compliance
-   - Test mobile responsiveness
-   - Validate error handling
-
-2. **Integration Testing**
-   - Test complete user flows
-   - Verify template management
-   - Test settings persistence
-   - Validate help system
-
-3. **End-to-End Testing**
-   - Test full onboarding flow
-   - Verify template sharing
-   - Test offline functionality
-   - Validate accessibility features
-
-4. **Performance Testing**
-   - Test mobile performance
-   - Verify large template lists
-   - Test help system search
-   - Validate network handling
+- Write comprehensive component tests for each new UI screen.
+- Perform integration testing to validate full user flows.
+- Validate mobile responsiveness across various devices.
+- Conduct accessibility testing for keyboard navigation and screen reader support.
+- Simulate error scenarios to verify robust error handling and network status indicators.
 
 ### **Next Steps for API Key Storage**
 
