@@ -483,7 +483,7 @@
 - Add missing features identified in technical design
 
 ### **High-Level Features**
-- **API Key Setup Flow**: Complete onboarding experience
+- **API Key Setup Flow**: Complete onboarding experience ✅
 - **Round Table Visualization**: Enhanced participant visualization
 - **Templates System**: Full template management
 - **Settings & Customization**: Complete settings interface
@@ -492,19 +492,34 @@
 
 ### **Detailed Tasks**
 
-1. **Complete First-Time User Flow**
-   - Create `ApiKeySetup` screen (1.3)
+1. **Complete First-Time User Flow** ✅
+   - Create `ApiKeySetup` screen (1.3) ✅
      ```ts
      interface ApiKeySetupProps {
        onComplete: () => void
        initialKeys?: StoredAPIKeys
+       storageType?: 'local' | 'session' | 'none'
      }
      ```
-   - Add display name input
-   - Add help text and documentation links
-   - Implement provider-specific key validation
-   - Add storage preference selection
-   - Create smooth transitions between screens
+   - Create `ApiKeyConsentModal` component (1.2) ✅
+     ```ts
+     interface ApiKeyConsentModalProps {
+       onContinue: (storageType: 'local' | 'session' | 'none') => void
+       onCancel: () => void
+     }
+     ```
+   - Add display name input ✅
+   - Add help text and documentation links ✅
+   - Implement provider-specific key validation ✅
+     - Support for OpenAI personal and project keys ✅
+     - Anthropic key validation (sk-ant- prefix) ✅
+     - Grok key validation ✅
+     - Google AI key validation ✅
+   - Add storage preference selection ✅
+     - Local storage option (persists between sessions) ✅
+     - Session storage option (cleared when browser closes) ✅
+     - No storage option (must re-enter each time) ✅
+   - Create smooth transitions between screens ✅
 
 2. **Round Table Chat Interface (5.1)**
    - Implement circular visualization component
@@ -542,11 +557,18 @@
    - Add collaborative template features
 
 4. **Settings Interface (7.1-7.4)**
-   - Complete API key management UI
-   - Add appearance settings panel
-   - Implement language selection
+   - Complete API key management UI ✅
+     - Add storage preference options ✅
+     - Implement key masking and visibility toggle ✅
+     - Add key validation and testing ✅
+     - Support for multiple providers (OpenAI, Anthropic, Grok, Google) ✅
+   - Add appearance settings panel ✅
+   - Implement language selection ✅
    - Create accessibility options
-   - Build privacy and storage settings
+   - Build privacy and storage settings ✅
+     - Storage preference management ✅
+     - Data export functionality
+     - Clear stored data options ✅
    - Add keyboard shortcut configuration
 
 5. **Help Center (9.1-9.2)**
@@ -595,6 +617,16 @@
 
 ### **Exit Criteria**
 - All UI mockup screens are implemented
+  - First-time onboarding screens (1.1, 1.2, 1.3) ✅
+  - API Key management screens (2.1, 2.2) ✅
+  - Theme customization screens (3.1, 3.2) ✅
+  - Participant configuration screens (4.1, 4.2, 4.3) ✅
+  - Round Table conversation screens (5.1, 5.2, 5.3)
+  - Templates screens (6.1, 6.2)
+  - Settings screens (7.1, 7.2) ✅
+  - Error and system messages (8.1, 8.2)
+  - Help documentation screens (9.1, 9.2)
+  - Mobile responsive layouts (10.1, 10.2)
 - User flows work smoothly on both desktop and mobile
 - Templates system is fully functional
 - Settings and help systems are complete
@@ -604,6 +636,9 @@
 ### **Testing Requirements**
 1. **Component Testing**
    - Test all new components
+   - Fix existing test failures for:
+     - `ApiKeySetup` component tests to handle new UI structure
+     - `Welcome` component tests to properly mock navigation
    - Verify accessibility compliance
    - Test mobile responsiveness
    - Validate error handling
@@ -625,3 +660,30 @@
    - Verify large template lists
    - Test help system search
    - Validate network handling
+
+### **Next Steps for API Key Storage**
+
+The API key storage strategy selection has been implemented but requires the following improvements:
+
+1. **Test Fixes**
+   - Update the `ApiKeySetup.test.tsx` to work with the new UI structure
+   - Fix the `Welcome.test.tsx` to properly mock the `useNavigate` hook
+   - Address controlled/uncontrolled input warnings
+
+2. **Validation Enhancements**
+   - Add more robust network error handling during API key validation
+   - Implement retry mechanisms for transient failures
+   - Provide more detailed feedback for various validation failures
+
+3. **Security Improvements**
+   - Review the security of API key storage in browser storage
+   - Add additional encryption for stored keys where possible
+   - Enhance the warnings and information about storage security
+
+4. **UX Refinements**
+   - Improve the messaging around storage options
+   - Add tooltips explaining storage implications
+   - Create a visual indicator for the current storage method in use
+   - Implement a way to change storage method for existing keys
+
+These improvements will ensure the API key storage feature is robust, secure, and user-friendly.
