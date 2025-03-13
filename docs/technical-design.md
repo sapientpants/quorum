@@ -129,6 +129,97 @@ App
 - Interface for managing API keys for different providers
 - Handles validation, testing, and storage preferences
 
+### 2.3 Round Table Visualization
+
+The round table visualization is a core component that requires special attention:
+
+```typescript
+interface RoundTableVisualization {
+  participants: Participant[]
+  activeParticipant?: string
+  onParticipantClick: (participantId: string) => void
+  onParticipantDrag: (sourceId: string, targetId: string) => void
+  size: 'compact' | 'full'
+  showStatus: boolean
+}
+```
+
+Key visualization features:
+1. **Circular Layout Engine**
+   - Calculate participant positions in a circle
+   - Handle dynamic participant count
+   - Support drag and drop reordering
+   - Maintain proper spacing and scaling
+
+2. **Participant Cards**
+   - Show participant avatar/icon
+   - Display status indicators
+   - Support quick actions
+   - Handle active/inactive states
+
+3. **Connection Lines**
+   - Draw lines between participants
+   - Show message flow direction
+   - Indicate active connections
+   - Support animated transitions
+
+4. **Mobile Adaptations**
+   - Switch to vertical list on small screens
+   - Support touch gestures
+   - Maintain functionality in compact mode
+   - Ensure proper scaling
+
+Implementation approach:
+```typescript
+function calculateParticipantPositions(
+  participants: Participant[],
+  centerX: number,
+  centerY: number,
+  radius: number
+): Position[] {
+  return participants.map((_, index) => {
+    const angle = (index / participants.length) * 2 * Math.PI
+    return {
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle)
+    }
+  })
+}
+```
+
+### 2.4 Message Threading
+
+The message threading system requires careful design to handle:
+1. Message grouping by participant
+2. Proper timestamp display
+3. Status indicators (sending, error, etc.)
+4. Streaming responses
+5. Rich content rendering
+
+```typescript
+interface MessageThread {
+  messages: Message[]
+  groupByParticipant: boolean
+  showTimestamps: boolean
+  onRetry: (messageId: string) => void
+  onDelete: (messageId: string) => void
+}
+
+interface MessageGroup {
+  participantId: string
+  messages: Message[]
+  timestamp: number
+  status: 'complete' | 'streaming' | 'error'
+}
+```
+
+Implementation considerations:
+1. Use virtualization for large message lists
+2. Implement proper scroll management
+3. Handle message updates efficiently
+4. Support rich text formatting
+5. Enable message actions (copy, retry, etc.)
+
 ## 3. Data Models and Interfaces
 
 ### 3.1 Core Data Types
