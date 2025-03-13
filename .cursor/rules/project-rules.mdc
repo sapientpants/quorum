@@ -14,6 +14,7 @@ Key Principles:
 - Use lowercase with dashes for directories (e.g., components/auth-wizard).
 - Favor named exports for components.
 - Use the Receive an Object, Return an Object (RORO) pattern.
+- Never use --no-verify with git commit
 
 JavaScript/TypeScript:
 
