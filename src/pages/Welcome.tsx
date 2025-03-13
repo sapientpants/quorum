@@ -4,46 +4,37 @@ import { Icon } from '@iconify/react'
 import { Button } from '../components/ui/button'
 import { useTranslation } from 'react-i18next'
 import { ApiKeySetup } from '../components/ApiKeySetup'
-import { usePreferencesStore } from '../store/preferencesStore'
-import { ApiKeyConsentModal } from '../components/ApiKeyConsentModal'
 import type { ApiKeyStorageOptions } from '../types/api'
+import { useState } from 'react'
 
 export function Welcome() {
   const navigate = useNavigate()
   const [isVisible, setIsVisible] = React.useState(false)
-  const [showConsent, setShowConsent] = React.useState(false)
   const [showApiKeySetup, setShowApiKeySetup] = React.useState(false)
-  const [storageType, setStorageType] = React.useState<ApiKeyStorageOptions['storage']>('session')
+  const storageType: ApiKeyStorageOptions['storage'] = 'session'
   const { t } = useTranslation()
-  const { hasConsented, setHasConsented } = usePreferencesStore()
+  const [consentChecked, setConsentChecked] = useState(false)
+  const [showConsentModal, setShowConsentModal] = useState(false)
   
   React.useEffect(() => {
     setIsVisible(true)
   }, [])
 
-  function handleGetStarted() {
-    if (hasConsented) {
-      const hasApiKeys = localStorage.getItem('hasApiKeys')
-      if (hasApiKeys === 'true') {
-        navigate('/chat')
-      } else {
-        setShowApiKeySetup(true)
-      }
+  const handleGetStarted = () => {
+    if (localStorage.getItem('hasConsented') && localStorage.getItem('hasApiKeys')) {
+      navigate('/chat')
+    } else if (localStorage.getItem('hasConsented')) {
+      setShowApiKeySetup(true)
     } else {
-      setShowConsent(true)
+      setShowConsentModal(true)
     }
   }
   
-  function handleConsent(selectedStorageType: ApiKeyStorageOptions['storage']) {
-    setHasConsented(true)
-    setStorageType(selectedStorageType)
-    setShowConsent(false)
+  const handleConsentContinue = () => {
+    localStorage.setItem('hasConsented', 'true')
+    setShowConsentModal(false)
+    setConsentChecked(false)
     setShowApiKeySetup(true)
-  }
-
-  function handleApiKeySetupComplete() {
-    localStorage.setItem('hasApiKeys', 'true')
-    navigate('/chat')
   }
 
   return (
@@ -112,11 +103,23 @@ export function Welcome() {
         </div>
       )}
 
-      {showConsent && (
-        <ApiKeyConsentModal
-          onContinue={handleConsent}
-          onCancel={() => setShowConsent(false)}
-        />
+      {showConsentModal && (
+        <div role="dialog" className="modal">
+          <h2>API Keys & Privacy Notice</h2>
+          <div className="consent-options">
+            <input
+              type="checkbox"
+              role="checkbox"
+              checked={consentChecked}
+              onChange={() => setConsentChecked(!consentChecked)}
+            />
+            <span>I understand and agree to these terms</span>
+          </div>
+          <div className="modal-actions">
+            <button onClick={() => setShowConsentModal(false)}>Cancel</button>
+            <button disabled={!consentChecked} onClick={handleConsentContinue}>Continue</button>
+          </div>
+        </div>
       )}
 
       {showApiKeySetup && (
@@ -124,7 +127,10 @@ export function Welcome() {
           <div className="relative bg-card p-6 rounded-xl shadow-xl max-w-4xl w-full border border-border/30 overflow-y-auto max-h-[90vh]">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10 rounded-xl -z-10"></div>
             <ApiKeySetup
-              onComplete={handleApiKeySetupComplete}
+              onComplete={() => {
+                localStorage.setItem('hasApiKeys', 'true')
+                navigate('/chat')
+              }}
               storageType={storageType}
             />
           </div>
