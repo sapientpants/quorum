@@ -30,7 +30,7 @@ function ParticipantCard({ participant, onEdit, onDelete }: ParticipantCardProps
   const isHuman = participant.type === 'human'
   
   return (
-    <div className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow">
+    <div className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow border border-base-300">
       <div className="card-body p-4">
         <div className="flex justify-between items-start">
           <h3 className="card-title text-base flex items-center gap-2">
@@ -50,16 +50,28 @@ function ParticipantCard({ participant, onEdit, onDelete }: ParticipantCardProps
         </div>
         
         {!isHuman && (
-          <div className="text-xs opacity-70 mt-1">
-            <span className="font-medium">Model:</span> {participant.model}
-          </div>
+          <>
+            <div className="text-xs opacity-70 mt-1 space-y-1">
+              <div>
+                <span className="font-medium">Model:</span> {participant.model}
+              </div>
+              {participant.roleDescription && (
+                <div>
+                  <span className="font-medium">Role:</span> {participant.roleDescription}
+                </div>
+              )}
+            </div>
+            <div className="text-xs mt-2 line-clamp-2 opacity-60 italic">
+              {participant.systemPrompt || "No system prompt defined"}
+            </div>
+          </>
         )}
         
         <div className="card-actions justify-end mt-3">
           {!isHuman && (
             <button 
               onClick={() => onEdit(participant.id)} 
-              className="btn btn-xs btn-ghost"
+              className="btn btn-xs btn-ghost gap-1"
             >
               <Icon icon="solar:pen-linear" className="w-4 h-4" />
               Edit
@@ -69,7 +81,7 @@ function ParticipantCard({ participant, onEdit, onDelete }: ParticipantCardProps
           {!isHuman && (
             <button 
               onClick={() => onDelete(participant.id)} 
-              className="btn btn-xs btn-ghost text-error"
+              className="btn btn-xs btn-ghost text-error gap-1"
             >
               <Icon icon="solar:trash-bin-trash-linear" className="w-4 h-4" />
               Delete
@@ -259,63 +271,72 @@ export function ParticipantList() {
   }
   
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="p-4 max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-medium">Participants</h2>
-        <button 
-          className="btn btn-primary btn-sm"
+        <h2 className="text-2xl font-semibold">Participants</h2>
+        <button
           onClick={() => setIsAddingParticipant(true)}
+          className="btn btn-primary gap-2"
         >
           <Icon icon="solar:add-circle-linear" className="w-5 h-5" />
           Add Participant
         </button>
       </div>
       
-      <div className="mb-8">
+      <div className="bg-base-100 rounded-lg shadow-sm border border-base-300 p-4 mb-6">
+        <div className="flex items-center gap-3 text-sm">
+          <Icon icon="solar:info-circle-linear" className="w-5 h-5 text-info" />
+          <p>
+            Configure AI participants to join your round table conversation. 
+            Each participant can have a specific role, personality, and expertise.
+          </p>
+        </div>
+      </div>
+      
+      {participants.length === 0 ? (
+        <div className="text-center py-10 bg-base-200 rounded-lg">
+          <Icon icon="solar:users-group-rounded-broken" className="w-16 h-16 mx-auto mb-4 opacity-50" />
+          <h3 className="text-lg font-medium mb-2">No Participants Yet</h3>
+          <p className="text-sm max-w-md mx-auto mb-4">
+            Add your first participant to start creating your round table conversation.
+          </p>
+          <button 
+            onClick={() => setIsAddingParticipant(true)}
+            className="btn btn-primary btn-sm"
+          >
+            Add Participant
+          </button>
+        </div>
+      ) : (
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
           modifiers={[restrictToVerticalAxis]}
+          onDragEnd={handleDragEnd}
         >
-          <SortableContext
-            items={participants.map(p => p.id)}
+          <div className="mb-4 bg-base-100 p-3 rounded-lg border border-base-300 flex items-center gap-2">
+            <Icon icon="solar:sort-by-time-linear" className="w-5 h-5 opacity-70" />
+            <p className="text-sm">Drag to reorder participants. This order will be used in round table conversations.</p>
+          </div>
+          
+          <SortableContext 
+            items={participants.map(p => p.id)} 
             strategy={verticalListSortingStrategy}
           >
-            {participants.length === 0 ? (
-              <div className="text-center py-8 bg-base-200 rounded-lg">
-                <Icon icon="solar:users-group-rounded-linear" className="w-12 h-12 mx-auto opacity-50" />
-                <p className="mt-2 text-lg">No participants yet</p>
-                <p className="text-sm opacity-70">Add your first participant to get started</p>
-              </div>
-            ) : (
-              <div>
-                {participants.map(participant => (
-                  <SortableParticipant
-                    key={participant.id}
-                    id={participant.id}
-                    participant={participant}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="space-y-3">
+              {participants.map(participant => (
+                <SortableParticipant
+                  key={participant.id}
+                  id={participant.id}
+                  participant={participant}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </div>
           </SortableContext>
         </DndContext>
-      </div>
-      
-      <div className="bg-base-200 p-4 rounded-lg">
-        <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
-          <Icon icon="solar:info-circle-linear" className="w-5 h-5" />
-          Tips
-        </h3>
-        <ul className="text-sm space-y-2 opacity-80">
-          <li>• Drag participants to reorder them</li>
-          <li>• Each participant can have a unique role and system prompt</li>
-          <li>• Human participants cannot be edited or deleted</li>
-        </ul>
-      </div>
+      )}
     </div>
   )
 } 

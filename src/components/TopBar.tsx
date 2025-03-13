@@ -55,6 +55,19 @@ export function TopBar() {
             {t('navigation.chat')}
           </Link>
         </NavbarItem>
+        <NavbarItem isActive={isActive('/participants')}>
+          <Link 
+            to="/participants"
+            className={`flex items-center gap-1.5 ${
+              isActive('/participants')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+          >
+            <Icon icon="solar:users-group-rounded-linear" />
+            {t('navigation.participants', 'Participants')}
+          </Link>
+        </NavbarItem>
         <NavbarItem isActive={isActive('/templates')}>
           <Link 
             to="/templates"
@@ -128,6 +141,20 @@ export function TopBar() {
           >
             <Icon icon="solar:chat-line-linear" />
             {t('navigation.chat')}
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem isActive={isActive('/participants')}>
+          <Link
+            to="/participants"
+            className={`flex items-center gap-2 py-2 ${
+              isActive('/participants')
+                ? 'text-primary'
+                : 'text-foreground/70 hover:text-foreground'
+            }`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <Icon icon="solar:users-group-rounded-linear" />
+            {t('navigation.participants', 'Participants')}
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem isActive={isActive('/templates')}>

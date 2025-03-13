@@ -10,6 +10,7 @@ const Settings = React.lazy(() => import('../pages/Settings').then(mod => ({ def
 const Help = React.lazy(() => import('../pages/Help').then(mod => ({ default: mod.Help })))
 const Templates = React.lazy(() => import('../pages/Templates').then(mod => ({ default: mod.Templates })))
 const NotFound = React.lazy(() => import('../pages/NotFound').then(mod => ({ default: mod.NotFound })))
+const ParticipantConfig = React.lazy(() => import('../pages/ParticipantConfigPage').then(mod => ({ default: mod.ParticipantConfigPage })))
 
 const routes: RouteObject[] = [
   {
@@ -53,6 +54,14 @@ const routes: RouteObject[] = [
         element: (
           <React.Suspense fallback={<PageLoader />}>
             <Templates />
+          </React.Suspense>
+        ),
+      },
+      {
+        path: 'participants',
+        element: (
+          <React.Suspense fallback={<PageLoader />}>
+            <ParticipantConfig />
           </React.Suspense>
         ),
       },
