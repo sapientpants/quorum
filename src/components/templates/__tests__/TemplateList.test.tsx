@@ -1,11 +1,43 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { vi } from 'vitest'
+import { vi, type MockInstance } from 'vitest'
 import TemplateList from '../TemplateList'
 import { useTemplatesStore } from '../../../store/templatesStore'
 
 // Mock the store
 vi.mock('../../../store/templatesStore', () => ({
-  useTemplatesStore: vi.fn()
+  useTemplatesStore: vi.fn((selector) => {
+    const templates = [
+      {
+        id: 'template1',
+        name: 'Test Template 1',
+        description: 'This is test template 1',
+        participantIds: ['user1', 'ai1'],
+        defaultConversationStarter: 'Hello, let\'s start a conversation',
+        createdAt: Date.now() - 86400000, // 1 day ago
+        updatedAt: Date.now()
+      },
+      {
+        id: 'template2',
+        name: 'Test Template 2',
+        description: 'This is test template 2',
+        participantIds: ['user1', 'ai2'],
+        defaultConversationStarter: 'Another conversation starter',
+        createdAt: Date.now() - 172800000, // 2 days ago
+        updatedAt: Date.now() - 86400000 // 1 day ago
+      }
+    ];
+    
+    const state = {
+      templates,
+      removeTemplate: vi.fn()
+    };
+    
+    if (typeof selector === 'function') {
+      return selector(state);
+    }
+    
+    return state;
+  })
 }))
 
 // Mock the DeleteConfirmationModal component
@@ -80,7 +112,7 @@ describe('TemplateList', () => {
     vi.clearAllMocks()
     
     // Setup the mock store
-    ;(useTemplatesStore as jest.Mock).mockReturnValue({
+    ;(useTemplatesStore as unknown as MockInstance).mockReturnValue({
       templates: mockTemplates,
       removeTemplate: mockRemoveTemplate
     })
@@ -150,7 +182,7 @@ describe('TemplateList', () => {
   
   it('shows empty state when no templates exist', () => {
     // Setup the mock store with empty templates array
-    ;(useTemplatesStore as jest.Mock).mockReturnValue({
+    ;(useTemplatesStore as unknown as MockInstance).mockReturnValue({
       templates: [],
       removeTemplate: mockRemoveTemplate
     })

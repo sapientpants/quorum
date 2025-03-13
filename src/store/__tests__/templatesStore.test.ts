@@ -11,14 +11,28 @@ vi.stubGlobal('crypto', {
 const mockNow = 1625097600000 // July 1, 2021
 vi.spyOn(Date, 'now').mockImplementation(() => mockNow)
 
+// Reset the module between tests
+beforeEach(() => {
+  vi.resetModules()
+})
+
 describe('templatesStore', () => {
   beforeEach(() => {
-    // Clear the store before each test
+    // Initialize the store with an empty templates array
     const store = useTemplatesStore.getState()
     act(() => {
-      store.templates.forEach(template => {
-        store.removeTemplate(template.id)
-      })
+      // Ensure templates is an array
+      if (!Array.isArray(store.templates)) {
+        Object.defineProperty(store, 'templates', {
+          value: [],
+          writable: true
+        })
+      } else {
+        // Clear existing templates
+        store.templates.forEach(template => {
+          store.removeTemplate(template.id)
+        })
+      }
     })
   })
   
@@ -50,13 +64,10 @@ describe('templatesStore', () => {
     const store = useTemplatesStore.getState()
     
     // Add a template first
-    let templateId: string
-    act(() => {
-      templateId = store.addTemplate({
-        name: 'Test Template',
-        description: 'Test Description',
-        participantIds: ['user1', 'user2']
-      })
+    const templateId = store.addTemplate({
+      name: 'Test Template',
+      description: 'Test Description',
+      participantIds: ['user1', 'user2']
     })
     
     // Update the template
@@ -82,13 +93,10 @@ describe('templatesStore', () => {
     const store = useTemplatesStore.getState()
     
     // Add a template first
-    let templateId: string
-    act(() => {
-      templateId = store.addTemplate({
-        name: 'Test Template',
-        description: 'Test Description',
-        participantIds: ['user1', 'user2']
-      })
+    const templateId = store.addTemplate({
+      name: 'Test Template',
+      description: 'Test Description',
+      participantIds: ['user1', 'user2']
     })
     
     expect(store.templates).toHaveLength(1)
@@ -105,13 +113,10 @@ describe('templatesStore', () => {
     const store = useTemplatesStore.getState()
     
     // Add a template first
-    let templateId: string
-    act(() => {
-      templateId = store.addTemplate({
-        name: 'Test Template',
-        description: 'Test Description',
-        participantIds: ['user1', 'user2']
-      })
+    const templateId = store.addTemplate({
+      name: 'Test Template',
+      description: 'Test Description',
+      participantIds: ['user1', 'user2']
     })
     
     const template = store.getTemplateById(templateId)
@@ -130,13 +135,10 @@ describe('templatesStore', () => {
     const store = useTemplatesStore.getState()
     
     // Add a template first
-    let templateId: string
-    act(() => {
-      templateId = store.addTemplate({
-        name: 'Test Template',
-        description: 'Test Description',
-        participantIds: ['user1', 'user2']
-      })
+    const templateId = store.addTemplate({
+      name: 'Test Template',
+      description: 'Test Description',
+      participantIds: ['user1', 'user2']
     })
     
     const mockParticipants = [

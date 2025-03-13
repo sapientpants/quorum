@@ -1,11 +1,33 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { vi } from 'vitest'
+import { vi, type MockInstance } from 'vitest'
 import TemplateCard from '../TemplateCard'
 import { useParticipantsStore } from '../../../store/participants'
 
 // Mock the participants store
 vi.mock('../../../store/participants', () => ({
-  useParticipantsStore: vi.fn()
+  useParticipantsStore: vi.fn((selector) => {
+    const participants = [
+      {
+        id: 'user1',
+        name: 'You',
+        type: 'human'
+      },
+      {
+        id: 'ai1',
+        name: 'AI Assistant',
+        type: 'llm',
+        provider: 'openai',
+        model: 'gpt-4o',
+        systemPrompt: 'You are a helpful assistant'
+      }
+    ];
+    
+    if (typeof selector === 'function') {
+      return selector({ participants });
+    }
+    
+    return participants;
+  })
 }))
 
 // Mock react-i18next
@@ -67,7 +89,7 @@ describe('TemplateCard', () => {
     vi.clearAllMocks()
     
     // Setup the mock store
-    ;(useParticipantsStore as jest.Mock).mockReturnValue({
+    ;(useParticipantsStore as unknown as MockInstance).mockReturnValue({
       participants: mockParticipants
     })
   })

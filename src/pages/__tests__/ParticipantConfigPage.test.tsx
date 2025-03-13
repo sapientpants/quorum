@@ -22,7 +22,7 @@ describe('ParticipantConfigPage', () => {
   
   beforeEach(() => {
     // Default mock implementation
-    (useParticipantsStore as MockInstance).mockReturnValue({
+    (useParticipantsStore as unknown as MockInstance).mockReturnValue({
       participants: [
         { 
           id: 'user', 
@@ -79,14 +79,14 @@ describe('ParticipantConfigPage', () => {
     )
     
     // Click on Round Table view
-    fireEvent.click(screen.getByText('Round Table'))
+    fireEvent.click(screen.getByRole('button', { name: /Round Table/i }))
     
     // Verify we're in round table view
-    expect(screen.getByText('Round Table')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Round Table' })).toBeInTheDocument()
     expect(screen.getByText('Click on a participant to view details')).toBeInTheDocument()
     
     // Click back to list view
-    fireEvent.click(screen.getByText('List'))
+    fireEvent.click(screen.getAllByRole('button', { name: /List/i })[0])
     
     // Verify we're back in list view
     expect(screen.getByText('Participants')).toBeInTheDocument()
@@ -94,7 +94,7 @@ describe('ParticipantConfigPage', () => {
   
   test('shows participant details when selected in round table view', () => {
     // Mock with an active participant
-    (useParticipantsStore as MockInstance).mockReturnValue({
+    (useParticipantsStore as unknown as MockInstance).mockReturnValue({
       participants: [
         { 
           id: 'user', 
@@ -130,9 +130,9 @@ describe('ParticipantConfigPage', () => {
     fireEvent.click(screen.getByText('Round Table'))
     
     // Verify we see the active participant details
-    expect(screen.getByText('AI Assistant')).toBeInTheDocument()
-    expect(screen.getByText('openai')).toBeInTheDocument()
-    expect(screen.getByText('gpt-4o')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 3, name: 'AI Assistant' })).toBeInTheDocument()
+    expect(screen.getAllByText('openai')[0]).toBeInTheDocument()
+    expect(screen.getAllByText('gpt-4o')[0]).toBeInTheDocument()
     expect(screen.getByText('You are a helpful assistant')).toBeInTheDocument()
     
     // Check for the clear selection button
@@ -144,5 +144,24 @@ describe('ParticipantConfigPage', () => {
     
     // Verify setActiveParticipant was called with null
     expect(mockSetActiveParticipant).toHaveBeenCalledWith(null)
+  })
+
+  it('displays empty state when no participants are available', () => {
+    // Mock empty participants array
+    (useParticipantsStore as unknown as MockInstance).mockReturnValue({
+      participants: [],
+      setActiveParticipant: mockSetActiveParticipant,
+      addParticipant: mockAddParticipant,
+      updateParticipant: mockUpdateParticipant,
+    })
+    
+    render(
+      <BrowserRouter>
+        <ParticipantConfigPage />
+      </BrowserRouter>
+    )
+    
+    // Verify empty state message
+    expect(screen.getByText('No Participants Yet')).toBeInTheDocument()
   })
 }) 

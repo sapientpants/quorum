@@ -1,12 +1,34 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { vi } from 'vitest'
+import { vi, type MockInstance } from 'vitest'
 import TemplateForm from '../TemplateForm'
 import { useParticipantsStore } from '../../../store/participants'
 import { useTemplatesStore } from '../../../store/templatesStore'
 
 // Mock the stores
 vi.mock('../../../store/participants', () => ({
-  useParticipantsStore: vi.fn()
+  useParticipantsStore: vi.fn((selector) => {
+    const participants = [
+      {
+        id: 'user1',
+        name: 'You',
+        type: 'human'
+      },
+      {
+        id: 'ai1',
+        name: 'AI Assistant',
+        type: 'llm',
+        provider: 'openai',
+        model: 'gpt-4o',
+        systemPrompt: 'You are a helpful assistant'
+      }
+    ];
+    
+    if (typeof selector === 'function') {
+      return selector({ participants });
+    }
+    
+    return participants;
+  })
 }))
 
 vi.mock('../../../store/templatesStore', () => ({
@@ -14,11 +36,18 @@ vi.mock('../../../store/templatesStore', () => ({
 }))
 
 // Mock react-hook-form
-vi.mock('react-hook-form', () => {
-  const originalModule = vi.importActual('react-hook-form')
+vi.mock('react-hook-form', async () => {
+  const actual = await vi.importActual('react-hook-form')
   return {
-    ...originalModule,
-    // We're not mocking the entire useForm implementation, just augmenting it
+    ...actual,
+    useForm: () => ({
+      register: vi.fn(),
+      handleSubmit: vi.fn((fn) => fn),
+      formState: { errors: {}, isSubmitting: false },
+      watch: vi.fn(),
+      setValue: vi.fn(),
+      reset: vi.fn()
+    })
   }
 })
 
@@ -58,11 +87,11 @@ describe('TemplateForm', () => {
     vi.clearAllMocks()
     
     // Setup the mock stores
-    ;(useParticipantsStore as jest.Mock).mockReturnValue({
+    ;(useParticipantsStore as unknown as MockInstance).mockReturnValue({
       participants: mockParticipants
     })
     
-    ;(useTemplatesStore as jest.Mock).mockReturnValue({
+    ;(useTemplatesStore as unknown as MockInstance).mockReturnValue({
       addTemplate: mockAddTemplate,
       updateTemplate: mockUpdateTemplate
     })

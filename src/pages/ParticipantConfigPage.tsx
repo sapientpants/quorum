@@ -5,6 +5,7 @@ import { ParticipantForm } from '../components/ParticipantForm'
 import { RoundTable } from '../components/RoundTable'
 import { ParticipantAdvancedSettings } from '../components/ParticipantAdvancedSettings'
 import { useParticipantsStore } from '../store/participants'
+import { type LLMParticipant } from '../types/participant'
 
 // Define a type for the advanced settings
 interface AdvancedSettings {
@@ -52,10 +53,9 @@ export function ParticipantConfigPage() {
   function handleAdvancedSettingsSave(settings: AdvancedSettings) {
     if (editingParticipantId) {
       updateParticipant(editingParticipantId, {
-        settings: {
-          ...settings
-        }
-      })
+        // Cast to proper LLM settings type
+        settings: settings
+      } as Partial<Omit<LLMParticipant, 'id' | 'type'>>)
     }
   }
   
