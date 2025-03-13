@@ -53,33 +53,33 @@ export function Welcome() {
             </div>
           </div>
           
-          <p className="text-lg md:text-xl text-gray-300 mx-auto mb-8 leading-relaxed">
+          <p className="text-lg md:text-xl text-foreground mx-auto mb-8 leading-relaxed">
             Chat with multiple LLMs in a round-table format
           </p>
           
           {/* Bullet points from the mockup */}
           <ul className="text-left max-w-lg mx-auto mb-8 space-y-3">
             <li className="flex items-start">
-              <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-400 mt-1 mr-2 flex-shrink-0" />
-              <span className="text-gray-300">Create custom AI participants with specific roles</span>
+              <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-500 mt-1 mr-2 flex-shrink-0" />
+              <span className="text-foreground">Create custom AI participants with specific roles</span>
             </li>
             <li className="flex items-start">
-              <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-400 mt-1 mr-2 flex-shrink-0" />
-              <span className="text-gray-300">Facilitate natural multi-model conversations</span>
+              <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-500 mt-1 mr-2 flex-shrink-0" />
+              <span className="text-foreground">Facilitate natural multi-model conversations</span>
             </li>
             <li className="flex items-start">
-              <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-400 mt-1 mr-2 flex-shrink-0" />
-              <span className="text-gray-300">Save and share your favorite configurations</span>
+              <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-500 mt-1 mr-2 flex-shrink-0" />
+              <span className="text-foreground">Save and share your favorite configurations</span>
             </li>
             <li className="flex items-start">
-              <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-400 mt-1 mr-2 flex-shrink-0" />
-              <span className="text-gray-300">Analyze conversation patterns and insights</span>
+              <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-500 mt-1 mr-2 flex-shrink-0" />
+              <span className="text-foreground">Analyze conversation patterns and insights</span>
             </li>
           </ul>
           
           {/* API key note */}
-          <div className="bg-card/30 backdrop-blur-sm rounded-lg p-4 mb-8 border border-white/10 max-w-md mx-auto">
-            <p className="text-sm text-gray-400">
+          <div className="bg-card/30 backdrop-blur-sm rounded-lg p-4 mb-8 border border-border/40 max-w-md mx-auto">
+            <p className="text-sm text-foreground/70">
               <Icon icon="solar:info-circle-linear" className="inline-block w-4 h-4 mr-1" />
               Requires API keys from LLM providers.
               Usage may incur costs based on provider pricing.
@@ -99,21 +99,21 @@ export function Welcome() {
       {/* Consent Modal */}
       {showConsent && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="relative bg-card p-6 rounded-xl shadow-xl max-w-md w-full border border-white/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-blue-900/20 rounded-xl -z-10"></div>
-            <h2 className="text-xl font-bold mb-4 text-white">API Keys & Privacy Notice</h2>
+          <div className="relative bg-card p-6 rounded-xl shadow-xl max-w-md w-full border border-border/30">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10 rounded-xl -z-10"></div>
+            <h2 className="text-xl font-bold mb-4 text-foreground">API Keys & Privacy Notice</h2>
             
-            <p className="mb-4 text-gray-300">
+            <p className="mb-4 text-foreground">
               Quorum requires API keys to function. Please note:
             </p>
             
             <div className="space-y-4">
-              <ul className="space-y-2 list-disc pl-5 text-gray-300">
+              <ul className="space-y-2 list-disc pl-5 text-foreground">
                 <li>Your API keys can be stored in your browser based on your preference</li>
                 <li>All processing happens in your browser - your conversations never leave your device</li>
                 <li>We don't have access to your API keys or data</li>
                 <li>You can choose how your keys are stored:
-                  <ul className="ml-4 mt-1 space-y-1">
+                  <ul className="ml-4 mt-1 space-y-1 text-foreground/80">
                     <li>Local Storage (persists between sessions)</li>
                     <li>Session Storage (cleared when browser closes)</li>
                     <li>No Storage (must re-enter each time)</li>
@@ -129,7 +129,7 @@ export function Welcome() {
                 />
                 <label
                   htmlFor="consent"
-                  className="text-sm font-medium text-white cursor-pointer"
+                  className="text-sm font-medium text-foreground cursor-pointer"
                 >
                   I understand and agree to these terms
                 </label>
@@ -139,7 +139,7 @@ export function Welcome() {
             <div className="flex justify-end gap-4 mt-6">
               <Button
                 variant="outline"
-                className="border-white/20 text-white hover:bg-white/10"
+                className="border-border text-foreground hover:bg-foreground/5"
                 onClick={() => setShowConsent(false)}
               >
                 Cancel
