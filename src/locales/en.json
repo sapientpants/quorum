@@ -109,6 +109,56 @@
     "exportError": "Error exporting data",
     "downloadError": "Error downloading data"
   },
+  "errors": {
+    "unknownError": "An unknown error occurred",
+    "suggestionsTitle": "Suggested Actions",
+    "technicalDetails": "Technical Details",
+    "viewDocumentation": "View API Documentation",
+    "dismiss": "Dismiss",
+    "tryAgain": "Try Again",
+    "titles": {
+      "authError": "Authentication Error",
+      "rateLimitError": "Rate Limit Exceeded",
+      "timeoutError": "Request Timeout",
+      "contentFilterError": "Content Filter Triggered",
+      "networkError": "Network Error",
+      "apiError": "API Error",
+      "unknownError": "Unexpected Error"
+    },
+    "suggestions": {
+      "checkApiKey": "Verify your API key is correct and has not expired",
+      "regenerateKey": "Try regenerating your API key from the provider's dashboard",
+      "verifyAccount": "Check that your account is in good standing with the provider",
+      "waitAndRetry": "Wait a few minutes before trying again",
+      "upgradeAccount": "Consider upgrading your account for higher rate limits",
+      "checkUsage": "Check your usage dashboard for quota information",
+      "checkConnection": "Check your internet connection",
+      "retryRequest": "Try the request again",
+      "reduceComplexity": "Try simplifying your request",
+      "modifyContent": "Modify your content to comply with provider policies",
+      "checkPolicies": "Review the provider's content policies",
+      "retry": "Try again",
+      "refreshPage": "Refresh the page",
+      "verifyDns": "Check your DNS settings",
+      "browserExtensions": "Disable browser extensions that might interfere",
+      "checkSettings": "Check your settings",
+      "contactSupport": "Contact support if the problem persists"
+    }
+  },
+  "network": {
+    "online": "Online",
+    "offline": "You are offline",
+    "slow": "Slow connection",
+    "backOnline": "You're back online",
+    "lowBandwidth": "Low bandwidth detected",
+    "reducedDataMode": "Reduced data mode enabled",
+    "connectionType": {
+      "wifi": "WiFi",
+      "cellular": "Cellular",
+      "ethernet": "Ethernet",
+      "unknown": "Unknown"
+    }
+  },
   "languageToggle": {
     "selectLanguage": "Select language"
   },

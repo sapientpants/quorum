@@ -23,13 +23,12 @@ beforeAll(() => {
 vi.mock('react-router-dom', () => ({
   BrowserRouter: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="router-provider">{children}</div>
-  ),
-  Routes: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="routes">{children}</div>
-  ),
-  Route: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="route">{children}</div>
   )
+}))
+
+// Mock the routes
+vi.mock('./routes', () => ({
+  AppRoutes: () => <div data-testid="app-routes">App Routes</div>
 }))
 
 // Mock the ThemeProvider
@@ -39,47 +38,25 @@ vi.mock('./contexts/ThemeContext', () => ({
   )
 }))
 
-// Mock the ChatProvider
-vi.mock('./contexts/ChatContext', () => ({
-  ChatProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="chat-provider">{children}</div>
+// Mock the ErrorProvider
+vi.mock('./contexts/ErrorContext', () => ({
+  ErrorProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="error-provider">{children}</div>
   )
 }))
 
-// Mock the page components
-vi.mock('./components/layouts/AppLayout', () => ({
-  AppLayout: () => <div data-testid="app-layout">App Layout</div>
-}))
-
-vi.mock('./pages/Welcome', () => ({
-  Welcome: () => <div data-testid="welcome">Welcome</div>
-}))
-
-vi.mock('./pages/Settings', () => ({
-  Settings: () => <div data-testid="settings">Settings</div>
-}))
-
-vi.mock('./pages/Templates', () => ({
-  Templates: () => <div data-testid="templates">Templates</div>
-}))
-
-vi.mock('./pages/Help', () => ({
-  Help: () => <div data-testid="help">Help</div>
-}))
-
-vi.mock('./pages/NotFound', () => ({
-  NotFound: () => <div data-testid="not-found">Not Found</div>
-}))
-
-vi.mock('./components/Chat', () => ({
-  default: () => <div data-testid="chat">Chat</div>
+// Mock Toaster
+vi.mock('sonner', () => ({
+  Toaster: () => <div data-testid="toaster">Toaster</div>
 }))
 
 describe('App', () => {
-  it('renders the router provider', () => {
+  it('renders the providers and router', () => {
     render(<App />)
     expect(screen.getByTestId('theme-provider')).toBeInTheDocument()
-    expect(screen.getByTestId('chat-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('error-provider')).toBeInTheDocument()
     expect(screen.getByTestId('router-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('app-routes')).toBeInTheDocument()
+    expect(screen.getByTestId('toaster')).toBeInTheDocument()
   })
 })
