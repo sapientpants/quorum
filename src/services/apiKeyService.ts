@@ -11,35 +11,46 @@ export function validateApiKey(provider: string, key: string): ApiKeyValidationR
 
   switch (provider) {
     case 'openai':
-      // OpenAI keys typically start with 'sk-' and are 51 characters long
-      if (!key.startsWith('sk-') || key.length < 40) {
+      // OpenAI keys start with 'sk-' or 'sk-proj-'
+      if ((!key.startsWith('sk-') && !key.startsWith('sk-proj-')) || 
+          (key.startsWith('sk-proj-') && key.length !== 164) || 
+          (key.startsWith('sk-') && !key.startsWith('sk-proj-') && key.length !== 51)) {
         return { 
           isValid: false, 
-          message: 'Invalid OpenAI API key format. Should start with "sk-"' 
+          message: 'Invalid OpenAI API key format. Should start with "sk-" (51 characters) or "sk-proj-" (164 characters)' 
         }
       }
       break
     case 'anthropic':
-      // Anthropic keys typically start with 'sk-ant-' 
-      if (!key.startsWith('sk-ant-')) {
+      // Anthropic keys start with 'sk-ant-' and are at least 40 characters
+      if (!key.startsWith('sk-ant-') || key.length < 40) {
         return { 
           isValid: false, 
-          message: 'Invalid Anthropic API key format. Should start with "sk-ant-"' 
+          message: 'Invalid Anthropic API key format. Should start with "sk-ant-" and be at least 40 characters' 
         }
       }
       break
     case 'grok':
-      // Grok keys are typically long strings
-      if (key.length < 30) {
+      // Grok keys start with 'grok-' and are at least 40 characters
+      if (!key.startsWith('grok-') || key.length < 40) {
         return { 
           isValid: false, 
-          message: 'Invalid Grok API key format' 
+          message: 'Invalid Grok API key format. Should start with "grok-" and be at least 40 characters' 
+        }
+      }
+      break
+    case 'google':
+      // Google AI keys are at least 40 characters
+      if (key.length < 40) {
+        return { 
+          isValid: false, 
+          message: 'Invalid Google AI API key format. Should be at least 40 characters' 
         }
       }
       break
     default:
-      // For other providers, just check if the key is not empty
-      if (key.length < 10) {
+      // For unknown providers, just check if the key is a reasonable length
+      if (key.length < 30) {
         return { 
           isValid: false, 
           message: 'API key seems too short' 

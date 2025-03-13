@@ -372,7 +372,6 @@ export function ApiKeyManager({
       <div className="mt-4">
         <p className="text-sm text-base-content/70">
           Your API keys are {storageType === 'none' ? 'not stored' : 'stored locally in your browser'} and never sent to our servers.
-          We recommend using environment variables for production applications.
         </p>
       </div>
     </div>

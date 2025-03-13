@@ -5,7 +5,7 @@ import { GrokClient } from './grokClient'
 import { GoogleClient } from './googleClient'
 import type { LLMProvider } from '../../types/llm'
 import { LLMError, ErrorType } from './LLMError'
-import type { Message } from '../../types/chat'
+import { validateApiKey } from '../../services/apiKeyService'
 
 // Registry for LLM clients
 const clientRegistry = new Map<string, () => Partial<LLMClient>>()
@@ -95,25 +95,60 @@ export function createEnhancedClient(
     supportsStreaming,
     
     // Add validateApiKey method if it doesn't exist
-    validateApiKey: baseClient.validateApiKey || (async (apiKey: string) => {
+    validateApiKey: baseClient.validateApiKey || (async (apiKey: string): Promise<boolean> => {
+      // First do basic format validation
+      const formatValidation = validateApiKey(provider, apiKey)
+      if (!formatValidation.isValid) {
+        return false
+      }
+
+      // Then try to validate with the provider's API
       try {
-        // Try to send a minimal message as validation
-        const testMessage: Message = { 
-          id: '1', 
-          senderId: 'user', 
-          text: 'test', 
-          timestamp: Date.now() 
+        /* eslint-disable no-case-declarations */
+        let response: Response
+        let endpoint: string
+        let headers: Record<string, string>
+
+        switch (provider) {
+          case 'openai':
+            endpoint = 'https://api.openai.com/v1/models'
+            headers = { 'Authorization': `Bearer ${apiKey}` }
+            response = await fetch(endpoint, { headers })
+            break
+
+          case 'anthropic':
+            endpoint = 'https://api.anthropic.com/v1/models'
+            headers = { 'x-api-key': apiKey }
+            response = await fetch(endpoint, { headers })
+            break
+
+          case 'grok':
+            endpoint = 'https://api.grok.x/v1/models'
+            headers = { 'Authorization': `Bearer ${apiKey}` }
+            response = await fetch(endpoint, { headers })
+            break
+
+          case 'google':
+            endpoint = 'https://generativelanguage.googleapis.com/v1/models'
+            headers = { 'x-goog-api-key': apiKey }
+            response = await fetch(endpoint, { headers })
+            break
+
+          default:
+            endpoint = ''
+            headers = {}
+            response = new Response(null, { status: 200 })
         }
-        
-        await sendMessage(
-          [testMessage],
-          apiKey,
-          getDefaultModel(),
-          { maxTokens: 1 }
-        )
+        /* eslint-enable no-case-declarations */
+
+        if (!response.ok) {
+          console.error(`API validation failed for ${provider}: ${response.status} ${response.statusText}`)
+          return false
+        }
+
         return true
       } catch (error) {
-        console.error(`Error validating API key for ${provider}:`, error)
+        console.error(`Error validating ${provider} API key:`, error)
         return false
       }
     }),

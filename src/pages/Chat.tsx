@@ -1,14 +1,15 @@
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import ChatComponent from '../components/Chat'
+import { usePreferencesStore } from '../store/preferencesStore'
 
 export function Chat() {
   const navigate = useNavigate()
+  const { hasConsented } = usePreferencesStore()
   
   React.useEffect(() => {
     // Check if user has consented
-    const hasConsented = localStorage.getItem('hasConsented')
-    if (hasConsented !== 'true') {
+    if (!hasConsented) {
       navigate('/')
       return
     }
@@ -16,10 +17,10 @@ export function Chat() {
     // Check if API keys are set
     const hasApiKeys = localStorage.getItem('hasApiKeys')
     if (hasApiKeys !== 'true') {
-      navigate('/settings')
+      navigate('/')
       return
     }
-  }, [navigate])
+  }, [navigate, hasConsented])
 
   return (
     <div className="flex flex-col h-full">
