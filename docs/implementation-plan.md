@@ -523,18 +523,18 @@
    - **Main Layout with Theme Toggle** ✅
      - Integrate the top navigation bar with the app title, navigation links, and a theme toggle button. ✅
 
-4. **Participant Configuration**
-   - **Participant Form**
-     - Create a form for adding or editing participants with fields: Name, Provider selection, Model selection, Role description, and System Prompt input.
-   - **Participant List**
-     - Display a list or grid of participant cards showing key details and actions (Edit, Delete).
-   - **Advanced Settings for Participant**
-     - Implement a modal or expandable panel for adjusting advanced settings (e.g., temperature, max tokens).
+4. **Participant Configuration** ✅
+   - **Participant Form** ✅
+     - Create a form for adding or editing participants with fields: Name, Provider selection, Model selection, Role description, and System Prompt input. ✅
+   - **Participant List** ✅
+     - Display a list or grid of participant cards showing key details and actions (Edit, Delete). ✅
+   - **Advanced Settings for Participant** ✅
+     - Implement a modal or expandable panel for adjusting advanced settings (e.g., temperature, max tokens). ✅
 
-5. **Round Table Conversation**
-   - **Main Chat Screen with Round Table**
-     - Develop a chat interface that includes a message list and input field.
-     - Create a round table layout displaying participant avatars in a circular arrangement with active/inactive status indicators.
+5. **Round Table Conversation** ✅
+   - **Main Chat Screen with Round Table** ✅
+     - Develop a chat interface that includes a message list and input field. ✅
+     - Create a round table layout displaying participant avatars in a circular arrangement with active/inactive status indicators. ✅
 
 6. **Templates Management**
    - **Templates List**
