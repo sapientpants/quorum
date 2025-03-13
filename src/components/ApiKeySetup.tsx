@@ -27,17 +27,24 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
     google: null
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Load initial keys if provided
   useEffect(() => {
+    const defaultKeys: Record<LLMProvider, string> = {
+      openai: '',
+      anthropic: '',
+      grok: '',
+      google: ''
+    };
     if (initialKeys.length > 0) {
       const keyMap = initialKeys.reduce((acc, key) => {
-        acc[key.provider] = key.key
-        return acc
-      }, {} as Record<LLMProvider, string>)
-      setApiKeys(keyMap)
+        acc[key.provider] = key.key;
+        return acc;
+      }, {} as Record<LLMProvider, string>);
+      setApiKeys({ ...defaultKeys, ...keyMap });
     }
-  }, [initialKeys])
+  }, [initialKeys]);
 
   function handleKeyChange(provider: LLMProvider, value: string) {
     setApiKeys(prev => ({ ...prev, [provider]: value }))
@@ -94,7 +101,12 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
     }
 
     setIsSubmitting(false)
-    onComplete()
+    setIsLoading(true)
+    try {
+      await onComplete()
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -122,16 +134,22 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
             </a>
           </div>
           <Input
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             id="openai"
+            placeholder="sk-..."
             type="password"
             value={apiKeys.openai}
-            onChange={(e) => handleKeyChange('openai', e.target.value)}
-            placeholder="sk-..."
-            className={errors.openai ? 'border-error' : ''}
+            onBlur={(e) => {
+              if (!e.target.value.startsWith('sk-')) {
+                setErrors(prev => ({ ...prev, openai: 'Invalid API key' }))
+              }
+            }}
+            onChange={(e) => {
+              setErrors(prev => ({ ...prev, openai: '' }))
+              setApiKeys({ ...apiKeys, openai: e.target.value })
+            }}
           />
-          {errors.openai && (
-            <p className="text-sm text-error">{errors.openai}</p>
-          )}
+          {errors.openai && <p data-testid="openai-error" className="error text-red-500 mt-1 text-sm">{errors.openai}</p>}
         </div>
 
         {/* Anthropic API Key */}
@@ -152,13 +170,16 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
             id="anthropic"
             type="password"
             value={apiKeys.anthropic}
+            onBlur={(e) => {
+              if(e.target.value && !e.target.value.startsWith('sk-ant-')) {
+                setErrors(prev => ({ ...prev, anthropic: 'Invalid API key' }))
+              }
+            }}
             onChange={(e) => handleKeyChange('anthropic', e.target.value)}
             placeholder="sk-ant-..."
             className={errors.anthropic ? 'border-error' : ''}
           />
-          {errors.anthropic && (
-            <p className="text-sm text-error">{errors.anthropic}</p>
-          )}
+          {errors.anthropic && <p data-testid="anthropic-error" className="text-sm text-error">{errors.anthropic}</p>}
         </div>
 
         {/* Grok API Key */}
@@ -183,9 +204,7 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
             placeholder="grok-..."
             className={errors.grok ? 'border-error' : ''}
           />
-          {errors.grok && (
-            <p className="text-sm text-error">{errors.grok}</p>
-          )}
+          {errors.grok && <p data-testid="grok-error" className="text-sm text-error">{errors.grok}</p>}
         </div>
 
         {/* Google AI API Key */}
@@ -210,23 +229,17 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
             placeholder="Enter your Google AI API key"
             className={errors.google ? 'border-error' : ''}
           />
-          {errors.google && (
-            <p className="text-sm text-error">{errors.google}</p>
-          )}
+          {errors.google && <p data-testid="google-error" className="text-sm text-error">{errors.google}</p>}
         </div>
       </div>
 
       <div className="mt-8 flex justify-end">
         <Button
-          className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 hover:shadow-lg hover:shadow-purple-600/20 min-w-[120px]"
+          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 font-medium px-8 h-12 rounded-md shadow-lg hover:shadow-purple-600/30 transition-all inline-flex items-center justify-center gap-2 w-64 mx-auto"
           disabled={isSubmitting}
           onClick={handleSubmit}
         >
-          {isSubmitting ? (
-            <Icon icon="solar:spinner-line-duotone" className="w-5 h-5 animate-spin" />
-          ) : (
-            'Continue'
-          )}
+          <span>{isLoading ? 'Testing...' : 'Continue'}</span>
         </Button>
       </div>
 
