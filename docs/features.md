@@ -2,131 +2,167 @@
 
 ## 1. User Interface & Design
 
-1. **Modern Dark Theme**
-   - Sleek dark-themed interface with gradient accents and glassmorphism effects.
-   - Responsive design that works on desktop and mobile devices.
-   - Consistent color scheme with purple and blue gradients.
+1. **Modern Theme System**
+   - Sleek interface with multiple theme options via HeroUI
+   - Responsive design that works on desktop and mobile devices
+   - Theme persistence in localStorage
+   - Light and dark mode variants
 
 2. **Landing Page**
-   - Hero section with animated elements and clear value proposition.
-   - Feature cards highlighting key capabilities.
-   - "How It Works" section explaining the process.
-   - Call-to-action buttons for getting started.
+   - Hero section with animated elements and clear value proposition
+   - Feature cards highlighting key capabilities
+   - "How It Works" section explaining the process
+   - Call-to-action buttons for getting started
 
 3. **Navigation**
-   - Unified navbar with links to Chat, Templates, and Help pages.
-   - Theme toggle for light/dark mode.
-   - Settings menu for configuration options.
+   - Unified navbar with links to Chat, Templates, and Help pages
+   - Theme selector dropdown
+   - Settings menu for configuration options
 
 4. **Component Library**
-   - Custom UI components built with HeroUI.
-   - Solar icons via Iconify for consistent iconography.
-   - Glassmorphism effects for cards and modals.
-   - Gradient buttons and accents for visual appeal.
+   - Custom UI components built with HeroUI
+   - Solar icons via Iconify for consistent iconography
+   - Glassmorphism effects for cards and modals
+   - Gradient buttons and accents for visual appeal
 
 ---
 
 ## 2. User Onboarding & Disclaimers
 
 1. **Welcome Screen**  
-   - Brief explanation of what the app does ("Chat with multiple LLMs in a round-table conversation").  
-   - Clear disclaimers about API key usage and who bears responsibility for usage/costs.  
-   - Optionally, a short tutorial or link to a help page on how to get and use an API key from each supported LLM provider.
+   - Brief explanation of what the app does ("Chat with multiple LLMs in a round-table conversation")  
+   - Clear disclaimers about API key usage and who bears responsibility for usage/costs  
+   - Optionally, a short tutorial or link to a help page on how to get and use an API key from each supported LLM provider
 
 2. **Consent & Privacy Notice**  
-   - Modal or prompt that informs the user about storing keys (e.g., localStorage) and the security implications.  
-   - Checkbox or confirmation button indicating they understand the risks (especially if localStorage is used).
+   - Modal or prompt that informs the user about storing keys (e.g., localStorage) and the security implications  
+   - Checkbox or confirmation button indicating they understand the risks (especially if localStorage is used)
 
 3. **First-time Setup**  
-   - Optionally provide a field for the user to enter their display name.  
-   - Provide input fields for each LLM's API key (OpenAI, Anthropic, Grok, etc.), with an explanation of each key's purpose.
+   - Optionally provide a field for the user to enter their display name  
+   - Provide input fields for each LLM's API key (OpenAI, Anthropic, Grok, Google, etc.), with an explanation of each key's purpose
 
 ---
 
 ## 3. API Key Management
 
 1. **API Key Input Fields**  
-   - Text fields for OpenAI key, Anthropic key, etc.  
-   - Real-time validation (e.g., check for typical formatting if possible, or validate non-empty).
+   - Text fields for OpenAI key, Anthropic key, Grok key, Google key, etc.  
+   - Real-time validation (e.g., check for typical formatting if possible, or validate non-empty)
+   - Masked display for security
+   - Copy/paste functionality
 
-2. **Key Storage Options**  
-   - **Local Storage**: The user can choose to persist the key in the browser so they don't have to re-enter it each time.  
-   - **Session-Only**: For security-minded users, an option to keep keys in memory only (cleared upon refresh/close).
+2. **Storage Options**  
+   - Option to store keys in localStorage (persistent across sessions)  
+   - Option to store keys in sessionStorage (cleared when browser is closed)  
+   - Option to not store keys at all (must be re-entered each time)
+   - Clear warning about security implications of each option
 
-3. **Key Visibility & Editing**  
-   - The user can see if a key is currently stored (masked or partially visible), and can replace or remove it at any time.  
-   - A "Test Key" button could attempt a minimal call to verify the key is valid.
-
-4. **Multiple Keys per Provider** (Optional, advanced)  
-   - If you want to allow advanced users to switch between multiple API keys for the same provider, the UI could allow storing multiple labeled keys ("personal key", "work key", etc.).
-
----
-
-## 4. Participant Configuration
-
-1. **Human Participant**  
-   - The user is the only human participant in the conversation.
-   - Optionally, allow the user to choose an avatar or color for their messages.
-
-2. **LLM Participants**  
-   - A list of supported LLMs (OpenAI GPT, Anthropic Claude, Grok, etc.).  
-   - Each LLM participant can be toggled on/off.  
-   - Fields to configure each LLM participant:  
-     - **Name** (e.g., "GPT" vs. "Claude"),  
-     - **Key** (or use the global key from the API Key Management above),  
-     - **Model** (e.g., "gpt-4o," "o3-mini," "claude-3.7-sonnet," "grok-3," etc.),  
-     - **Role Description** (e.g., "Medical Expert," "Legal Advisor," "Creative Writer"),
-     - **System Prompt** (instructions that define the participant's persona, knowledge, and behavior),
-     - **Advanced Settings** (temperature, max tokens, top_p, presence penalty, etc., depending on the provider).
-
-3. **Round Table Setup**
-   - Interface for arranging the order of AI participants in the conversation.
-   - Ability to save and load different round table configurations.
-   - Option to create themed round tables (e.g., "Expert Panel," "Creative Brainstorming," "Debate").
-
-4. **Round Robin Conversation Flow**  
-   - App automatically cycles through participants (user → LLM1 → LLM2 → user → …).
-   - Clear indication of whose turn it is to speak next.
+3. **Key Validation**  
+   - Visual indicators for valid/invalid keys  
+   - Test button to verify key works with the respective API  
+   - Error messages for invalid or expired keys
 
 ---
 
-## 5. Chat Interface & User Experience
+## 4. Chat Interface
 
-1. **Conversation Display**  
-   - Real-time updates as new messages arrive.  
-   - Each message displays:  
-     - Participant name or avatar (human or LLM).  
-     - Role description or expertise area.
-     - Timestamp.  
-     - Message text.  
-   - Visual cues for LLM messages vs. human messages (colors, backgrounds).
-   - Optional indicators showing which LLM model is being used for each AI participant.
+1. **Message Display**  
+   - Clear visual distinction between user messages and LLM responses  
+   - Timestamps for each message  
+   - Markdown rendering for formatted text  
+   - Code syntax highlighting  
+   - Provider and model badges on messages
 
-2. **Message Input**  
-   - A text box or multiline input field for the human user(s).  
-   - "Send" button or `Enter` key handling.  
-   - (Optionally) a "mic" icon for voice input if you want speech-to-text (more advanced).
+2. **Input Area**  
+   - Text input field with auto-focus  
+   - Send button  
+   - Character/token count (optional)  
+   - Keyboard shortcuts (e.g., Enter to send, Shift+Enter for new line)
 
-3. **LLM Response Flow**  
-   - Automatic triggering of LLM responses when it's their turn in the round-robin.
-   - Visual indicators showing which LLM is currently responding.
-   - Buttons display both the LLM name and the assigned role (e.g., "GPT (Medical Expert)," "Claude (Creative Writer)").
-   - Clear indication of the conversation flow and whose turn is next.
-
-4. **Streaming Responses** (Advanced)  
-   - For APIs that support streaming, show tokens as they arrive, mimicking ChatGPT's behavior.  
-   - This requires a streaming Fetch or WebSockets approach.
-
-5. **Typing Indicators** (Optional)  
-   - Show "GPT is thinking..." while waiting on an API response.  
-   - Show a loading animation or progress indicator while waiting for LLM responses.
-
-6. **Pagination / Load More** (Optional)  
-   - For very long chats, load older messages on demand or display an infinite scroll.
+3. **Conversation Management**  
+   - Start new conversation button  
+   - Export conversation (to text, JSON, etc.)  
+   - Clear conversation history  
+   - Conversation title/naming
 
 ---
 
-## 6. Conversation Management
+## 5. Multi-LLM Integration
+
+1. **Provider Support**  
+   - OpenAI (GPT-4o, GPT-4o-mini, etc.)  
+   - Anthropic (Claude 3.5 Sonnet, Claude 3.5 Haiku, etc.)  
+   - Grok (Grok-2, Grok-3)
+   - Google (Gemini 2.0 Pro, Gemini 2.0 Flash)
+   - Extensible architecture for adding more providers
+
+2. **Model Selection**  
+   - Dropdown to select specific models for each provider  
+   - Model information (capabilities, token limits, etc.)  
+   - Default model settings
+
+3. **Provider-Specific Settings**  
+   - Temperature control  
+   - Max tokens/response length  
+   - Other relevant parameters per provider
+
+---
+
+## 6. Round Table Functionality
+
+1. **Participant Configuration**  
+   - Add/remove LLM participants  
+   - Assign names and roles to each LLM  
+   - Configure system prompts for each participant  
+   - Set participant order in the conversation
+
+2. **Round Table UI**  
+   - Visual representation of participants in a circular layout  
+   - Indication of current active participant  
+   - Drag-and-drop reordering of participants  
+   - Participant avatars with provider badges
+
+3. **Conversation Flow**  
+   - Sequential turn-taking between participants  
+   - Option for manual or automatic progression  
+   - Visual indicators for "thinking" state  
+   - Error handling for failed API calls
+
+4. **Templates**  
+   - Pre-configured expert panels (e.g., "Code Review", "Creative Writing", etc.)  
+   - Save and load custom configurations  
+   - Share configurations via export/import
+
+---
+
+## 7. Advanced Features
+
+1. **Streaming Responses**  
+   - Real-time display of LLM outputs as they're generated  
+   - Typing indicators  
+   - Cancel response generation
+
+2. **Conversation Analysis**  
+   - Summarize conversation using an LLM  
+   - Extract key points or action items  
+   - Compare different LLM responses
+
+3. **Customization**  
+   - Theme selection (light/dark and color variants)  
+   - Font size and style options  
+   - Layout preferences  
+   - Keyboard shortcuts
+
+4. **Accessibility**  
+   - Screen reader support  
+   - Keyboard navigation  
+   - High contrast mode  
+   - Responsive design for all screen sizes
+
+---
+
+## 8. Conversation Management
 
 1. **Internal Data Structures**  
    - A message list in React state: 
@@ -151,7 +187,7 @@
 
 ---
 
-## 7. Settings & Customization
+## 9. Settings & Customization
 
 1. **LLM Tuning Parameters**  
    - For each LLM participant, allow advanced parameters like temperature, max tokens, top_p, etc.  
@@ -182,13 +218,13 @@
 
 ---
 
-## 8. Future Expansion Possibilities
+## 10. Future Expansion Possibilities
 
 *(These features are not part of the initial implementation but could be considered for future versions.)*
 
 ---
 
-## 9. Security Considerations
+## 11. Security Considerations
 
 1. **API Key Visibility**  
    - Warn users that keys stored in localStorage can be found by anyone with access to the device.  
@@ -207,7 +243,7 @@
 
 ---
 
-## 10. Conversation Logs & Export
+## 12. Conversation Logs & Export
 
 1. **Save/Export Conversation**  
    - Allow users to export the entire chat (including multiple LLM responses) as a JSON file or a text transcript.  
@@ -218,7 +254,7 @@
 
 ---
 
-## 11. Error Handling & User Feedback
+## 13. Error Handling & User Feedback
 
 1. **API Errors**  
    - Handle and display error messages from the LLM provider (e.g., invalid API key, rate limit exceeded, network error).  

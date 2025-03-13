@@ -21,14 +21,13 @@ Quorum is a single-page application (SPA) with a client-side only architecture. 
 │  OpenAI API             │ │  Anthropic API       │
 │                         │ │                      │
 └─────────────────────────┘ └──────────────────────┘
-                    ▲
-                    │
-┌─────────────────────────┐
-│                         │
-│  Grok API               │
-│  (and other providers)  │
-│                         │
-└─────────────────────────┘
+                    ▲               ▲
+                    │               │
+┌─────────────────────────┐ ┌──────────────────────┐
+│                         │ │                      │
+│  Grok API               │ │  Google API          │
+│                         │ │  (Gemini)            │
+└─────────────────────────┘ └──────────────────────┘
 ```
 
 ### 1.2 Technology Stack
@@ -40,12 +39,15 @@ Quorum is a single-page application (SPA) with a client-side only architecture. 
   - HeroUI for component styling and theming
   - Custom UI components with glassmorphism and gradient effects
 - **Icons**: Solar icons via Iconify
-- **State Management**: React Context API + custom hooks
-- **Storage**: Browser's localStorage and sessionStorage
+- **State Management**: 
+  - Zustand for global state management
+  - React hooks for component-level state
+- **Storage**: Browser's localStorage and sessionStorage with configurable options
 - **API Communication**: Fetch API with custom adapters for different LLM providers
 - **Form Handling**: React Hook Form with Zod for validation
 - **Routing**: React Router for navigation between pages
 - **Testing**: Vitest and React Testing Library
+- **Drag and Drop**: @dnd-kit/core for participant reordering
 
 ## 2. Component Architecture
 
@@ -181,6 +183,7 @@ interface StoredAPIKeys {
   openai?: string
   anthropic?: string
   grok?: string
+  google?: string
   // Additional providers as needed
 }
 
@@ -232,7 +235,7 @@ interface StorageService {
 
 ### 4.1 Application State Structure
 
-The application will use React Context to manage global state, with custom hooks for accessing and updating specific parts of the state.
+The application will use Zustand to manage global state, with custom hooks for accessing and updating specific parts of the state.
 
 ```typescript
 interface AppState {
@@ -662,6 +665,9 @@ Translation files will be organized in a hierarchical structure to maintain clar
 A language selector component will be implemented in the settings panel:
 
 ```typescript
+import { useTranslation } from 'react-i18next'
+import { useSettings } from '../contexts/SettingsContext'
+
 function LanguageSelector() {
   const { i18n } = useTranslation()
   const { preferences, updatePreferences } = useSettings()
@@ -678,12 +684,12 @@ function LanguageSelector() {
   }
   
   return (
-    <div className="form-control">
-      <label className="label">
-        <span className="label-text">{t('settings.language')}</span>
+    <div className="form-group">
+      <label className="form-label">
+        <span>{t('settings.language')}</span>
       </label>
       <select 
-        className="select select-bordered" 
+        className="form-select" 
         value={i18n.language} 
         onChange={(e) => handleLanguageChange(e.target.value)}
       >
@@ -699,6 +705,8 @@ function LanguageSelector() {
     </div>
   )
 }
+
+export default LanguageSelector
 ```
 
 ### 13.5 RTL Support
@@ -751,7 +759,7 @@ Testing for multi-lingual support will include:
 The implementation plan is structured into specific phases that align with the user flows and UI mockups, with each phase building upon the previous ones.
 
 ### Phase 1: Project Setup & Core Infrastructure
-- Set up project with Vite, React, TypeScript, Tailwind CSS, and DaisyUI
+- Set up project with Vite, React, TypeScript, Tailwind CSS, and HeroUI
 - Implement basic responsive layout structure with mobile-first approach
 - Create core directory structure following component organization principles
 - Implement storage service for localStorage and sessionStorage

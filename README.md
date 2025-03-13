@@ -6,20 +6,23 @@ Quorum is a web application that allows you to chat with multiple Large Language
 
 ## Features
 
-- **Modern UI**: Sleek dark-themed interface with gradient accents and glassmorphism effects
-- **Multi-LLM Support**: Chat with multiple AI models simultaneously
+- **Modern UI**: Sleek interface with multiple theme options via HeroUI
+- **Multi-LLM Support**: Chat with multiple AI models simultaneously (OpenAI, Anthropic, Grok, Google)
+- **Round Table**: Visual circular interface for organizing AI participants
 - **Expert Panels**: Create specialized panels of AI models for different tasks
 - **Model Comparison**: Compare responses from different models side-by-side
 - **API Key Management**: Securely store your API keys locally in your browser
 - **Responsive Design**: Works on desktop and mobile devices
+- **Streaming Responses**: Real-time display of AI responses as they're generated
 
 ## Tech Stack
 
 - **Frontend**: React, TypeScript, Vite
 - **Styling**: Tailwind CSS, HeroUI components
 - **Icons**: Solar icons via Iconify
+- **State Management**: Zustand
+- **Drag and Drop**: @dnd-kit/core
 - **Routing**: React Router
-- **State Management**: React Hooks
 - **Testing**: Vitest, React Testing Library
 
 ## Getting Started
@@ -28,7 +31,7 @@ Quorum is a web application that allows you to chat with multiple Large Language
 
 - Node.js (v18 or higher)
 - npm or yarn
-- API keys for LLM providers (OpenAI, Anthropic, etc.)
+- API keys for LLM providers (OpenAI, Anthropic, Grok, Google)
 
 ### Installation
 
@@ -54,57 +57,23 @@ Quorum is a web application that allows you to chat with multiple Large Language
 
 4. Open your browser and navigate to `http://localhost:5173`
 
-### Usage
+## Usage
 
-1. Click "Get Started" on the landing page
-2. Enter your API keys in the Settings page
-3. Create a new chat or use a template
-4. Add AI participants to your conversation
-5. Start chatting with multiple models
+1. Enter at least one API key in the Settings > API Keys section
+2. Configure AI participants with different roles and system prompts
+3. Arrange participants in the round table
+4. Start a conversation and watch as each AI participant takes their turn
 
-## Project Structure
+## Contributing
 
-```
-quorum/
-├── docs/             # Project documentation
-├── public/           # Static assets
-├── src/              # Source code
-│   ├── components/   # React components
-│   │   ├── layouts/  # Layout components
-│   │   └── ui/       # UI components (Button, Card, etc.)
-│   │   └── App.tsx       # Main application component
-│   ├── hooks/        # Custom React hooks
-│   ├── pages/        # Page components
-│   ├── routes/       # Routing configuration
-│   ├── services/     # API services
-│   ├── types/        # TypeScript type definitions
-│   └── main.tsx      # Application entry point
-├── .github/          # GitHub workflows
-├── .husky/           # Git hooks
-└── ...               # Configuration files
-```
-
-## Development
-
-### Scripts
-
-- `npm run dev` - Start the development server
-- `npm run build` - Build the application for production
-- `npm run lint` - Run ESLint to check for code issues
-- `npm run preview` - Preview the production build locally
-- `npm run test` - Run tests
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgements
+## Acknowledgments
 
-- [React](https://reactjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [HeroUI](https://www.heroui.com/)
-- [Solar Icons](https://icon-sets.iconify.design/solar/)
-- [OpenAI](https://openai.com/)
-- [Anthropic](https://www.anthropic.com/)
+- OpenAI, Anthropic, Grok, and Google for their amazing LLM APIs
+- The React and Vite communities for their excellent tools
+- HeroUI for the beautiful component library
