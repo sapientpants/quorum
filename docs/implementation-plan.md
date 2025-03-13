@@ -536,12 +536,12 @@
      - Develop a chat interface that includes a message list and input field. ✅
      - Create a round table layout displaying participant avatars in a circular arrangement with active/inactive status indicators. ✅
 
-6. **Templates Management**
-   - **Templates List**
-     - Display template cards with information such as Title, Description, and participant summaries.
-     - Add actions for each template: Use, Edit, Share, and Delete.
-   - **Template Form**
-     - Build a form for creating and editing templates with fields for Template Name, Description, Participant selection, and a Default Conversation Starter.
+6. **Templates Management** ✅
+   - **Templates List** ✅
+     - Display template cards with information such as Title, Description, and participant summaries. ✅
+     - Add actions for each template: Use, Edit, Share, and Delete. ✅
+   - **Template Form** ✅
+     - Build a form for creating and editing templates with fields for Template Name, Description, Participant selection, and a Default Conversation Starter. ✅
 
 7. **Settings Screens**
    - **Main Settings**

@@ -4,7 +4,7 @@ import TemplateList from '../components/templates/TemplateList'
 import { useTemplatesStore } from '../store/templatesStore'
 import { useParticipantsStore } from '../store/participants'
 
-export function Templates() {
+export function TemplatesPage() {
   useTranslation() // Keep translation context for i18n to work
   const navigate = useNavigate()
   const { getTemplateById } = useTemplatesStore()
@@ -25,7 +25,7 @@ export function Templates() {
     }
     
     // Navigate to the chat page
-    navigate('/chat')
+    navigate('/')
     
     // If there's a default conversation starter, we could trigger it here
     // or pass it as state to the chat page
@@ -36,4 +36,6 @@ export function Templates() {
       <TemplateList onUseTemplate={handleUseTemplate} />
     </div>
   )
-} 
+}
+
+export default TemplatesPage 
