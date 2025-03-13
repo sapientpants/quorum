@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { UserPreferences } from '../types/preferences'
+import type { UserPreferences, Theme } from '../types/preferences'
 
 interface PreferencesState {
   preferences: UserPreferences
@@ -8,10 +8,11 @@ interface PreferencesState {
   setHasConsented: (value: boolean) => void
   updatePreferences: (updates: Partial<UserPreferences>) => void
   resetPreferences: () => void
+  setTheme: (theme: Theme) => void
 }
 
 const defaultPreferences: UserPreferences = {
-  theme: 'dark',
+  theme: 'system',
   accentColor: 'purple',
   autoAdvance: true,
   showThinkingIndicators: true,
@@ -33,6 +34,13 @@ export const usePreferencesStore = create<PreferencesState>()(
         set((state) => ({
           preferences: { ...state.preferences, ...updates }
         })),
+
+      setTheme: (theme: Theme) => {
+        console.log('PreferencesStore: Setting theme to', theme)
+        set((state) => ({
+          preferences: { ...state.preferences, theme }
+        }))
+      },
 
       resetPreferences: () =>
         set({ preferences: defaultPreferences, hasConsented: false })

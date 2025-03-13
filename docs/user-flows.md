@@ -68,11 +68,9 @@ This document outlines the key user flows that implement the features described 
 ## 3. Theme Customization
 
 ### 3.1 Changing Theme
-1. User clicks on theme selector in the top navigation bar
-2. System displays dropdown with available themes
-3. User selects a theme
-4. System immediately applies the selected theme
-5. System stores theme preference in localStorage for future visits
+1. User clicks on theme toggle button in the top navigation bar
+2. System immediately toggles between light and dark themes
+3. System stores theme preference in localStorage for future visits
 
 ### 3.2 Accessibility Theme Options
 1. User with accessibility needs navigates to Settings > Appearance
@@ -345,9 +343,8 @@ This document outlines the key user flows that implement the features described 
 ### 9.1 Changing Theme
 1. User navigates to Settings > Appearance
 2. User toggles between light/dark mode
-3. User selects color scheme preferences
-4. System applies changes immediately
-5. User clicks "Save as Default" to persist preferences
+3. System applies changes immediately
+4. System stores the theme preference for future visits
 
 ### 9.2 Adjusting LLM Parameters
 1. User navigates to Settings > LLM Defaults

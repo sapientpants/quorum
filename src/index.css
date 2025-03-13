@@ -17,6 +17,7 @@
     color-scheme: dark;
   }
   
+  /* Dark theme is the default */
   html, body {
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));

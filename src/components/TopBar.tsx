@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Icon } from '@iconify/react'
-import { useThemeContext } from '../contexts/ThemeContext'
 import { useTranslation } from 'react-i18next'
 import { LanguageToggle } from './LanguageToggle'
+import { ThemeSelectorWithErrorBoundary } from './ThemeSelectorWithErrorBoundary'
 import {
   Navbar,
   NavbarBrand,
@@ -17,7 +17,6 @@ import {
 export function TopBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
-  const { theme, toggleTheme } = useThemeContext()
   const { t } = useTranslation()
   
   const isActive = (path: string) => {
@@ -103,20 +102,9 @@ export function TopBar() {
           <LanguageToggle />
         </NavbarItem>
         
-        {/* Theme toggle button */}
+        {/* Theme selector dropdown with error boundary */}
         <NavbarItem>
-          <button
-            className="p-2 rounded-full hover:bg-white/10 transition-colors"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          >
-            <Icon
-              icon={theme === 'dark' ? "solar:sun-linear" : "solar:moon-linear"}
-              width="20"
-              height="20"
-              className={theme === 'dark' ? "text-yellow-400" : "text-purple-500"}
-            />
-          </button>
+          <ThemeSelectorWithErrorBoundary />
         </NavbarItem>
         
         {/* Mobile menu toggle */}

@@ -3,7 +3,7 @@
 ## 1. User Interface & Design
 
 1. **Modern Theme System**
-   - Sleek interface with multiple theme options via HeroUI
+   - Sleek interface with light and dark theme options via HeroUI
    - Responsive design that works on desktop and mobile devices
    - Theme persistence in localStorage
    - Light and dark mode variants
@@ -16,7 +16,7 @@
 
 3. **Navigation**
    - Unified navbar with links to Chat, Templates, and Help pages
-   - Theme selector dropdown
+   - Theme toggle button
    - Settings menu for configuration options
 
 4. **Component Library**

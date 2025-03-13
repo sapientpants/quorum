@@ -42,6 +42,7 @@
     "title": "Settings",
     "language": "Language",
     "theme": "Theme",
+    "themeDescription": "Choose from a variety of themes to customize the appearance of the application. Your last selected light and dark themes will be remembered when toggling.",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
     "apiKeys": "API Keys",
@@ -73,5 +74,15 @@
   },
   "languageToggle": {
     "selectLanguage": "Select language"
+  },
+  "theme": {
+    "select": "Select theme",
+    "toggle": "Toggle theme",
+    "lightThemes": "Light Themes",
+    "darkThemes": "Dark Themes",
+    "themeToggleInfo": "Toggle between your preferred light and dark themes",
+    "system": "System",
+    "preferences": "Preferences",
+    "followSystem": "Follow system preference"
   }
 } 

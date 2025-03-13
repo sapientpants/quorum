@@ -41,7 +41,8 @@
   "settings": {
     "title": "Einstellungen",
     "language": "Sprache",
-    "theme": "Thema",
+    "theme": "Theme",
+    "themeDescription": "Wählen Sie aus einer Vielzahl von Themes, um das Erscheinungsbild der Anwendung anzupassen. Ihre zuletzt ausgewählten hellen und dunklen Themes werden beim Umschalten gespeichert.",
     "darkMode": "Dunkelmodus",
     "lightMode": "Hellmodus",
     "apiKeys": "API-Schlüssel",
@@ -73,5 +74,15 @@
   },
   "languageToggle": {
     "selectLanguage": "Sprache auswählen"
+  },
+  "theme": {
+    "select": "Theme auswählen",
+    "toggle": "Theme umschalten",
+    "lightThemes": "Helle Themes",
+    "darkThemes": "Dunkle Themes",
+    "themeToggleInfo": "Zwischen Ihrem bevorzugten hellen und dunklen Theme wechseln",
+    "system": "System",
+    "preferences": "Einstellungen",
+    "followSystem": "Systemeinstellung folgen"
   }
 } 

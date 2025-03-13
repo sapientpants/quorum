@@ -5,6 +5,9 @@ import { ParticipantList } from '../components/ParticipantList'
 import { Icon } from '@iconify/react'
 import { useLanguageContext } from '../contexts/LanguageContext'
 import { useTranslation } from 'react-i18next'
+import { ThemeSelectorWithErrorBoundary } from '../components/ThemeSelectorWithErrorBoundary'
+import { ThemeDebug } from '../components/ThemeDebug'
+import { HeroUIThemeTest } from '../components/HeroUIThemeTest'
 
 export function Settings() {
   const [activeTab, setActiveTab] = React.useState('api-keys')
@@ -200,7 +203,31 @@ export function Settings() {
                 />
               </div>
               
-              {/* Theme selector removed */}
+              <div className="form-control w-full max-w-md mb-6">
+                <label className="label">
+                  <span className="label-text">{t('settings.theme')}</span>
+                </label>
+                <div className="mt-2">
+                  <ThemeSelectorWithErrorBoundary />
+                </div>
+                <label className="label">
+                  <span className="label-text-alt text-muted-foreground">
+                    {t('settings.themeDescription')}
+                  </span>
+                </label>
+              </div>
+              
+              {/* Theme Debug Component */}
+              <div className="mb-6">
+                <h4 className="font-bold mb-2">Theme Debug</h4>
+                <ThemeDebug />
+              </div>
+              
+              {/* HeroUI Theme Test */}
+              <div className="mb-6">
+                <h4 className="font-bold mb-2">HeroUI Theme Test</h4>
+                <HeroUIThemeTest />
+              </div>
               
               <div className="mb-6">
                 <h4 className="font-bold mb-2">{t('settings.roundTableBehavior')}</h4>

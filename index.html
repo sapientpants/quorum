@@ -5,11 +5,45 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quorum - Multi-LLM Chat</title>
+    <style>
+      /* Fallback styles in case theme fails to load */
+      html:not(.light):not(.dark) {
+        --fallback-bg: #ffffff;
+        --fallback-text: #333333;
+        
+        background-color: var(--fallback-bg);
+        color: var(--fallback-text);
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        html:not(.light):not(.dark) {
+          --fallback-bg: #1a1a2e;
+          --fallback-text: #e6e6e6;
+        }
+      }
+    </style>
     <script>
-      // Set the initial theme based on localStorage or default to business
+      // Set the initial theme based on localStorage, system preference, or default
       (function() {
-        const savedTheme = localStorage.getItem('theme');
-        document.documentElement.setAttribute('data-theme', savedTheme || 'business');
+        try {
+          const savedTheme = localStorage.getItem('theme');
+          
+          // If there's a saved theme and it's valid, use it
+          if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
+            document.documentElement.classList.add(savedTheme);
+            return;
+          }
+          
+          // Otherwise, check system preference
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const defaultTheme = prefersDark ? 'dark' : 'light';
+          
+          document.documentElement.classList.add(defaultTheme);
+        } catch (error) {
+          // If anything goes wrong, fall back to light theme
+          console.error('Error setting initial theme:', error);
+          document.documentElement.classList.add('light');
+        }
       })();
     </script>
   </head>

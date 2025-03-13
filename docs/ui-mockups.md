@@ -143,16 +143,16 @@ This document contains UI mockups for the screens needed to implement the user f
 
 ## 3. Theme Customization
 
-### 3.1 Main Layout with Theme Selector
+### 3.1 Main Layout with Theme Toggle
 
 ```
 ┌─────────────────────────────────────────────────────┐
 │ Quorum    [Round Table] [Templates] [Settings]  👤  │
 ├─────────────────────────────────────────────────────┤
 │ ┌─────┐                                      🌙│    │
-│ │     │ Round Table Conversation            📋│    │
-│ │  🎭 │                                     ⚙️│    │
-│ │     │                                    ───┘    │
+│ │     │ Round Table Conversation               │    │
+│ │  🎭 │                                        │    │
+│ │     │                                        │    │
 │ └─────┘                                             │
 │                                                     │
 │                                                     │
@@ -166,29 +166,9 @@ This document contains UI mockups for the screens needed to implement the user f
 └─────────────────────────────────────────────────────┘
 ```
 
-### 3.2 Theme Selector Dropdown
+### 3.2 Theme Selector Dropdown (Removed)
 
-```
-┌─────────────────────────────────────────────────────┐
-│ Quorum    [Round Table] [Templates] [Settings]  👤  │
-├─────────────────────────────────────────────────────┤
-│ ┌─────┐                                      🌙│    │
-│ │     │ Round Table Conversation         ┌───────┐  │
-│ │  🎭 │                                  │ Light │  │
-│ │     │                                  │ Dark  │  │
-│ └─────┘                                  │ System│  │
-│                                          │       │  │
-│                                          │ Color │  │
-│                                          │ Blue  │  │
-│                                          │ Green │  │
-│                                          │ Purple│  │
-│                                          │ Orange│  │
-│                                          └───────┘  │
-│ You: Hello, let's discuss AI ethics today.          │
-│                                                     │
-│ [                                          ] [Send] │
-└─────────────────────────────────────────────────────┘
-```
+This feature has been simplified to a toggle button that switches between light and dark themes.
 
 ## 4. Participant Configuration
 
@@ -242,29 +222,29 @@ This document contains UI mockups for the screens needed to implement the user f
 │ ┌─────────────────────────────────────────────┐ │
 │ │ Facilitator: [OpenAI GPT-4o ▼]                    │ │
 │ │   (Leads the round table conversation)          │ │
-│ └─────────────────────────────────────────────┘ │
-│                                                     │
-│ ┌─────────────────────────────────────────────┐     │
-│ │ AI Ethics Expert                            │     │
-│ │ OpenAI GPT-4o                               │     │
-│ │ [Edit] [Advanced] [Delete]                  │     │
-│ └─────────────────────────────────────────────┘     │
-│                                                     │
-│ ┌─────────────────────────────────────────────┐     │
-│ │ Technical Expert                            │     │
-│ │ Anthropic Claude 3 Opus                     │     │
-│ │ [Edit] [Advanced] [Delete]                  │     │
-│ └─────────────────────────────────────────────┘     │
-│                                                     │
-│ ┌─────────────────────────────────────────────┐     │
-│ │ Creative Thinker                            │     │
-│ │ OpenAI GPT-4o                               │     │
-│ │ [Edit] [Advanced] [Delete]                  │     │
-│ └─────────────────────────────────────────────┘     │
-│                                                     │
-│ [+ Add Participant]                                 │
-│                                                     │
-└─────────────────────────────────────────────────────┘
+│ │     └────────────────────────────────────────────┘ │
+│ │                                                     │
+│ │ ┌─────────────────────────────────────────────┐     │
+│ │ │ AI Ethics Expert                            │     │
+│ │ │ OpenAI GPT-4o                               │     │
+│ │ │ [Edit] [Advanced] [Delete]                  │     │
+│ │ └─────────────────────────────────────────────┘     │
+│ │                                                     │
+│ │ ┌─────────────────────────────────────────────┐     │
+│ │ │ Technical Expert                            │     │
+│ │ │ Anthropic Claude 3 Opus                     │     │
+│ │ │ [Edit] [Advanced] [Delete]                  │     │
+│ │ └─────────────────────────────────────────────┘     │
+│ │                                                     │
+│ │ ┌─────────────────────────────────────────────┐     │
+│ │ │ Creative Thinker                            │     │
+│ │ │ OpenAI GPT-4o                               │     │
+│ │ │ [Edit] [Advanced] [Delete]                  │     │
+│ │ └─────────────────────────────────────────────┘     │
+│ │                                                     │
+│ │ [+ Add Participant]                                 │
+│ │                                                     │
+│ └─────────────────────────────────────────────────────┘
 ```
 
 ### 4.3 Advanced Settings for Participant
@@ -510,7 +490,37 @@ This document contains UI mockups for the screens needed to implement the user f
 └─────────────────────────────────────────────────────┘
 ```
 
-### 7.2 Privacy Settings
+### 7.2 Appearance Settings
+
+```
+┌─────────────────────────────────────────────────────┐
+│                                                     │
+│  ← Settings                                         │
+│                                                     │
+│  Appearance                                         │
+│                                                     │
+│  Display Name:                                      │
+│  [                  User                      ]     │
+│                                                     │
+│  Theme:                                             │
+│  [○] Light Mode                                     │
+│  [●] Dark Mode                                      │
+│                                                     │
+│  Interface Density:                                 │
+│  [○] Comfortable                                    │
+│  [●] Compact                                        │
+│                                                     │
+│  Message Display:                                   │
+│  [×] Show timestamps                                │
+│  [×] Show participant avatars                       │
+│  [ ] Show model information                         │
+│                                                     │
+│  [          Save Changes          ]                 │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
+
+### 7.3 Privacy Settings
 
 ```
 ┌─────────────────────────────────────────────────────┐

@@ -98,9 +98,9 @@
   - Key visibility controls ✅
   - Provider-specific validation ✅
 - **Theme System**: Complete theme customization with DaisyUI ✅
-  - All DaisyUI themes available ✅
+  - Light and dark theme support ✅
   - Theme persistence ✅
-  - Theme selector dropdown ✅
+  - Theme toggle button ✅
 - **Multi-LLM Support**: Integration with multiple LLM providers. ✅
 - **Enhanced Message Display**: Visual distinction between different LLM responses. ✅
 
@@ -114,8 +114,8 @@
    - Add clear all keys functionality ✅
 
 2. **Theme System Implementation** ✅
-   - Configure DaisyUI with all available themes ✅
-   - Create `ThemeSelector` component with dropdown ✅
+   - Configure DaisyUI with light and dark themes ✅
+   - Create `ThemeSelector` component with toggle button ✅
    - Implement theme persistence in localStorage ✅
    - Add theme initialization on app load ✅
    - Update TopBar with theme controls ✅
@@ -522,9 +522,6 @@
 3. **Theme Customization**
    - **Main Layout with Theme Selector**
      - Integrate the top navigation bar with the app title, navigation links, and a theme toggle button.
-   - **Theme Selector Dropdown**
-     - Build a dropdown component listing available themes.
-     - Ensure theme selection updates the UI dynamically.
 
 4. **Participant Configuration**
    - **Participant Form**

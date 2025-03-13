@@ -281,7 +281,6 @@ interface StoredAPIKeys {
 // User Preferences
 interface UserPreferences {
   theme: 'light' | 'dark'
-  accentColor: string
   autoAdvance: boolean
   showThinkingIndicators: boolean
   autoSummarize: boolean
@@ -894,7 +893,6 @@ The implementation plan is structured into specific phases that align with the u
 
 ### Phase 5: Settings & Customization
 - Implement theme switching (light/dark mode)
-- Create accent color customization
 - Build LLM default settings management
 - Implement preferences for conversation behavior
 - Create privacy settings panel
