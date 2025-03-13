@@ -40,4 +40,7 @@ export interface UserPreferences {
   autoSummarize: boolean
   keyStoragePreference: KeyStoragePreference
   language: string
+  defaultTemperature?: number
+  defaultMaxTokens?: number
+  defaultSystemPrompt?: string
 } 

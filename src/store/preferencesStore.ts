@@ -18,7 +18,10 @@ const defaultPreferences: UserPreferences = {
   showThinkingIndicators: true,
   autoSummarize: false,
   keyStoragePreference: 'session',
-  language: 'en'
+  language: 'en',
+  defaultTemperature: 0.7,
+  defaultMaxTokens: 1000,
+  defaultSystemPrompt: ''
 }
 
 export const usePreferencesStore = create<PreferencesState>()(

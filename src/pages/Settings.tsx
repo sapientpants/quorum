@@ -8,6 +8,19 @@ import { useTranslation } from 'react-i18next'
 import { ThemeSelectorWithErrorBoundary } from '../components/ThemeSelectorWithErrorBoundary'
 import { ThemeDebug } from '../components/ThemeDebug'
 import { HeroUIThemeTest } from '../components/HeroUIThemeTest'
+import { usePreferencesStore } from '../store/preferencesStore'
+import { type KeyStoragePreference } from '../types/preferences'
+import { useState } from 'react'
+import { Separator } from '../components/ui/separator'
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '../components/ui/dialog'
+import { toast } from 'sonner'
 
 export function Settings() {
   const [activeTab, setActiveTab] = React.useState('api-keys')
@@ -17,6 +30,10 @@ export function Settings() {
   const [autoSummarize, setAutoSummarize] = React.useState<boolean>(localStorage.getItem('autoSummarize') === 'true')
   const { language, changeLanguage, availableLanguages } = useLanguageContext()
   const { t } = useTranslation()
+  const { preferences, updatePreferences, resetPreferences } = usePreferencesStore()
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
+  const [exportData, setExportData] = useState('')
   
   function handleDisplayNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setDisplayName(e.target.value)
@@ -26,16 +43,22 @@ export function Settings() {
   function handleAutoAdvanceChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAutoAdvance(e.target.checked)
     localStorage.setItem('autoAdvance', e.target.checked.toString())
+    // Also update in preferences store
+    updatePreferences({ autoAdvance: e.target.checked })
   }
   
   function handleShowThinkingChange(e: React.ChangeEvent<HTMLInputElement>) {
     setShowThinking(e.target.checked)
     localStorage.setItem('showThinking', e.target.checked.toString())
+    // Also update in preferences store
+    updatePreferences({ showThinkingIndicators: e.target.checked })
   }
   
   function handleAutoSummarizeChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAutoSummarize(e.target.checked)
     localStorage.setItem('autoSummarize', e.target.checked.toString())
+    // Also update in preferences store
+    updatePreferences({ autoSummarize: e.target.checked })
   }
   
   function handleApiKeyChange(provider: string, key: string) {
@@ -59,6 +82,83 @@ export function Settings() {
     localStorage.setItem('autoAdvance', 'true')
     localStorage.setItem('showThinking', 'true')
     localStorage.setItem('autoSummarize', 'false')
+    
+    // Close the dialog
+    setIsResetDialogOpen(false)
+    
+    // Use the preferences store reset function
+    resetPreferences()
+    
+    toast.success(t('settings.resetSuccessful'))
+  }
+
+  function handleKeyStorageChange(preference: KeyStoragePreference) {
+    updatePreferences({ keyStoragePreference: preference })
+    toast.success(t('settings.keyStorageUpdated'))
+  }
+  
+  function handleClearAllData() {
+    // Clear localStorage
+    localStorage.clear()
+    
+    // Reset preferences to defaults
+    resetPreferences()
+    
+    // Reset UI state
+    setDisplayName('')
+    setAutoAdvance(true)
+    setShowThinking(true)
+    setAutoSummarize(false)
+    
+    // Close the dialog
+    setIsResetDialogOpen(false)
+    
+    toast.success(t('settings.dataCleared'))
+  }
+  
+  function handleExportData() {
+    try {
+      // Collect all data from localStorage
+      const exportObj: Record<string, unknown> = {}
+      
+      // Add all localStorage items
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key) {
+          try {
+            // Try to parse as JSON first
+            exportObj[key] = JSON.parse(localStorage.getItem(key) || '')
+          } catch {
+            // If not valid JSON, store as string
+            exportObj[key] = localStorage.getItem(key)
+          }
+        }
+      }
+      
+      // Format as pretty JSON
+      const dataStr = JSON.stringify(exportObj, null, 2)
+      setExportData(dataStr)
+      setIsExportDialogOpen(true)
+    } catch (error) {
+      console.error('Error exporting data:', error)
+      toast.error(t('settings.exportError'))
+    }
+  }
+  
+  function downloadExportedData() {
+    try {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportData)
+      const downloadAnchorNode = document.createElement('a')
+      downloadAnchorNode.setAttribute("href", dataStr)
+      downloadAnchorNode.setAttribute("download", "quorum_data_export.json")
+      document.body.appendChild(downloadAnchorNode)
+      downloadAnchorNode.click()
+      downloadAnchorNode.remove()
+      setIsExportDialogOpen(false)
+    } catch (error) {
+      console.error('Error downloading data:', error)
+      toast.error(t('settings.downloadError'))
+    }
   }
   
   return (
@@ -73,6 +173,7 @@ export function Settings() {
               onClick={() => setActiveTab('api-keys')}
               className="justify-start"
             >
+              <Icon icon="solar:key-linear" className="mr-2 h-4 w-4" />
               {t('settings.apiKeys')}
             </Button>
             <Button 
@@ -84,6 +185,22 @@ export function Settings() {
               {t('settings.participants')}
             </Button>
             <Button 
+              variant={activeTab === 'appearance' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('appearance')}
+              className="justify-start"
+            >
+              <Icon icon="solar:palette-linear" className="mr-2 h-4 w-4" />
+              {t('settings.appearance')}
+            </Button>
+            <Button 
+              variant={activeTab === 'llm-defaults' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('llm-defaults')}
+              className="justify-start"
+            >
+              <Icon icon="solar:settings-linear" className="mr-2 h-4 w-4" />
+              {t('settings.llmDefaults')}
+            </Button>
+            <Button 
               variant={activeTab === 'language' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('language')}
               className="justify-start"
@@ -92,17 +209,11 @@ export function Settings() {
               {t('settings.language')}
             </Button>
             <Button 
-              variant={activeTab === 'appearance' ? 'default' : 'ghost'}
-              onClick={() => setActiveTab('appearance')}
-              className="justify-start"
-            >
-              {t('settings.appearance')}
-            </Button>
-            <Button 
               variant={activeTab === 'privacy' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('privacy')}
               className="justify-start"
             >
+              <Icon icon="solar:shield-user-linear" className="mr-2 h-4 w-4" />
               {t('settings.privacy')}
             </Button>
             <Button 
@@ -110,6 +221,7 @@ export function Settings() {
               onClick={() => setActiveTab('about')}
               className="justify-start"
             >
+              <Icon icon="solar:info-circle-linear" className="mr-2 h-4 w-4" />
               {t('settings.about')}
             </Button>
           </div>
@@ -270,6 +382,76 @@ export function Settings() {
               </div>
             </div>
           )}
+
+          {activeTab === 'llm-defaults' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">{t('settings.llmDefaults')}</h2>
+              <p className="mb-6">
+                {t('settings.llmDefaultsDescription')}
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">{t('settings.defaultParameters')}</h3>
+                  
+                  <div className="form-control w-full max-w-md mb-4">
+                    <label className="label">
+                      <span className="label-text">{t('settings.defaultTemperature')}</span>
+                      <span className="label-text-alt">{preferences.defaultTemperature || 0.7}</span>
+                    </label>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="2" 
+                      step="0.1" 
+                      className="range" 
+                      value={preferences.defaultTemperature || 0.7}
+                      onChange={(e) => updatePreferences({ defaultTemperature: parseFloat(e.target.value) })}
+                    />
+                    <div className="flex justify-between text-xs px-2 mt-1">
+                      <span>Precise</span>
+                      <span>Balanced</span>
+                      <span>Creative</span>
+                    </div>
+                  </div>
+                  
+                  <div className="form-control w-full max-w-md mb-4">
+                    <label className="label">
+                      <span className="label-text">{t('settings.defaultMaxTokens')}</span>
+                      <span className="label-text-alt">{preferences.defaultMaxTokens || 1000}</span>
+                    </label>
+                    <input 
+                      type="range" 
+                      min="100" 
+                      max="4000" 
+                      step="100" 
+                      className="range" 
+                      value={preferences.defaultMaxTokens || 1000}
+                      onChange={(e) => updatePreferences({ defaultMaxTokens: parseInt(e.target.value) })}
+                    />
+                    <div className="flex justify-between text-xs px-2 mt-1">
+                      <span>Short</span>
+                      <span>Medium</span>
+                      <span>Long</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">{t('settings.defaultSystemPrompt')}</h3>
+                  <textarea 
+                    className="textarea textarea-bordered w-full h-32" 
+                    placeholder={t('settings.defaultSystemPromptPlaceholder')}
+                    value={preferences.defaultSystemPrompt || ""}
+                    onChange={(e) => updatePreferences({ defaultSystemPrompt: e.target.value })}
+                  ></textarea>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {t('settings.defaultSystemPromptDescription')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
           
           {activeTab === 'privacy' && (
             <div>
@@ -278,27 +460,113 @@ export function Settings() {
                 {t('settings.privacyDescription')}
               </p>
               
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{t('settings.dataStorage')}</h3>
-                  <p className="mb-2">
-                    {t('settings.dataStorageDescription')}
-                  </p>
-                  <Button variant="error">{t('settings.clearAllData')}</Button>
+              <div className="space-y-8">
+                <div className="card bg-base-200 shadow-sm">
+                  <div className="card-body">
+                    <h3 className="text-xl font-semibold">{t('settings.apiKeyStorage')}</h3>
+                    <p className="mb-4">
+                      {t('settings.apiKeyStorageDescription')}
+                    </p>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <input 
+                          type="radio" 
+                          id="localStorage" 
+                          name="keyStorage" 
+                          className="radio radio-primary" 
+                          checked={preferences.keyStoragePreference === 'local'}
+                          onChange={() => handleKeyStorageChange('local')}
+                        />
+                        <label htmlFor="localStorage" className="flex flex-col">
+                          <span className="font-medium">{t('settings.localStorage')}</span>
+                          <span className="text-sm opacity-70">{t('settings.localStorageDescription')}</span>
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <input 
+                          type="radio" 
+                          id="sessionOnly" 
+                          name="keyStorage" 
+                          className="radio radio-primary" 
+                          checked={preferences.keyStoragePreference === 'session'}
+                          onChange={() => handleKeyStorageChange('session')}
+                        />
+                        <label htmlFor="sessionOnly" className="flex flex-col">
+                          <span className="font-medium">{t('settings.sessionOnly')}</span>
+                          <span className="text-sm opacity-70">{t('settings.sessionOnlyDescription')}</span>
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <input 
+                          type="radio" 
+                          id="noStorage" 
+                          name="keyStorage" 
+                          className="radio radio-primary" 
+                          checked={preferences.keyStoragePreference === 'none'}
+                          onChange={() => handleKeyStorageChange('none')}
+                        />
+                        <label htmlFor="noStorage" className="flex flex-col">
+                          <span className="font-medium">{t('settings.noStorage')}</span>
+                          <span className="text-sm opacity-70">{t('settings.noStorageDescription')}</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{t('settings.apiKeyStorage')}</h3>
-                  <p className="mb-2">
-                    {t('settings.apiKeyStorageDescription')}
-                  </p>
-                  <div className="flex items-center space-x-2">
-                    <input type="radio" id="localStorage" name="keyStorage" defaultChecked />
-                    <label htmlFor="localStorage">{t('settings.localStorage')}</label>
+                <div className="card bg-base-200 shadow-sm">
+                  <div className="card-body">
+                    <h3 className="text-xl font-semibold">{t('settings.dataManagement')}</h3>
+                    <p className="mb-4">
+                      {t('settings.dataManagementDescription')}
+                    </p>
+                    
+                    <div className="flex flex-col gap-4 sm:flex-row">
+                      <Button 
+                        variant="outline" 
+                        className="flex items-center gap-2"
+                        onClick={handleExportData}
+                      >
+                        <Icon icon="solar:export-line-duotone" className="h-4 w-4" />
+                        {t('settings.exportAllData')}
+                      </Button>
+                      
+                      <Button 
+                        variant="error" 
+                        className="flex items-center gap-2"
+                        onClick={handleClearAllData}
+                      >
+                        <Icon icon="solar:trash-bin-trash-linear" className="h-4 w-4" />
+                        {t('settings.clearAllData')}
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input type="radio" id="sessionOnly" name="keyStorage" />
-                    <label htmlFor="sessionOnly">{t('settings.sessionOnly')}</label>
+                </div>
+                
+                <div className="card bg-base-200 shadow-sm">
+                  <div className="card-body">
+                    <h3 className="text-xl font-semibold">{t('settings.dataSecurity')}</h3>
+                    <div className="space-y-2">
+                      <p>
+                        {t('settings.dataSecurityDescription1')}
+                      </p>
+                      <p>
+                        {t('settings.dataSecurityDescription2')}
+                      </p>
+                      
+                      <div className="bg-warning/20 border border-warning/50 text-warning-content rounded-md p-4 mt-4">
+                        <div className="flex items-start gap-2">
+                          <Icon icon="solar:danger-triangle-bold" className="h-5 w-5 mt-0.5" />
+                          <div>
+                            <p className="font-medium">{t('settings.securityWarning')}</p>
+                            <p className="text-sm mt-1">{t('settings.securityWarningDetails')}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -311,17 +579,61 @@ export function Settings() {
               <p className="mb-4">
                 {t('settings.aboutDescription')}
               </p>
-              <p className="mb-4">
-                {t('settings.version')}: 0.1.0
-              </p>
-              <p className="mb-4">
-                {t('settings.createdBy')}: Your Name
-              </p>
-              <p className="mb-4">
-                <a href="https://github.com/yourusername/quorum" className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
-                  GitHub Repository
-                </a>
-              </p>
+
+              <div className="card bg-base-200 shadow-sm mb-6">
+                <div className="card-body">
+                  <div className="flex items-center gap-4 mb-4">
+                    <Icon icon="solar:chat-round-dots-linear" className="h-12 w-12 text-primary" />
+                    <div>
+                      <h3 className="text-2xl font-bold">Quorum</h3>
+                      <p className="text-sm opacity-70">A round-table conversation with AI participants</p>
+                    </div>
+                  </div>
+                  
+                  <Separator className="my-4" />
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="font-medium">{t('settings.version')}</span>
+                      <span>0.1.0</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">{t('settings.lastUpdated')}</span>
+                      <span>May 2024</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">{t('settings.license')}</span>
+                      <span>MIT</span>
+                    </div>
+                  </div>
+                  
+                  <Separator className="my-4" />
+                  
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button variant="outline" className="flex items-center gap-2">
+                      <Icon icon="solar:code-linear" className="h-4 w-4" />
+                      <a 
+                        href="https://github.com/yourusername/quorum" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        {t('settings.viewOnGitHub')}
+                      </a>
+                    </Button>
+                    
+                    <Button variant="outline" className="flex items-center gap-2">
+                      <Icon icon="solar:bug-linear" className="h-4 w-4" />
+                      <a 
+                        href="https://github.com/yourusername/quorum/issues" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        {t('settings.reportIssue')}
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -329,17 +641,66 @@ export function Settings() {
       
       {activeTab === 'appearance' && (
         <div className="flex justify-end mt-6">
-          <button 
-            className="btn btn-outline mr-2"
-            onClick={handleResetDefaults}
+          <Button 
+            variant="outline"
+            className="mr-2"
+            onClick={() => setIsResetDialogOpen(true)}
           >
             {t('settings.resetDefaults')}
-          </button>
-          <button className="btn btn-primary">
+          </Button>
+          <Button>
             {t('settings.saveChanges')}
-          </button>
+          </Button>
         </div>
       )}
+      
+      {/* Reset Confirmation Dialog */}
+      <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('settings.resetConfirmation')}</DialogTitle>
+            <DialogDescription>
+              {t('settings.resetConfirmationDescription')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsResetDialogOpen(false)}>
+              {t('settings.cancel')}
+            </Button>
+            <Button variant="error" onClick={handleResetDefaults}>
+              {t('settings.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Data Export Dialog */}
+      <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{t('settings.exportData')}</DialogTitle>
+            <DialogDescription>
+              {t('settings.exportDataDescription')}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="bg-muted/50 rounded-md p-4 max-h-80 overflow-auto">
+            <pre className="text-xs whitespace-pre-wrap overflow-x-auto">
+              {exportData}
+            </pre>
+          </div>
+          
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsExportDialogOpen(false)}>
+              {t('settings.close')}
+            </Button>
+            <Button onClick={downloadExportedData}>
+              <Icon icon="solar:download-linear" className="mr-2 h-4 w-4" />
+              {t('settings.download')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 } 

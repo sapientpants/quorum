@@ -543,11 +543,11 @@
    - **Template Form** ✅
      - Build a form for creating and editing templates with fields for Template Name, Description, Participant selection, and a Default Conversation Starter. ✅
 
-7. **Settings Screens**
-   - **Main Settings**
-     - Develop a comprehensive settings menu that navigates to API Keys, Participants, Appearance, LLM Defaults, Language, and Privacy & Storage sections.
-   - **Privacy & Storage**
-     - Create a dedicated screen for managing storage options, including data export and clear stored data actions.
+7. **Settings Screens** ✅
+   - **Main Settings** ✅
+     - Develop a comprehensive settings menu that navigates to API Keys, Participants, Appearance, LLM Defaults, Language, and Privacy & Storage sections. ✅
+   - **Privacy & Storage** ✅
+     - Create a dedicated screen for managing storage options, including data export and clear stored data actions. ✅
 
 8. **Error and System Messages**
    - **API Error Modal**
