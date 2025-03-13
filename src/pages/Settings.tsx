@@ -3,6 +3,8 @@ import { Button } from '../components/ui/button'
 import ApiKeyManager from '../components/ApiKeyManager'
 import { ParticipantList } from '../components/ParticipantList'
 import { Icon } from '@iconify/react'
+import { useLanguageContext } from '../contexts/LanguageContext'
+import { useTranslation } from 'react-i18next'
 
 export function Settings() {
   const [activeTab, setActiveTab] = React.useState('api-keys')
@@ -10,6 +12,8 @@ export function Settings() {
   const [autoAdvance, setAutoAdvance] = React.useState<boolean>(localStorage.getItem('autoAdvance') !== 'false')
   const [showThinking, setShowThinking] = React.useState<boolean>(localStorage.getItem('showThinking') !== 'false')
   const [autoSummarize, setAutoSummarize] = React.useState<boolean>(localStorage.getItem('autoSummarize') === 'true')
+  const { language, changeLanguage, availableLanguages } = useLanguageContext()
+  const { t } = useTranslation()
   
   function handleDisplayNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setDisplayName(e.target.value)
@@ -56,7 +60,7 @@ export function Settings() {
   
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Settings</h1>
+      <h1 className="text-3xl font-bold mb-6">{t('settings.title')}</h1>
       
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:w-1/4">
@@ -66,7 +70,7 @@ export function Settings() {
               onClick={() => setActiveTab('api-keys')}
               className="justify-start"
             >
-              API Keys
+              {t('settings.apiKeys')}
             </Button>
             <Button 
               variant={activeTab === 'participants' ? 'default' : 'ghost'}
@@ -74,28 +78,36 @@ export function Settings() {
               className="justify-start"
             >
               <Icon icon="solar:users-group-rounded-linear" className="mr-2 h-4 w-4" />
-              Participants
+              {t('settings.participants')}
+            </Button>
+            <Button 
+              variant={activeTab === 'language' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('language')}
+              className="justify-start"
+            >
+              <Icon icon="solar:global-linear" className="mr-2 h-4 w-4" />
+              {t('settings.language')}
             </Button>
             <Button 
               variant={activeTab === 'appearance' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('appearance')}
               className="justify-start"
             >
-              Appearance
+              {t('settings.appearance')}
             </Button>
             <Button 
               variant={activeTab === 'privacy' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('privacy')}
               className="justify-start"
             >
-              Privacy
+              {t('settings.privacy')}
             </Button>
             <Button 
               variant={activeTab === 'about' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('about')}
               className="justify-start"
             >
-              About
+              {t('settings.about')}
             </Button>
           </div>
         </div>
@@ -103,9 +115,9 @@ export function Settings() {
         <div className="w-full md:w-3/4">
           {activeTab === 'api-keys' && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">API Keys</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('settings.apiKeys')}</h2>
               <p className="mb-6">
-                Enter your API keys for the language model providers you want to use. Your keys are stored locally in your browser and are never sent to our servers.
+                {t('settings.apiKeysDescription')}
               </p>
               
               <ApiKeyManager onApiKeyChange={handleApiKeyChange} />
@@ -114,39 +126,84 @@ export function Settings() {
           
           {activeTab === 'participants' && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">Participants</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('settings.participants')}</h2>
               <p className="mb-6">
-                Manage AI participants for your round table discussions. Create, edit, and organize participants with different roles and personalities.
+                {t('settings.participantsDescription')}
               </p>
               
               <ParticipantList />
             </div>
           )}
           
+          {activeTab === 'language' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">{t('settings.language')}</h2>
+              <p className="mb-6">
+                {t('languageToggle.selectLanguage')}
+              </p>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {availableLanguages.map((lang) => (
+                    <div 
+                      key={lang.code}
+                      className={`flex items-center gap-3 p-4 border rounded-md cursor-pointer transition-colors ${
+                        language === lang.code 
+                          ? 'border-primary bg-primary/5 text-primary' 
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                      onClick={() => changeLanguage(lang.code)}
+                    >
+                      <Icon 
+                        icon={`emojione:flag-for-${lang.code === 'en' ? 'united-kingdom' : 'germany'}`}
+                        width="24" 
+                        height="24" 
+                      />
+                      <div>
+                        <div className="font-medium">{lang.name}</div>
+                        <div className="text-sm opacity-70">
+                          {lang.code === 'en' ? 'English' : 'Deutsch'}
+                        </div>
+                      </div>
+                      {language === lang.code && (
+                        <Icon 
+                          icon="solar:check-circle-bold" 
+                          className="ml-auto text-primary" 
+                          width="20" 
+                          height="20" 
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          
           {activeTab === 'appearance' && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">Appearance</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('settings.appearance')}</h2>
               <p className="mb-6">
-                Customize the appearance of the application.
+                {t('settings.appearanceDescription')}
               </p>
               
               <div className="form-control w-full max-w-md mb-6">
                 <label className="label">
-                  <span className="label-text">Display Name</span>
+                  <span className="label-text">{t('settings.displayName')}</span>
                 </label>
                 <input 
                   type="text" 
                   className="input input-bordered w-full" 
                   value={displayName}
                   onChange={handleDisplayNameChange}
-                  placeholder="Enter your display name"
+                  placeholder={t('settings.displayName')}
                 />
               </div>
               
               {/* Theme selector removed */}
               
               <div className="mb-6">
-                <h4 className="font-bold mb-2">Round Table Behavior</h4>
+                <h4 className="font-bold mb-2">{t('settings.roundTableBehavior')}</h4>
                 
                 <div className="form-control">
                   <label className="label cursor-pointer justify-start gap-2">
@@ -156,7 +213,7 @@ export function Settings() {
                       checked={autoAdvance}
                       onChange={handleAutoAdvanceChange}
                     />
-                    <span className="label-text">Auto-advance to next LLM</span>
+                    <span className="label-text">{t('settings.autoAdvance')}</span>
                   </label>
                 </div>
                 
@@ -168,7 +225,7 @@ export function Settings() {
                       checked={showThinking}
                       onChange={handleShowThinkingChange}
                     />
-                    <span className="label-text">Show thinking indicators</span>
+                    <span className="label-text">{t('settings.showThinking')}</span>
                   </label>
                 </div>
                 
@@ -180,7 +237,7 @@ export function Settings() {
                       checked={autoSummarize}
                       onChange={handleAutoSummarizeChange}
                     />
-                    <span className="label-text">Auto-summarize after 10 exchanges</span>
+                    <span className="label-text">{t('settings.autoSummarize')}</span>
                   </label>
                 </div>
               </div>
@@ -189,32 +246,32 @@ export function Settings() {
           
           {activeTab === 'privacy' && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">Privacy</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('settings.privacy')}</h2>
               <p className="mb-6">
-                Manage your privacy settings and data.
+                {t('settings.privacyDescription')}
               </p>
               
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Data Storage</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t('settings.dataStorage')}</h3>
                   <p className="mb-2">
-                    Your data is stored locally in your browser. You can clear all data at any time.
+                    {t('settings.dataStorageDescription')}
                   </p>
-                  <Button variant="error">Clear All Data</Button>
+                  <Button variant="error">{t('settings.clearAllData')}</Button>
                 </div>
                 
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">API Key Storage</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t('settings.apiKeyStorage')}</h3>
                   <p className="mb-2">
-                    Choose how you want to store your API keys.
+                    {t('settings.apiKeyStorageDescription')}
                   </p>
                   <div className="flex items-center space-x-2">
                     <input type="radio" id="localStorage" name="keyStorage" defaultChecked />
-                    <label htmlFor="localStorage">Local Storage (persists between sessions)</label>
+                    <label htmlFor="localStorage">{t('settings.localStorage')}</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input type="radio" id="sessionOnly" name="keyStorage" />
-                    <label htmlFor="sessionOnly">Session Only (cleared when browser is closed)</label>
+                    <label htmlFor="sessionOnly">{t('settings.sessionOnly')}</label>
                   </div>
                 </div>
               </div>
@@ -223,15 +280,15 @@ export function Settings() {
           
           {activeTab === 'about' && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">About Quorum</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('settings.about')} Quorum</h2>
               <p className="mb-4">
-                Quorum is an open-source application that allows you to chat with multiple AI models simultaneously in a round-table format.
+                {t('settings.aboutDescription')}
               </p>
               <p className="mb-4">
-                Version: 0.1.0
+                {t('settings.version')}: 0.1.0
               </p>
               <p className="mb-4">
-                Created by: Your Name
+                {t('settings.createdBy')}: Your Name
               </p>
               <p className="mb-4">
                 <a href="https://github.com/yourusername/quorum" className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
@@ -249,10 +306,10 @@ export function Settings() {
             className="btn btn-outline mr-2"
             onClick={handleResetDefaults}
           >
-            Reset to Defaults
+            {t('settings.resetDefaults')}
           </button>
           <button className="btn btn-primary">
-            Save Changes
+            {t('settings.saveChanges')}
           </button>
         </div>
       )}

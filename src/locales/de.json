@@ -1,0 +1,77 @@
+{
+  "app": {
+    "name": "Quorum"
+  },
+  "navigation": {
+    "chat": "Chat",
+    "templates": "Vorlagen",
+    "settings": "Einstellungen",
+    "help": "Hilfe"
+  },
+  "welcome": {
+    "title": "Willkommen bei Quorum",
+    "subtitle": "Ihr KI-Assistent für bessere Gespräche",
+    "features": {
+      "customParticipants": "Erstellen Sie KI-Teilnehmer mit spezifischen Rollen",
+      "multiModel": "Ermöglichen Sie natürliche Multi-Modell-Gespräche",
+      "saveConfigs": "Speichern und teilen Sie Ihre Lieblingskonfigurationen",
+      "analyze": "Analysieren Sie Gesprächsmuster und Erkenntnisse"
+    },
+    "apiNote": {
+      "text": "Erfordert API-Schlüssel von LLM-Anbietern. Die Nutzung kann je nach Anbieterpreisen Kosten verursachen."
+    },
+    "getStarted": "Loslegen",
+    "consent": {
+      "title": "API-Schlüssel & Datenschutzhinweis",
+      "intro": "Quorum benötigt API-Schlüssel für die Funktion. Bitte beachten Sie:",
+      "points": {
+        "storage": "Ihre API-Schlüssel können je nach Ihren Präferenzen in Ihrem Browser gespeichert werden",
+        "processing": "Die gesamte Verarbeitung findet in Ihrem Browser statt - Ihre Gespräche verlassen nie Ihr Gerät",
+        "access": "Wir haben keinen Zugriff auf Ihre API-Schlüssel oder Daten",
+        "options": "Sie können wählen, wie Ihre Schlüssel gespeichert werden:",
+        "localStorage": "Lokaler Speicher (bleibt zwischen Sitzungen erhalten)",
+        "sessionStorage": "Sitzungsspeicher (wird beim Schließen des Browsers gelöscht)",
+        "noStorage": "Kein Speicher (muss jedes Mal neu eingegeben werden)"
+      },
+      "agreement": "Ich verstehe und stimme diesen Bedingungen zu",
+      "cancel": "Abbrechen",
+      "continue": "Fortfahren"
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "theme": "Thema",
+    "darkMode": "Dunkelmodus",
+    "lightMode": "Hellmodus",
+    "apiKeys": "API-Schlüssel",
+    "participants": "Teilnehmer",
+    "appearance": "Erscheinungsbild",
+    "privacy": "Datenschutz",
+    "about": "Über",
+    "apiKeysDescription": "Geben Sie Ihre API-Schlüssel für die Sprachmodell-Anbieter ein, die Sie verwenden möchten. Ihre Schlüssel werden lokal in Ihrem Browser gespeichert und niemals an unsere Server gesendet.",
+    "participantsDescription": "Verwalten Sie KI-Teilnehmer für Ihre Rundtischgespräche. Erstellen, bearbeiten und organisieren Sie Teilnehmer mit verschiedenen Rollen und Persönlichkeiten.",
+    "appearanceDescription": "Passen Sie das Erscheinungsbild der Anwendung an.",
+    "privacyDescription": "Verwalten Sie Ihre Datenschutzeinstellungen und Daten.",
+    "aboutDescription": "Quorum ist eine Open-Source-Anwendung, mit der Sie gleichzeitig mit mehreren KI-Modellen in einem Rundtischformat chatten können.",
+    "displayName": "Anzeigename",
+    "resetDefaults": "Auf Standardwerte zurücksetzen",
+    "saveChanges": "Änderungen speichern",
+    "roundTableBehavior": "Rundtisch-Verhalten",
+    "autoAdvance": "Automatisch zum nächsten LLM wechseln",
+    "showThinking": "Denkanzeigen anzeigen",
+    "autoSummarize": "Nach 10 Austauschen automatisch zusammenfassen",
+    "dataStorage": "Datenspeicherung",
+    "dataStorageDescription": "Ihre Daten werden lokal in Ihrem Browser gespeichert. Sie können alle Daten jederzeit löschen.",
+    "clearAllData": "Alle Daten löschen",
+    "apiKeyStorage": "API-Schlüssel-Speicherung",
+    "apiKeyStorageDescription": "Wählen Sie, wie Sie Ihre API-Schlüssel speichern möchten.",
+    "localStorage": "Lokaler Speicher (bleibt zwischen Sitzungen erhalten)",
+    "sessionOnly": "Nur Sitzung (wird beim Schließen des Browsers gelöscht)",
+    "version": "Version",
+    "createdBy": "Erstellt von"
+  },
+  "languageToggle": {
+    "selectLanguage": "Sprache auswählen"
+  }
+} 

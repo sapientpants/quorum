@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useThemeContext } from '../contexts/ThemeContext'
+import { useTranslation } from 'react-i18next'
+import { LanguageToggle } from './LanguageToggle'
 import {
   Navbar,
   NavbarBrand,
@@ -16,6 +18,7 @@ export function TopBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
   const { theme, toggleTheme } = useThemeContext()
+  const { t } = useTranslation()
   
   const isActive = (path: string) => {
     return location.pathname === path
@@ -33,7 +36,7 @@ export function TopBar() {
         <NavbarBrand>
           <Link to="/" className="flex items-center gap-2 text-xl font-semibold">
             <Icon icon="solar:chat-round-dots-bold" className="text-purple-500" width="24" height="24" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-500">Quorum</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-500">{t('app.name')}</span>
           </Link>
         </NavbarBrand>
       </NavbarContent>
@@ -50,7 +53,7 @@ export function TopBar() {
             }`}
           >
             <Icon icon="solar:chat-line-linear" />
-            Chat
+            {t('navigation.chat')}
           </Link>
         </NavbarItem>
         <NavbarItem isActive={isActive('/templates')}>
@@ -63,7 +66,7 @@ export function TopBar() {
             }`}
           >
             <Icon icon="solar:bookmark-linear" />
-            Templates
+            {t('navigation.templates')}
           </Link>
         </NavbarItem>
         <NavbarItem isActive={isActive('/settings')}>
@@ -76,7 +79,7 @@ export function TopBar() {
             }`}
           >
             <Icon icon="solar:settings-linear" />
-            Settings
+            {t('navigation.settings')}
           </Link>
         </NavbarItem>
         <NavbarItem isActive={isActive('/help')}>
@@ -89,12 +92,17 @@ export function TopBar() {
             }`}
           >
             <Icon icon="solar:info-circle-linear" />
-            Help
+            {t('navigation.help')}
           </Link>
         </NavbarItem>
       </NavbarContent>
 
       <NavbarContent justify="end">
+        {/* Language toggle button */}
+        <NavbarItem>
+          <LanguageToggle />
+        </NavbarItem>
+        
         {/* Theme toggle button */}
         <NavbarItem>
           <button
@@ -131,7 +139,7 @@ export function TopBar() {
             onClick={() => setIsMenuOpen(false)}
           >
             <Icon icon="solar:chat-line-linear" />
-            Chat
+            {t('navigation.chat')}
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem isActive={isActive('/templates')}>
@@ -145,7 +153,7 @@ export function TopBar() {
             onClick={() => setIsMenuOpen(false)}
           >
             <Icon icon="solar:bookmark-linear" />
-            Templates
+            {t('navigation.templates')}
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem isActive={isActive('/settings')}>
@@ -159,7 +167,7 @@ export function TopBar() {
             onClick={() => setIsMenuOpen(false)}
           >
             <Icon icon="solar:settings-linear" />
-            Settings
+            {t('navigation.settings')}
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem isActive={isActive('/help')}>
@@ -173,7 +181,7 @@ export function TopBar() {
             onClick={() => setIsMenuOpen(false)}
           >
             <Icon icon="solar:info-circle-linear" />
-            Help
+            {t('navigation.help')}
           </Link>
         </NavbarMenuItem>
       </NavbarMenu>

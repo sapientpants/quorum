@@ -1,0 +1,77 @@
+{
+  "app": {
+    "name": "Quorum"
+  },
+  "navigation": {
+    "chat": "Chat",
+    "templates": "Templates",
+    "settings": "Settings",
+    "help": "Help"
+  },
+  "welcome": {
+    "title": "Welcome to Quorum",
+    "subtitle": "Your AI assistant for better conversations",
+    "features": {
+      "customParticipants": "Create custom AI participants with specific roles",
+      "multiModel": "Facilitate natural multi-model conversations",
+      "saveConfigs": "Save and share your favorite configurations",
+      "analyze": "Analyze conversation patterns and insights"
+    },
+    "apiNote": {
+      "text": "Requires API keys from LLM providers. Usage may incur costs based on provider pricing."
+    },
+    "getStarted": "Get Started",
+    "consent": {
+      "title": "API Keys & Privacy Notice",
+      "intro": "Quorum requires API keys to function. Please note:",
+      "points": {
+        "storage": "Your API keys can be stored in your browser based on your preference",
+        "processing": "All processing happens in your browser - your conversations never leave your device",
+        "access": "We don't have access to your API keys or data",
+        "options": "You can choose how your keys are stored:",
+        "localStorage": "Local Storage (persists between sessions)",
+        "sessionStorage": "Session Storage (cleared when browser closes)",
+        "noStorage": "No Storage (must re-enter each time)"
+      },
+      "agreement": "I understand and agree to these terms",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "apiKeys": "API Keys",
+    "participants": "Participants",
+    "appearance": "Appearance",
+    "privacy": "Privacy",
+    "about": "About",
+    "apiKeysDescription": "Enter your API keys for the language model providers you want to use. Your keys are stored locally in your browser and are never sent to our servers.",
+    "participantsDescription": "Manage AI participants for your round table discussions. Create, edit, and organize participants with different roles and personalities.",
+    "appearanceDescription": "Customize the appearance of the application.",
+    "privacyDescription": "Manage your privacy settings and data.",
+    "aboutDescription": "Quorum is an open-source application that allows you to chat with multiple AI models simultaneously in a round-table format.",
+    "displayName": "Display Name",
+    "resetDefaults": "Reset to Defaults",
+    "saveChanges": "Save Changes",
+    "roundTableBehavior": "Round Table Behavior",
+    "autoAdvance": "Auto-advance to next LLM",
+    "showThinking": "Show thinking indicators",
+    "autoSummarize": "Auto-summarize after 10 exchanges",
+    "dataStorage": "Data Storage",
+    "dataStorageDescription": "Your data is stored locally in your browser. You can clear all data at any time.",
+    "clearAllData": "Clear All Data",
+    "apiKeyStorage": "API Key Storage",
+    "apiKeyStorageDescription": "Choose how you want to store your API keys.",
+    "localStorage": "Local Storage (persists between sessions)",
+    "sessionOnly": "Session Only (cleared when browser is closed)",
+    "version": "Version",
+    "createdBy": "Created by"
+  },
+  "languageToggle": {
+    "selectLanguage": "Select language"
+  }
+} 

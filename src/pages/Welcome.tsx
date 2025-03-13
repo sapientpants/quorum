@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { Button } from '../components/ui/button'
 import { Checkbox } from '../components/ui/checkbox'
+import { useTranslation } from 'react-i18next'
 
 export function Welcome() {
   const navigate = useNavigate()
   const [isVisible, setIsVisible] = React.useState(false)
   const [showConsent, setShowConsent] = React.useState(false)
   const [isChecked, setIsChecked] = React.useState(false)
+  const { t } = useTranslation()
   
   React.useEffect(() => {
     setIsVisible(true)
@@ -48,32 +50,32 @@ export function Welcome() {
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full px-4 py-2 font-medium shadow-lg shadow-purple-600/20">
               <div className="flex items-center gap-1">
                 <Icon icon="solar:magic-stick-linear" width="20" height="20" />
-                <span>AI-Powered Conversations</span>
+                <span>{t('welcome.title')}</span>
               </div>
             </div>
           </div>
           
           <p className="text-lg md:text-xl text-foreground mx-auto mb-8 leading-relaxed">
-            Chat with multiple LLMs in a round-table format
+            {t('welcome.subtitle')}
           </p>
           
           {/* Bullet points from the mockup */}
           <ul className="text-left max-w-lg mx-auto mb-8 space-y-3">
             <li className="flex items-start">
               <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-500 mt-1 mr-2 flex-shrink-0" />
-              <span className="text-foreground">Create custom AI participants with specific roles</span>
+              <span className="text-foreground">{t('welcome.features.customParticipants')}</span>
             </li>
             <li className="flex items-start">
               <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-500 mt-1 mr-2 flex-shrink-0" />
-              <span className="text-foreground">Facilitate natural multi-model conversations</span>
+              <span className="text-foreground">{t('welcome.features.multiModel')}</span>
             </li>
             <li className="flex items-start">
               <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-500 mt-1 mr-2 flex-shrink-0" />
-              <span className="text-foreground">Save and share your favorite configurations</span>
+              <span className="text-foreground">{t('welcome.features.saveConfigs')}</span>
             </li>
             <li className="flex items-start">
               <Icon icon="solar:check-circle-bold" className="w-5 h-5 text-purple-500 mt-1 mr-2 flex-shrink-0" />
-              <span className="text-foreground">Analyze conversation patterns and insights</span>
+              <span className="text-foreground">{t('welcome.features.analyze')}</span>
             </li>
           </ul>
           
@@ -81,8 +83,7 @@ export function Welcome() {
           <div className="bg-card/30 backdrop-blur-sm rounded-lg p-4 mb-8 border border-border/40 max-w-md mx-auto">
             <p className="text-sm text-foreground/70">
               <Icon icon="solar:info-circle-linear" className="inline-block w-4 h-4 mr-1" />
-              Requires API keys from LLM providers.
-              Usage may incur costs based on provider pricing.
+              {t('welcome.apiNote.text')}
             </p>
           </div>
           
@@ -91,7 +92,7 @@ export function Welcome() {
             className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 font-medium px-8 h-12 rounded-md shadow-lg hover:shadow-purple-600/30 transition-all inline-flex items-center justify-center gap-2 w-64 mx-auto"
             onClick={handleGetStarted}
           >
-            <span>Get Started</span>
+            <span>{t('welcome.getStarted')}</span>
           </Button>
         </div>
       </div>
@@ -101,22 +102,23 @@ export function Welcome() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="relative bg-card p-6 rounded-xl shadow-xl max-w-md w-full border border-border/30">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10 rounded-xl -z-10"></div>
-            <h2 className="text-xl font-bold mb-4 text-foreground">API Keys & Privacy Notice</h2>
+            <h2 className="text-xl font-bold mb-4 text-foreground">{t('welcome.consent.title')}</h2>
             
             <p className="mb-4 text-foreground">
-              Quorum requires API keys to function. Please note:
+              {t('welcome.consent.intro')}
             </p>
             
             <div className="space-y-4">
               <ul className="space-y-2 list-disc pl-5 text-foreground">
-                <li>Your API keys can be stored in your browser based on your preference</li>
-                <li>All processing happens in your browser - your conversations never leave your device</li>
-                <li>We don't have access to your API keys or data</li>
-                <li>You can choose how your keys are stored:
+                <li>{t('welcome.consent.points.storage')}</li>
+                <li>{t('welcome.consent.points.processing')}</li>
+                <li>{t('welcome.consent.points.access')}</li>
+                <li>
+                  {t('welcome.consent.points.options')}
                   <ul className="ml-4 mt-1 space-y-1 text-foreground/80">
-                    <li>Local Storage (persists between sessions)</li>
-                    <li>Session Storage (cleared when browser closes)</li>
-                    <li>No Storage (must re-enter each time)</li>
+                    <li>{t('welcome.consent.points.localStorage')}</li>
+                    <li>{t('welcome.consent.points.sessionStorage')}</li>
+                    <li>{t('welcome.consent.points.noStorage')}</li>
                   </ul>
                 </li>
               </ul>
@@ -131,7 +133,7 @@ export function Welcome() {
                   htmlFor="consent"
                   className="text-sm font-medium text-foreground cursor-pointer"
                 >
-                  I understand and agree to these terms
+                  {t('welcome.consent.agreement')}
                 </label>
               </div>
             </div>
@@ -142,14 +144,14 @@ export function Welcome() {
                 className="border-border text-foreground hover:bg-foreground/5"
                 onClick={() => setShowConsent(false)}
               >
-                Cancel
+                {t('welcome.consent.cancel')}
               </Button>
               <Button
                 className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 hover:shadow-lg hover:shadow-purple-600/20"
                 onClick={handleConsent}
                 disabled={!isChecked}
               >
-                Continue
+                {t('welcome.consent.continue')}
               </Button>
             </div>
           </div>
