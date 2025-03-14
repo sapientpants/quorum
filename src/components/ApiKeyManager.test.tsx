@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import ApiKeyManager from './ApiKeyManager'
-import { loadApiKeys, saveApiKeys, clearApiKeys } from '../services/apiKeyService'
+import { loadApiKeys, saveApiKeys } from '../services/apiKeyService'
 import type { LLMProvider } from '../types/llm'
 
 // Mock the API key service functions
@@ -22,7 +22,6 @@ vi.mock('../services/apiKeyService', () => ({
 // Get the mocked functions with proper typing
 const mockedLoadApiKeys = vi.mocked(loadApiKeys)
 const mockedSaveApiKeys = vi.mocked(saveApiKeys)
-const mockedClearApiKeys = vi.mocked(clearApiKeys)
 
 describe('ApiKeyManager', () => {
   const onApiKeyChangeMock = vi.fn()
@@ -88,16 +87,27 @@ describe('ApiKeyManager', () => {
     expect(onApiKeyChangeMock).toHaveBeenCalledWith('anthropic', 'anthropic-key')
   })
   
-  it('changes storage type when requested', () => {
-    render(<ApiKeyManager onApiKeyChange={onApiKeyChangeMock} />)
+  it('uses the provided storage option', () => {
+    // Render with session storage option
+    render(
+      <ApiKeyManager 
+        onApiKeyChange={onApiKeyChangeMock} 
+        storageOption={{ storage: 'session' }}
+      />
+    )
     
-    // Click the "Session Only" button
-    fireEvent.click(screen.getByText('Session Only'))
+    // Click the "Add New API Key" button
+    fireEvent.click(screen.getByText('Add New API Key'))
     
-    // Check that clearApiKeys was called
-    expect(mockedClearApiKeys).toHaveBeenCalledWith({ storage: 'local' })
+    // Enter and save a key
+    const keyInput = screen.getByPlaceholderText('Enter your openai API key')
+    fireEvent.change(keyInput, { target: { value: 'test-key' } })
+    fireEvent.click(screen.getByText('Add Key'))
     
-    // Check that the storage type explanation changed
-    expect(screen.getByText('Keys will be saved only for this session and cleared when you close the browser')).toBeInTheDocument()
+    // Check that the correct storage option was passed
+    expect(mockedSaveApiKeys).toHaveBeenCalledWith(
+      expect.any(Array),
+      { storage: 'session' }
+    )
   })
 }) 

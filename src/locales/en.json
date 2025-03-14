@@ -51,7 +51,7 @@
     "privacy": "Privacy & Storage",
     "about": "About",
     "llmDefaults": "LLM Defaults",
-    "apiKeysDescription": "Enter your API keys for the language model providers you want to use. Your keys are stored locally in your browser and are never sent to our servers.",
+    "apiKeysDescription": "Enter your API keys for the language model providers you want to use.",
     "participantsDescription": "Manage AI participants for your round table discussions. Create, edit, and organize participants with different roles and personalities.",
     "appearanceDescription": "Customize the appearance of the application.",
     "privacyDescription": "Manage your privacy, data storage, and security settings.",

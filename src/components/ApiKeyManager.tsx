@@ -12,7 +12,7 @@ import { Icon } from '@iconify/react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Badge } from './ui/badge'
 
 interface ApiKeyManagerProps {
@@ -32,7 +32,7 @@ export function ApiKeyManager({
   const [newKeyLabel, setNewKeyLabel] = useState<string>('')
   const [validationError, setValidationError] = useState<string | null>(null)
   const [isAddingNew, setIsAddingNew] = useState<boolean>(false)
-  const [storageType, setStorageType] = useState<'local' | 'session' | 'none'>(
+  const [storageType] = useState<'local' | 'session' | 'none'>(
     storageOption.storage
   )
 
@@ -145,25 +145,6 @@ export function ApiKeyManager({
     }
   }
 
-  // Change storage type
-  function handleStorageTypeChange(type: 'local' | 'session' | 'none') {
-    if (type !== storageType) {
-      // Clear keys from the old storage
-      clearApiKeys({ storage: storageType })
-      
-      // Set new storage type
-      setStorageType(type)
-      
-      // If switching to 'none', clear the keys from state too
-      if (type === 'none') {
-        setApiKeys([])
-      } else {
-        // Save current keys to the new storage
-        saveApiKeys(apiKeys, { storage: type })
-      }
-    }
-  }
-
   // Group API keys by provider
   const keysByProvider: Record<string, ApiKey[]> = {}
   apiKeys.forEach(key => {
@@ -175,50 +156,12 @@ export function ApiKeyManager({
 
   return (
     <div className="space-y-6">
-      {/* API Key Storage Preference */}
+      {/* API Key Management */}
       <Card>
         <CardHeader>
           <CardTitle>API Key Management</CardTitle>
-          <CardDescription>
-            Your API keys will be stored securely and never sent to our servers.
-          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-4">
-            <Label className="mb-2 block">Storage Preference</Label>
-            <div className="flex space-x-2 mb-2">
-              <Button
-                size="sm"
-                variant={storageType === 'local' ? 'primary' : 'outline'}
-                onClick={() => handleStorageTypeChange('local')}
-              >
-                <Icon icon="solar:database-outline" className="mr-1.5 h-4 w-4" />
-                Local Storage
-              </Button>
-              <Button
-                size="sm"
-                variant={storageType === 'session' ? 'primary' : 'outline'}
-                onClick={() => handleStorageTypeChange('session')}
-              >
-                <Icon icon="solar:clock-circle-outline" className="mr-1.5 h-4 w-4" />
-                Session Only
-              </Button>
-              <Button
-                size="sm"
-                variant={storageType === 'none' ? 'primary' : 'outline'}
-                onClick={() => handleStorageTypeChange('none')}
-              >
-                <Icon icon="solar:shield-cross-outline" className="mr-1.5 h-4 w-4" />
-                No Storage
-              </Button>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {storageType === 'local' && 'Keys will be saved in your browser and persist between sessions'}
-              {storageType === 'session' && 'Keys will be saved only for this session and cleared when you close the browser'}
-              {storageType === 'none' && 'Keys will not be saved and will be lost when you refresh the page'}
-            </p>
-          </div>
-      
           {/* Existing API keys */}
           {Object.entries(keysByProvider).length > 0 ? (
             <div className="space-y-4">
