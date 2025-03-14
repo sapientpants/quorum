@@ -142,20 +142,54 @@ export function Welcome() {
       )}
 
       {showConsentModal && (
-        <div role="dialog" className="modal">
-          <h2>API Keys & Privacy Notice</h2>
-          <div className="consent-options">
-            <input
-              type="checkbox"
-              role="checkbox"
-              checked={consentChecked}
-              onChange={() => setConsentChecked(!consentChecked)}
-            />
-            <span>I understand and agree to these terms</span>
-          </div>
-          <div className="modal-actions">
-            <button onClick={() => setShowConsentModal(false)}>Cancel</button>
-            <button disabled={!consentChecked} onClick={handleConsentContinue}>Continue</button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="relative bg-card p-6 rounded-xl shadow-xl max-w-md w-full border border-border/30 overflow-y-auto">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10 rounded-xl -z-10"></div>
+            
+            <h2 className="text-xl font-semibold mb-4 text-foreground">API Keys & Privacy Notice</h2>
+            
+            <div className="prose prose-sm text-foreground/80 mb-6">
+              <p>Your API keys are stored securely in your browser and are never sent to our servers.</p>
+              <p className="mt-2">These keys will be used to connect to the language models you choose to use in Quorum.</p>
+            </div>
+            
+            <div className="bg-muted/30 rounded-lg p-4 mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="relative flex items-start">
+                  <div className="flex h-5 items-center">
+                    <input
+                      type="checkbox"
+                      id="consent-checkbox"
+                      checked={consentChecked}
+                      onChange={() => setConsentChecked(!consentChecked)}
+                      className="h-4 w-4 rounded border-border text-purple-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                    />
+                  </div>
+                  <div className="ml-3 text-sm leading-6">
+                    <label htmlFor="consent-checkbox" className="font-medium text-foreground">
+                      I understand and agree to these terms
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowConsentModal(false)}
+                className="border-border/60 hover:bg-muted"
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={!consentChecked}
+                onClick={handleConsentContinue}
+                className={`bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 ${!consentChecked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-purple-600/30'}`}
+              >
+                Continue
+              </Button>
+            </div>
           </div>
         </div>
       )}

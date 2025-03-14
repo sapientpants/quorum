@@ -8,6 +8,12 @@ import {
   createApiKey, 
   validateApiKey 
 } from '../services/apiKeyService'
+import { Icon } from '@iconify/react'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
+import { Label } from './ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
+import { Badge } from './ui/badge'
 
 interface ApiKeyManagerProps {
   onApiKeyChange: (provider: string, apiKey: string) => void
@@ -168,212 +174,219 @@ export function ApiKeyManager({
   })
 
   return (
-    <div className="bg-base-200 rounded-lg p-4 mb-4">
-      <h2 className="text-lg font-semibold mb-4">API Key Management</h2>
+    <div className="space-y-6">
+      {/* API Key Storage Preference */}
+      <Card>
+        <CardHeader>
+          <CardTitle>API Key Management</CardTitle>
+          <CardDescription>
+            Your API keys will be stored securely and never sent to our servers.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <Label className="mb-2 block">Storage Preference</Label>
+            <div className="flex space-x-2 mb-2">
+              <Button
+                size="sm"
+                variant={storageType === 'local' ? 'primary' : 'outline'}
+                onClick={() => handleStorageTypeChange('local')}
+              >
+                <Icon icon="solar:database-outline" className="mr-1.5 h-4 w-4" />
+                Local Storage
+              </Button>
+              <Button
+                size="sm"
+                variant={storageType === 'session' ? 'primary' : 'outline'}
+                onClick={() => handleStorageTypeChange('session')}
+              >
+                <Icon icon="solar:clock-circle-outline" className="mr-1.5 h-4 w-4" />
+                Session Only
+              </Button>
+              <Button
+                size="sm"
+                variant={storageType === 'none' ? 'primary' : 'outline'}
+                onClick={() => handleStorageTypeChange('none')}
+              >
+                <Icon icon="solar:shield-cross-outline" className="mr-1.5 h-4 w-4" />
+                No Storage
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {storageType === 'local' && 'Keys will be saved in your browser and persist between sessions'}
+              {storageType === 'session' && 'Keys will be saved only for this session and cleared when you close the browser'}
+              {storageType === 'none' && 'Keys will not be saved and will be lost when you refresh the page'}
+            </p>
+          </div>
       
-      {/* Storage options */}
-      <div className="mb-4">
-        <label className="label">
-          <span className="label-text">Storage Preference</span>
-        </label>
-        <div className="btn-group">
-          <button 
-            className={`btn btn-sm ${storageType === 'local' ? 'bg-base-300' : ''}`}
-            onClick={() => handleStorageTypeChange('local')}
-          >
-            Local Storage
-          </button>
-          <button 
-            className={`btn btn-sm ${storageType === 'session' ? 'bg-base-300' : ''}`}
-            onClick={() => handleStorageTypeChange('session')}
-          >
-            Session Only
-          </button>
-          <button 
-            className={`btn btn-sm ${storageType === 'none' ? 'bg-base-300' : ''}`}
-            onClick={() => handleStorageTypeChange('none')}
-          >
-            No Storage
-          </button>
-        </div>
-        <label className="label">
-          <span className="label-text-alt">
-            {storageType === 'local' && 'Keys will be saved in your browser and persist between sessions'}
-            {storageType === 'session' && 'Keys will be saved only for this session and cleared when you close the browser'}
-            {storageType === 'none' && 'Keys will not be saved and will be lost when you refresh the page'}
-          </span>
-        </label>
-      </div>
-      
-      {/* Existing API keys */}
-      {Object.entries(keysByProvider).length > 0 ? (
-        <div className="mb-4">
-          <h3 className="text-md font-medium mb-2">Your API Keys</h3>
-          <div className="space-y-4">
-            {Object.entries(keysByProvider).map(([provider, keys]) => (
-              <div key={provider} className="bg-base-100 p-3 rounded-md">
-                <h4 className="font-medium capitalize mb-2">{provider}</h4>
-                <div className="space-y-2">
-                  {keys.map(key => (
-                    <div key={key.id} className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="font-medium">{key.label}</div>
-                        <div className="text-sm">
-                          {key.isVisible 
-                            ? key.key 
-                            : key.key.substring(0, 4) + '•'.repeat(Math.min(10, key.key.length - 8)) + key.key.substring(key.key.length - 4)
-                          }
-                        </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button 
-                          className="btn btn-sm btn-ghost"
-                          onClick={() => toggleKeyVisibility(key.id)}
-                        >
-                          {key.isVisible ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                            </svg>
-                          ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                          )}
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-ghost text-success"
-                          onClick={() => selectApiKey(key.provider, key.key)}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-ghost text-error"
-                          onClick={() => deleteApiKey(key.id)}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      </div>
+          {/* Existing API keys */}
+          {Object.entries(keysByProvider).length > 0 ? (
+            <div className="space-y-4">
+              <h3 className="font-medium text-base">Your API Keys</h3>
+              <div className="space-y-4">
+                {Object.entries(keysByProvider).map(([provider, keys]) => (
+                  <div key={provider} className="border border-border rounded-lg bg-background/50">
+                    <div className="px-4 py-3 border-b border-border">
+                      <h4 className="text-base font-medium capitalize">{provider}</h4>
                     </div>
-                  ))}
-                </div>
+                    <div className="p-4 space-y-3">
+                      {keys.map(key => (
+                        <div key={key.id} className="flex items-center justify-between bg-muted/40 border border-border/30 rounded-md p-3">
+                          <div className="flex-1 overflow-hidden">
+                            <div className="font-medium text-sm flex items-center">
+                              {key.label || provider}
+                              <Badge variant="outline" className="ml-2 text-xs">
+                                {key.provider}
+                              </Badge>
+                            </div>
+                            <div className="text-sm text-muted-foreground font-mono mt-1 overflow-hidden overflow-ellipsis">
+                              {key.isVisible 
+                                ? key.key 
+                                : key.key.substring(0, 4) + '•'.repeat(Math.min(10, key.key.length - 8)) + key.key.substring(key.key.length - 4)
+                              }
+                            </div>
+                          </div>
+                          <div className="flex space-x-1 ml-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => toggleKeyVisibility(key.id)}
+                            >
+                              <Icon 
+                                icon={key.isVisible ? "solar:eye-closed-linear" : "solar:eye-linear"} 
+                                className="h-4 w-4" 
+                              />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => selectApiKey(key.provider, key.key)}
+                              className="text-primary"
+                            >
+                              <Icon icon="solar:check-circle-linear" className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => deleteApiKey(key.id)}
+                              className="text-destructive"
+                            >
+                              <Icon icon="solar:trash-bin-trash-linear" className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          
-          <div className="mt-2">
-            <button 
-              className="btn btn-sm btn-outline btn-error"
-              onClick={handleClearAllKeys}
-            >
-              Clear All Keys
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="alert mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info shrink-0 w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>No API keys configured. Add a key to get started.</span>
-        </div>
-      )}
+            
+              <div className="pt-2">
+                <Button
+                  variant="error"
+                  size="sm"
+                  onClick={handleClearAllKeys}
+                >
+                  <Icon icon="solar:trash-bin-trash-linear" className="mr-1.5 h-4 w-4" />
+                  Clear All Keys
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-muted/50 border border-border/30 rounded-lg p-4 flex items-center space-x-3">
+              <Icon icon="solar:info-circle-linear" className="text-muted-foreground h-5 w-5 flex-shrink-0" />
+              <p className="text-sm text-muted-foreground">No API keys configured. Add a key to get started.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
       
       {/* Add new API key */}
       {isAddingNew ? (
-        <div className="bg-base-100 p-4 rounded-lg">
-          <h3 className="text-md font-medium mb-2">Add New API Key</h3>
-          
-          <div className="form-control w-full mb-2">
-            <label className="label">
-              <span className="label-text">Provider</span>
-            </label>
-            <select 
-              className="select select-bordered w-full"
-              value={selectedProvider}
-              onChange={(e) => setSelectedProvider(e.target.value as LLMProvider)}
-            >
-              <option value="openai">OpenAI</option>
-              <option value="anthropic">Anthropic</option>
-              <option value="cohere">Cohere</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          
-          <div className="form-control w-full mb-2">
-            <label className="label">
-              <span className="label-text">API Key</span>
-            </label>
-            <input
-              type="password"
-              value={newKeyValue}
-              onChange={(e) => setNewKeyValue(e.target.value)}
-              placeholder={`Enter your ${selectedProvider} API key`}
-              className="input input-bordered w-full"
-            />
-          </div>
-          
-          <div className="form-control w-full mb-4">
-            <label className="label">
-              <span className="label-text">Label (Optional)</span>
-            </label>
-            <input
-              type="text"
-              value={newKeyLabel}
-              onChange={(e) => setNewKeyLabel(e.target.value)}
-              placeholder="My API Key"
-              className="input input-bordered w-full"
-            />
-          </div>
-          
-          {validationError && (
-            <div className="alert alert-error mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{validationError}</span>
+        <Card>
+          <CardHeader>
+            <CardTitle>Add New API Key</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="provider-select">Provider</Label>
+                <div className="relative">
+                  <select
+                    id="provider-select"
+                    className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm appearance-none"
+                    value={selectedProvider}
+                    onChange={(e) => setSelectedProvider(e.target.value as LLMProvider)}
+                  >
+                    <option value="openai">OpenAI</option>
+                    <option value="anthropic">Anthropic</option>
+                    <option value="cohere">Cohere</option>
+                    <option value="grok">Grok</option>
+                    <option value="google">Google</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <Icon 
+                    icon="solar:alt-arrow-down-linear" 
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none opacity-70" 
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="api-key">API Key</Label>
+                <Input
+                  id="api-key"
+                  type="password"
+                  value={newKeyValue}
+                  onChange={(e) => setNewKeyValue(e.target.value)}
+                  placeholder={`Enter your ${selectedProvider} API key`}
+                />
+                {validationError && (
+                  <p className="text-sm text-destructive mt-1">{validationError}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="key-label">Label (Optional)</Label>
+                <Input
+                  id="key-label"
+                  type="text"
+                  value={newKeyLabel}
+                  onChange={(e) => setNewKeyLabel(e.target.value)}
+                  placeholder="My API Key"
+                />
+              </div>
+              
+              <div className="flex justify-end space-x-2 pt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsAddingNew(false)
+                    setValidationError(null)
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  variant="primary"
+                  onClick={addApiKey}
+                >
+                  Add Key
+                </Button>
+              </div>
             </div>
-          )}
-          
-          <div className="flex justify-end space-x-2">
-            <button 
-              className="btn btn-ghost"
-              onClick={() => {
-                setIsAddingNew(false)
-                setValidationError(null)
-                setNewKeyValue('')
-                setNewKeyLabel('')
-              }}
-            >
-              Cancel
-            </button>
-            <button 
-              className="btn btn-primary"
-              onClick={addApiKey}
-              disabled={!newKeyValue}
-            >
-              Add Key
-            </button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       ) : (
-        <button 
-          className="btn btn-primary"
+        <Button
+          variant="primary"
           onClick={() => setIsAddingNew(true)}
+          className="w-full"
         >
+          <Icon icon="solar:add-circle-linear" className="mr-1.5 h-4 w-4" />
           Add New API Key
-        </button>
+        </Button>
       )}
-      
-      <div className="mt-4">
-        <p className="text-sm text-base-content/70">
-          Your API keys are {storageType === 'none' ? 'not stored' : 'stored locally in your browser'} and never sent to our servers.
-        </p>
-      </div>
     </div>
   )
 }
