@@ -1,4 +1,4 @@
-import { useThemeContext } from '../contexts/ThemeContext'
+import { useThemeContext } from '../hooks/useThemeContext'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@iconify/react'
 import { Button } from '@heroui/react'

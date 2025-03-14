@@ -1,4 +1,4 @@
-import { useLanguageContext } from '../contexts/LanguageContext'
+import { useLanguageContext } from '../hooks/useLanguageContext'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@iconify/react'
 import {

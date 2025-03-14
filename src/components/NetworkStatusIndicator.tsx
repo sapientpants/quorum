@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useError } from '../contexts/ErrorContext';
+import { useError } from '../hooks/useErrorContext';
 import { ConnectionQuality } from '../utils/network';
 import { 
   Wifi, 

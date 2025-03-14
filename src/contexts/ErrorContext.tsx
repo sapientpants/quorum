@@ -1,32 +1,9 @@
-import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { LLMError } from '../services/llm/errors';
 import { getConnectionQuality, ConnectionQuality } from '../utils/network';
-
-interface ErrorContextType {
-  apiError: LLMError | Error | null;
-  setApiError: (error: LLMError | Error | null) => void;
-  showApiErrorModal: boolean;
-  setShowApiErrorModal: (show: boolean) => void;
-  networkStatus: ConnectionQuality;
-  isOnline: boolean;
-  isLowBandwidth: boolean;
-  currentProvider: string | null;
-  setCurrentProvider: (provider: string | null) => void;
-  clearError: () => void;
-}
-
-const ErrorContext = createContext<ErrorContextType | undefined>(undefined);
-
-// Custom hook to use the error context
-export function useError() {
-  const context = useContext(ErrorContext);
-  if (!context) {
-    throw new Error('useError must be used within an ErrorProvider');
-  }
-  return context;
-}
+import { ErrorContext, ErrorContextType } from './contexts/ErrorContextDefinition';
 
 interface ErrorProviderProps {
   children: ReactNode;
@@ -105,7 +82,7 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
   }, [apiError]);
 
   // The value provided to consumers
-  const value = {
+  const value: ErrorContextType = {
     apiError,
     setApiError,
     showApiErrorModal,

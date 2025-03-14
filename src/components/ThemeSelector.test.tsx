@@ -41,18 +41,25 @@ vi.mock('@heroui/react', async () => {
   }
 })
 
-// Mock the useThemeContext
+// Mock the useThemeContext - now imported from hooks directory
 const toggleThemeMock = vi.fn()
 let mockIsDark = false
 let mockEffectiveTheme = 'light'
 
-vi.mock('../contexts/ThemeContext', () => ({
+vi.mock('../hooks/useThemeContext', () => ({
   useThemeContext: () => ({
     effectiveTheme: mockEffectiveTheme,
     isDark: mockIsDark,
     isLight: !mockIsDark,
     toggleTheme: toggleThemeMock
-  }),
+  })
+}))
+
+// Mock the ThemeContext
+vi.mock('../contexts/ThemeContext', () => ({
+  ThemeContext: {
+    Provider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
+  },
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 }))
 

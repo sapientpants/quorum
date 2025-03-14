@@ -1,18 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { useState, useEffect, ReactNode } from 'react'
 import i18n from '../lib/i18n'
-
-interface LanguageContextType {
-  language: string
-  changeLanguage: (lang: string) => void
-  availableLanguages: { code: string; name: string }[]
-}
-
-const availableLanguages = [
-  { code: 'en', name: 'English' },
-  { code: 'de', name: 'Deutsch' }
-]
-
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+import { LanguageContext, LanguageContextType, availableLanguages } from './contexts/LanguageContextDefinition'
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState(i18n.language || 'en')
@@ -33,19 +21,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const value: LanguageContextType = {
+    language,
+    changeLanguage,
+    availableLanguages
+  }
+
   return (
-    <LanguageContext.Provider value={{ language, changeLanguage, availableLanguages }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   )
-}
-
-export function useLanguageContext() {
-  const context = useContext(LanguageContext)
-  
-  if (context === undefined) {
-    throw new Error('useLanguageContext must be used within a LanguageProvider')
-  }
-  
-  return context
 } 

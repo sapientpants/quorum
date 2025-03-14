@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { LLMError, LLMErrorType } from '../services/llm/errors';
-import { useError } from '../contexts/ErrorContext';
+import { useError } from '../hooks/useErrorContext';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
