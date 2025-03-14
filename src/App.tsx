@@ -2,6 +2,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { Suspense } from 'react'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ErrorProvider } from './contexts/ErrorContext'
+import { LanguageProvider } from './contexts/LanguageContext'
 import { Toaster } from 'sonner'
 import './lib/i18n' // Initialize i18n
 import { AppRoutes } from './routes'
@@ -14,11 +15,13 @@ export function App() {
     <Suspense fallback={<Loading />}>
       <ThemeProvider>
         <ErrorProvider>
-          <Router>
-            <AppRoutes />
-            <Toaster richColors position="top-right" />
-            <KeyboardShortcutsOverlay />
-          </Router>
+          <LanguageProvider>
+            <Router>
+              <AppRoutes />
+              <Toaster richColors position="top-right" />
+              <KeyboardShortcutsOverlay />
+            </Router>
+          </LanguageProvider>
         </ErrorProvider>
       </ThemeProvider>
     </Suspense>
