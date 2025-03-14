@@ -14,6 +14,7 @@ import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Badge } from './ui/badge'
+import { useTranslation } from 'react-i18next'
 
 interface ApiKeyManagerProps {
   onApiKeyChange: (provider: string, apiKey: string) => void
@@ -26,6 +27,7 @@ export function ApiKeyManager({
   initialApiKeys = [], 
   storageOption = { storage: 'local' } 
 }: ApiKeyManagerProps) {
+  const { t } = useTranslation()
   const [apiKeys, setApiKeys] = useState<ApiKey[]>(initialApiKeys)
   const [selectedProvider, setSelectedProvider] = useState<LLMProvider>('openai')
   const [newKeyValue, setNewKeyValue] = useState<string>('')
@@ -97,14 +99,14 @@ export function ApiKeyManager({
   // Add a new API key
   function addApiKey() {
     if (!newKeyValue) {
-      setValidationError('API key is required')
+      setValidationError(t('settings.apiKeyManager.apiKeyRequired'))
       return
     }
     
     // Validate the key
     const validationResult = validateApiKey(selectedProvider, newKeyValue)
     if (!validationResult.isValid) {
-      setValidationError(validationResult.message || 'Invalid API key')
+      setValidationError(validationResult.message || t('settings.apiKeyManager.invalidApiKey'))
       return
     }
     
@@ -133,7 +135,7 @@ export function ApiKeyManager({
 
   // Clear all API keys
   function handleClearAllKeys() {
-    if (confirm('Are you sure you want to remove all API keys? This cannot be undone.')) {
+    if (confirm(t('settings.apiKeyManager.clearConfirmation'))) {
       clearApiKeys({ storage: storageType })
       setApiKeys([])
       
@@ -159,13 +161,13 @@ export function ApiKeyManager({
       {/* API Key Management */}
       <Card>
         <CardHeader>
-          <CardTitle>API Key Management</CardTitle>
+          <CardTitle>{t('settings.apiKeyManager.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           {/* Existing API keys */}
           {Object.entries(keysByProvider).length > 0 ? (
             <div className="space-y-4">
-              <h3 className="font-medium text-base">Your API Keys</h3>
+              <h3 className="font-medium text-base">{t('settings.apiKeyManager.yourApiKeys')}</h3>
               <div className="space-y-4">
                 {Object.entries(keysByProvider).map(([provider, keys]) => (
                   <div key={provider} className="border border-border rounded-lg bg-background/50">
@@ -231,14 +233,14 @@ export function ApiKeyManager({
                   onClick={handleClearAllKeys}
                 >
                   <Icon icon="solar:trash-bin-trash-linear" className="mr-1.5 h-4 w-4" />
-                  Clear All Keys
+                  {t('settings.apiKeyManager.clearAllKeys')}
                 </Button>
               </div>
             </div>
           ) : (
             <div className="bg-muted/50 border border-border/30 rounded-lg p-4 flex items-center space-x-3">
               <Icon icon="solar:info-circle-linear" className="text-muted-foreground h-5 w-5 flex-shrink-0" />
-              <p className="text-sm text-muted-foreground">No API keys configured. Add a key to get started.</p>
+              <p className="text-sm text-muted-foreground">{t('settings.apiKeyManager.noKeysConfigured')}</p>
             </div>
           )}
         </CardContent>
@@ -248,12 +250,12 @@ export function ApiKeyManager({
       {isAddingNew ? (
         <Card>
           <CardHeader>
-            <CardTitle>Add New API Key</CardTitle>
+            <CardTitle>{t('settings.apiKeyManager.addNewApiKey')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="provider-select">Provider</Label>
+                <Label htmlFor="provider-select">{t('settings.apiKeyManager.provider')}</Label>
                 <div className="relative">
                   <select
                     id="provider-select"
@@ -276,7 +278,7 @@ export function ApiKeyManager({
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="api-key">API Key</Label>
+                <Label htmlFor="api-key">{t('settings.apiKeyManager.apiKey')}</Label>
                 <Input
                   id="api-key"
                   type="password"
@@ -290,13 +292,13 @@ export function ApiKeyManager({
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="key-label">Label (Optional)</Label>
+                <Label htmlFor="key-label">{t('settings.apiKeyManager.label')}</Label>
                 <Input
                   id="key-label"
                   type="text"
                   value={newKeyLabel}
                   onChange={(e) => setNewKeyLabel(e.target.value)}
-                  placeholder="My API Key"
+                  placeholder={t('settings.apiKeyManager.labelPlaceholder')}
                 />
               </div>
               
@@ -308,13 +310,13 @@ export function ApiKeyManager({
                     setValidationError(null)
                   }}
                 >
-                  Cancel
+                  {t('settings.cancel')}
                 </Button>
                 <Button 
                   variant="primary"
                   onClick={addApiKey}
                 >
-                  Add Key
+                  {t('settings.apiKeyManager.addKey')}
                 </Button>
               </div>
             </div>
@@ -327,7 +329,7 @@ export function ApiKeyManager({
           className="w-full"
         >
           <Icon icon="solar:add-circle-linear" className="mr-1.5 h-4 w-4" />
-          Add New API Key
+          {t('settings.apiKeyManager.addNewApiKey')}
         </Button>
       )}
     </div>

@@ -51,7 +51,7 @@
     "privacy": "Datenschutz & Speicherung",
     "about": "Über",
     "llmDefaults": "LLM-Standardeinstellungen",
-    "apiKeysDescription": "Gib deine API-Schlüssel für die Sprachmodell-Anbieter ein, die du verwenden möchtest. Deine Schlüssel werden lokal in deinem Browser gespeichert und niemals an unsere Server gesendet.",
+    "apiKeysDescription": "Gib deine API-Schlüssel für die Sprachmodell-Anbieter ein, die du verwenden möchtest.",
     "participantsDescription": "Verwalte KI-Teilnehmer für deine Roundtable-Diskussionen. Erstelle, bearbeite und organisiere Teilnehmer mit verschiedenen Rollen und Persönlichkeiten.",
     "appearanceDescription": "Passe das Erscheinungsbild der Anwendung an.",
     "privacyDescription": "Verwalte deine Datenschutz-, Speicher- und Sicherheitseinstellungen.",
@@ -107,7 +107,22 @@
     "close": "Schließen",
     "download": "Herunterladen",
     "exportError": "Fehler beim Exportieren der Daten",
-    "downloadError": "Fehler beim Herunterladen der Daten"
+    "downloadError": "Fehler beim Herunterladen der Daten",
+    "apiKeyManager": {
+      "title": "API-Schlüssel-Verwaltung",
+      "yourApiKeys": "Deine API-Schlüssel",
+      "addNewApiKey": "Neuen API-Schlüssel hinzufügen",
+      "provider": "Anbieter",
+      "apiKey": "API-Schlüssel",
+      "label": "Bezeichnung (Optional)",
+      "labelPlaceholder": "Mein API-Schlüssel",
+      "addKey": "Schlüssel hinzufügen",
+      "clearAllKeys": "Alle Schlüssel löschen",
+      "noKeysConfigured": "Keine API-Schlüssel konfiguriert. Füge einen Schlüssel hinzu, um zu beginnen.",
+      "apiKeyRequired": "API-Schlüssel ist erforderlich",
+      "invalidApiKey": "Ungültiger API-Schlüssel",
+      "clearConfirmation": "Bist du sicher, dass du alle API-Schlüssel entfernen möchtest? Dies kann nicht rückgängig gemacht werden."
+    }
   },
   "errors": {
     "unknownError": "Ein unbekannter Fehler ist aufgetreten",
