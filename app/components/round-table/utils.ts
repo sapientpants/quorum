@@ -18,6 +18,26 @@ export function calculateCircularPositions(
   if (count === 0) return []
   if (count === 1) return [{ x: 50, y: 50 }]
 
+  // Calculate responsive radius based on viewport
+  const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024
+  
+  // Adjust radius for smaller screens or when there are many participants
+  let responsiveRadius = radius
+  
+  // On smaller screens, reduce the radius
+  if (viewportWidth < 640) {
+    responsiveRadius = Math.min(35, radius) // Smaller radius on mobile
+  } else if (viewportWidth < 768) {
+    responsiveRadius = Math.min(38, radius) // Slightly larger on tablets
+  }
+  
+  // If there are many participants, adjust the radius further
+  if (count > 6) {
+    responsiveRadius = Math.min(responsiveRadius, 45) // Ensure participants don't go off-screen
+  } else if (count <= 3) {
+    responsiveRadius = Math.max(responsiveRadius, 30) // For fewer participants, keep them closer to center
+  }
+  
   const positions: CircularPosition[] = []
   const angleStep = 360 / count
   const centerX = 50
@@ -26,8 +46,8 @@ export function calculateCircularPositions(
   for (let i = 0; i < count; i++) {
     const angle = (startAngle + i * angleStep) * (Math.PI / 180)
     positions.push({
-      x: centerX + radius * Math.cos(angle),
-      y: centerY + radius * Math.sin(angle)
+      x: centerX + responsiveRadius * Math.cos(angle),
+      y: centerY + responsiveRadius * Math.sin(angle)
     })
   }
 

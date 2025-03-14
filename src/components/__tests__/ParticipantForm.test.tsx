@@ -30,7 +30,7 @@ describe('ParticipantForm', () => {
   it('shows validation errors for required fields', async () => {
     render(<ParticipantForm {...defaultProps} />)
 
-    fireEvent.click(screen.getByText(/save participant/i))
+    fireEvent.click(screen.getByText(/create participant/i))
 
     await waitFor(() => {
       expect(screen.getByText(/name is required/i)).toBeInTheDocument()
@@ -101,7 +101,7 @@ describe('ParticipantForm', () => {
     await userEvent.type(maxTokensInput, '2000')
 
     // Submit form
-    const submitButton = screen.getByText(/save participant/i)
+    const submitButton = screen.getByText(/create participant/i)
     await userEvent.click(submitButton)
 
     await waitFor(() => {

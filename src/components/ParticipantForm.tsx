@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -49,7 +49,22 @@ const systemPromptExamples = [
 export function ParticipantForm({ initialData, onSubmit, onCancel }: ParticipantFormProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [showExamples, setShowExamples] = useState(false)
+  const [isMobileView, setIsMobileView] = useState(false)
   const sortedProviders = [...SUPPORTED_PROVIDERS].sort() as LLMProvider[]
+
+  // Detect mobile view
+  useEffect(() => {
+    const checkMobileView = () => {
+      setIsMobileView(window.innerWidth < 768)
+    }
+    
+    checkMobileView()
+    window.addEventListener('resize', checkMobileView)
+    
+    return () => {
+      window.removeEventListener('resize', checkMobileView)
+    }
+  }, [])
 
   const {
     register,
@@ -81,19 +96,35 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
   }, [setValue, setShowExamples])
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 bg-base-100 p-5 rounded-lg shadow-sm">
-      <h2 className="text-xl font-semibold mb-4">Participant Configuration</h2>
+    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 bg-base-100 p-3 sm:p-5 rounded-lg shadow-sm max-w-4xl mx-auto">
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg sm:text-xl font-semibold">Participant Configuration</h2>
+        
+        {/* Mobile-optimized form navigation */}
+        {isMobileView && (
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="btn btn-sm btn-ghost"
+              aria-label="Cancel"
+            >
+              <Icon icon="solar:close-circle-bold" className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+      </div>
       
       {/* Basic Information */}
       <div className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium">
+          <label htmlFor="name" className="block text-sm font-medium mb-1">
             Name
           </label>
           <input
             type="text"
             id="name"
-            className="input input-bordered w-full mt-1"
+            className="input input-bordered w-full p-3 text-base"
             placeholder="e.g., Medical Expert"
             {...register('name')}
           />
@@ -104,12 +135,12 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="provider" className="block text-sm font-medium">
+            <label htmlFor="provider" className="block text-sm font-medium mb-1">
               Provider
             </label>
             <select
               id="provider"
-              className="select select-bordered w-full mt-1"
+              className="select select-bordered w-full p-3 text-base h-auto min-h-12"
               {...register('provider')}
             >
               {sortedProviders.map(provider => (
@@ -124,12 +155,12 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
           </div>
 
           <div>
-            <label htmlFor="model" className="block text-sm font-medium">
+            <label htmlFor="model" className="block text-sm font-medium mb-1">
               Model
             </label>
             <select
               id="model"
-              className="select select-bordered w-full mt-1"
+              className="select select-bordered w-full p-3 text-base h-auto min-h-12"
               {...register('model')}
             >
               {models.map(model => (
@@ -147,12 +178,12 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
 
       {/* Role Description */}
       <div>
-        <label htmlFor="roleDescription" className="block text-sm font-medium">
+        <label htmlFor="roleDescription" className="block text-sm font-medium mb-1">
           Role Description
         </label>
         <textarea
           id="roleDescription"
-          className="textarea textarea-bordered w-full mt-1 h-20"
+          className="textarea textarea-bordered w-full p-3 text-base h-20 sm:h-24"
           placeholder="Describe the role this participant will play in the conversation..."
           {...register('roleDescription')}
         />
@@ -169,7 +200,7 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
           </label>
           <button
             type="button"
-            className="text-xs btn btn-ghost btn-xs"
+            className="text-xs btn btn-ghost btn-sm"
             onClick={() => setShowExamples(!showExamples)}
           >
             {showExamples ? 'Hide Examples' : 'Show Examples'}
@@ -179,13 +210,13 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
         {showExamples && (
           <div className="bg-base-200 p-3 rounded-md mb-2 text-sm">
             <h4 className="font-medium mb-2">Example Prompts:</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {systemPromptExamples.map((example, index) => (
                 <li key={index} className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => handleExamplePrompt(example)}
-                    className="btn btn-xs btn-ghost"
+                    className="btn btn-sm btn-ghost h-auto py-2"
                   >
                     Use
                   </button>
@@ -198,7 +229,7 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
         
         <textarea
           id="systemPrompt"
-          className="textarea textarea-bordered w-full h-32"
+          className="textarea textarea-bordered w-full p-3 text-base h-32 sm:h-40"
           placeholder="Enter the system prompt that defines this participant's behavior..."
           {...register('systemPrompt')}
         />
@@ -214,7 +245,7 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
       <div>
         <button
           type="button"
-          className="btn btn-ghost btn-sm gap-2"
+          className="btn btn-ghost btn-sm gap-2 h-auto py-2 px-3"
           onClick={() => setShowAdvanced(!showAdvanced)}
         >
           <Icon 
@@ -226,9 +257,9 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
 
         {showAdvanced && (
           <div className="mt-4 space-y-4 p-4 bg-base-200 rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
-                <label htmlFor="temperature" className="block text-sm font-medium">
+                <label htmlFor="temperature" className="block text-sm font-medium mb-1">
                   Temperature (0-2)
                 </label>
                 <div className="flex items-center gap-3">
@@ -238,7 +269,7 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
                     step="0.1"
                     min="0"
                     max="2"
-                    className="range range-sm"
+                    className="range range-sm flex-1"
                     {...register('settings.temperature', { valueAsNumber: true })}
                   />
                   <span className="text-sm font-mono w-10">
@@ -248,32 +279,23 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
                 <p className="text-xs mt-1 text-base-content/70">
                   Lower values (0-0.5) produce more consistent outputs. Higher values (0.7-2) make responses more creative.
                 </p>
-                {errors.settings?.temperature && (
-                  <p className="text-error text-sm mt-1">
-                    {errors.settings.temperature.message}
-                  </p>
-                )}
               </div>
 
               <div>
-                <label htmlFor="maxTokens" className="block text-sm font-medium">
+                <label htmlFor="maxTokens" className="block text-sm font-medium mb-1">
                   Max Tokens
                 </label>
                 <input
                   type="number"
                   id="maxTokens"
-                  min="1"
-                  className="input input-bordered w-full mt-1"
+                  className="input input-bordered w-full p-3 text-base"
+                  min="100"
+                  step="100"
                   {...register('settings.maxTokens', { valueAsNumber: true })}
                 />
                 <p className="text-xs mt-1 text-base-content/70">
-                  Maximum number of tokens to generate. Higher values allow for longer responses.
+                  Maximum number of tokens to generate in the response.
                 </p>
-                {errors.settings?.maxTokens && (
-                  <p className="text-error text-sm mt-1">
-                    {errors.settings.maxTokens.message}
-                  </p>
-                )}
               </div>
             </div>
           </div>
@@ -281,27 +303,28 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
       </div>
 
       {/* Form Actions */}
-      <div className="flex justify-end gap-2 pt-2">
-        <button
-          type="button"
-          className="btn btn-ghost"
-          onClick={onCancel}
-          disabled={isSubmitting}
-        >
-          Cancel
-        </button>
+      <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-base-300">
+        {!isMobileView && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="btn btn-ghost order-2 sm:order-1 h-auto py-3"
+          >
+            Cancel
+          </button>
+        )}
         <button
           type="submit"
-          className="btn btn-primary"
           disabled={isSubmitting}
+          className="btn btn-primary flex-1 order-1 sm:order-2 h-auto py-3"
         >
           {isSubmitting ? (
             <>
-              <Icon icon="solar:spinner-line-duotone" className="animate-spin" />
+              <span className="loading loading-spinner loading-sm"></span>
               Saving...
             </>
           ) : (
-            'Save Participant'
+            initialData?.name ? 'Update Participant' : 'Create Participant'
           )}
         </button>
       </div>

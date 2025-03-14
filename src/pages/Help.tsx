@@ -4,12 +4,32 @@ import { Input } from '../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { ScrollArea } from '../components/ui/scroll-area'
-import { SearchIcon, PlayIcon, BookOpenIcon, LightbulbIcon, HelpCircleIcon } from 'lucide-react'
+import { SearchIcon, PlayIcon, BookOpenIcon, LightbulbIcon, HelpCircleIcon, MenuIcon, XIcon } from 'lucide-react'
 
 export function Help() {
   const [activeSection, setActiveSection] = useState('getting-started')
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredTopics, setFilteredTopics] = useState<HelpTopic[]>([])
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const [isMobileView, setIsMobileView] = useState(false)
+  
+  // Detect mobile view
+  useEffect(() => {
+    const checkMobileView = () => {
+      const isMobile = window.innerWidth < 768
+      setIsMobileView(isMobile)
+      if (!isMobile && showMobileMenu) {
+        setShowMobileMenu(false)
+      }
+    }
+    
+    checkMobileView()
+    window.addEventListener('resize', checkMobileView)
+    
+    return () => {
+      window.removeEventListener('resize', checkMobileView)
+    }
+  }, [showMobileMenu])
   
   // Help content data structure - wrapped in useMemo to prevent unnecessary re-renders
   const helpTopics = useMemo<HelpTopic[]>(() => [
@@ -231,29 +251,33 @@ export function Help() {
   
   // Filter topics based on search term
   useEffect(() => {
-    if (searchTerm.trim() === '') {
+    if (!searchTerm.trim()) {
       setFilteredTopics([])
       return
     }
     
-    const searchLower = searchTerm.toLowerCase()
-    const results = helpTopics.filter(topic => {
-      // Search in title, content, tags
-      if (topic.title.toLowerCase().includes(searchLower) || 
-          topic.content.toLowerCase().includes(searchLower)) {
+    const searchTermLower = searchTerm.toLowerCase()
+    const filtered = helpTopics.filter(topic => {
+      // Check title and content
+      if (
+        topic.title.toLowerCase().includes(searchTermLower) ||
+        topic.content.toLowerCase().includes(searchTermLower)
+      ) {
         return true
       }
       
-      // Search in tags
-      if (topic.tags.some(tag => tag.toLowerCase().includes(searchLower))) {
+      // Check tags
+      if (topic.tags.some(tag => tag.toLowerCase().includes(searchTermLower))) {
         return true
       }
       
-      // Search in sections
+      // Check sections
       if (topic.sections.some(section => 
-        section.title.toLowerCase().includes(searchLower) || 
-        section.content.toLowerCase().includes(searchLower) ||
-        (section.isList && section.listItems?.some(item => item.toLowerCase().includes(searchLower)))
+        section.title.toLowerCase().includes(searchTermLower) ||
+        section.content.toLowerCase().includes(searchTermLower) ||
+        (section.listItems && section.listItems.some(item => 
+          item.toLowerCase().includes(searchTermLower)
+        ))
       )) {
         return true
       }
@@ -261,8 +285,16 @@ export function Help() {
       return false
     })
     
-    setFilteredTopics(results)
+    setFilteredTopics(filtered)
   }, [searchTerm, helpTopics])
+  
+  // Handle topic selection from mobile menu
+  const handleTopicSelect = (topicId: string) => {
+    setActiveSection(topicId)
+    if (isMobileView) {
+      setShowMobileMenu(false)
+    }
+  }
   
   // Render search results
   const renderSearchResults = () => {
@@ -284,20 +316,23 @@ export function Help() {
     
     return (
       <div className="space-y-4">
-        <h2 className="text-xl font-bold">Search Results</h2>
+        <h2 className="text-xl font-bold">Search Results ({filteredTopics.length})</h2>
         {filteredTopics.map(topic => (
-          <Card key={topic.id} className="cursor-pointer hover:bg-accent/50 transition-colors" 
-                onClick={() => {
-                  setActiveSection(topic.id)
-                  setSearchTerm('')
-                }}>
-            <CardHeader className="py-4">
-              <CardTitle>{topic.title}</CardTitle>
+          <Card 
+            key={topic.id} 
+            className="cursor-pointer hover:bg-accent/50 transition-colors" 
+            onClick={() => {
+              handleTopicSelect(topic.id)
+              setSearchTerm('')
+            }}
+          >
+            <CardHeader className="py-3 px-4">
+              <CardTitle className="text-base sm:text-lg">{topic.title}</CardTitle>
               <CardDescription className="text-xs">
                 Category: {topic.category.charAt(0).toUpperCase() + topic.category.slice(1)}
               </CardDescription>
             </CardHeader>
-            <CardContent className="py-2">
+            <CardContent className="py-2 px-4">
               <p className="text-sm line-clamp-2">{topic.content}</p>
             </CardContent>
           </Card>
@@ -313,41 +348,41 @@ export function Help() {
     
     return (
       <div>
-        <h2 className="text-2xl font-bold mb-4">{currentTopic.title}</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">{currentTopic.title}</h2>
         <p className="mb-4">{currentTopic.content}</p>
         
         {currentTopic.sections.map((section, index) => (
           <div key={index} className="mb-6">
-            <h3 className="text-xl font-semibold mb-2">{section.title}</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-2">{section.title}</h3>
             <p className="mb-2">{section.content}</p>
             
             {section.isList && section.listItems && (
               <ol className="list-decimal pl-5 space-y-2 mb-4">
                 {section.listItems.map((item, idx) => (
-                  <li key={idx}>{item}</li>
+                  <li key={idx} className="text-sm sm:text-base">{item}</li>
                 ))}
               </ol>
             )}
             
             {section.isVideo && (
-              <div className="mt-2 bg-accent/30 rounded-md p-3 flex items-center space-x-3">
-                <div className="relative flex-shrink-0">
+              <div className="mt-2 bg-accent/30 rounded-md p-3 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="relative flex-shrink-0 mx-auto sm:mx-0">
                   <img 
                     src={section.videoThumb} 
                     alt={`Thumbnail for ${section.title}`} 
-                    className="w-20 h-12 object-cover rounded-md"
+                    className="w-full sm:w-40 max-w-xs object-cover rounded-md"
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <PlayIcon className="h-6 w-6 text-primary bg-background/80 rounded-full p-1" />
+                    <PlayIcon className="h-10 w-10 sm:h-8 sm:w-8 text-primary bg-background/80 rounded-full p-1" />
                   </div>
                 </div>
-                <div>
+                <div className="text-center sm:text-left">
                   <p className="text-sm font-medium">{section.title}</p>
                   <a 
                     href={section.videoUrl} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="text-xs text-blue-500 hover:underline"
+                    className="text-xs text-blue-500 hover:underline mt-1 inline-block"
                   >
                     Watch video
                   </a>
@@ -360,9 +395,44 @@ export function Help() {
     )
   }
   
+  // Render the topic list for a given category
+  const renderTopicList = (category: HelpTopic['category']) => {
+    const topics = helpTopics.filter(topic => topic.category === category)
+    
+    return (
+      <div className="flex flex-col gap-2">
+        {topics.map(topic => (
+          <Button 
+            key={topic.id}
+            variant={activeSection === topic.id ? 'default' : 'ghost'}
+            onClick={() => handleTopicSelect(topic.id)}
+            className="justify-start text-left h-auto py-2 px-3"
+          >
+            <span className="truncate">{topic.title}</span>
+          </Button>
+        ))}
+      </div>
+    )
+  }
+  
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Help Center</h1>
+    <div className="max-w-4xl mx-auto p-3 sm:p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">Help Center</h1>
+        
+        {/* Mobile menu toggle */}
+        {isMobileView && (
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            aria-label={showMobileMenu ? "Close menu" : "Open menu"}
+            className="w-8 h-8 p-0 flex items-center justify-center"
+          >
+            {showMobileMenu ? <XIcon className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
+          </Button>
+        )}
+      </div>
       
       <div className="mb-6">
         <div className="relative">
@@ -380,81 +450,54 @@ export function Help() {
         renderSearchResults()
       ) : (
         <div className="flex flex-col md:flex-row gap-6">
-          <div className="w-full md:w-1/4">
+          {/* Sidebar - either fixed or mobile overlay */}
+          <div 
+            className={`
+              ${isMobileView && !showMobileMenu ? 'hidden' : 'block'} 
+              ${isMobileView && showMobileMenu ? 'fixed inset-0 z-50 bg-background pt-16 px-4' : 'w-full md:w-1/4'}
+            `}
+          >
             <Tabs defaultValue="basics" className="w-full">
               <TabsList className="w-full flex justify-between mb-4">
                 <TabsTrigger value="basics" className="flex-1">
                   <BookOpenIcon className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">Basics</span>
+                  <span className="hidden xs:inline">Basics</span>
                 </TabsTrigger>
                 <TabsTrigger value="features" className="flex-1">
                   <LightbulbIcon className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">Features</span>
+                  <span className="hidden xs:inline">Features</span>
+                </TabsTrigger>
+                <TabsTrigger value="configuration" className="flex-1">
+                  <HelpCircleIcon className="h-4 w-4 mr-1" />
+                  <span className="hidden xs:inline">Config</span>
                 </TabsTrigger>
                 <TabsTrigger value="support" className="flex-1">
                   <HelpCircleIcon className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">Support</span>
+                  <span className="hidden xs:inline">Support</span>
                 </TabsTrigger>
               </TabsList>
               
               <TabsContent value="basics" className="mt-0">
-                <div className="flex flex-col gap-2 sticky top-20">
-                  {helpTopics
-                    .filter(topic => topic.category === 'basics')
-                    .map(topic => (
-                      <Button 
-                        key={topic.id}
-                        variant={activeSection === topic.id ? 'default' : 'ghost'}
-                        onClick={() => setActiveSection(topic.id)}
-                        className="justify-start"
-                      >
-                        {topic.title}
-                      </Button>
-                    ))
-                  }
-                </div>
+                {renderTopicList('basics')}
               </TabsContent>
               
               <TabsContent value="features" className="mt-0">
-                <div className="flex flex-col gap-2 sticky top-20">
-                  {helpTopics
-                    .filter(topic => topic.category === 'features')
-                    .map(topic => (
-                      <Button 
-                        key={topic.id}
-                        variant={activeSection === topic.id ? 'default' : 'ghost'}
-                        onClick={() => setActiveSection(topic.id)}
-                        className="justify-start"
-                      >
-                        {topic.title}
-                      </Button>
-                    ))
-                  }
-                </div>
+                {renderTopicList('features')}
+              </TabsContent>
+              
+              <TabsContent value="configuration" className="mt-0">
+                {renderTopicList('configuration')}
               </TabsContent>
               
               <TabsContent value="support" className="mt-0">
-                <div className="flex flex-col gap-2 sticky top-20">
-                  {helpTopics
-                    .filter(topic => topic.category === 'support')
-                    .map(topic => (
-                      <Button 
-                        key={topic.id}
-                        variant={activeSection === topic.id ? 'default' : 'ghost'}
-                        onClick={() => setActiveSection(topic.id)}
-                        className="justify-start"
-                      >
-                        {topic.title}
-                      </Button>
-                    ))
-                  }
-                </div>
+                {renderTopicList('support')}
               </TabsContent>
             </Tabs>
           </div>
           
-          <div className="w-full md:w-3/4">
-            <ScrollArea className="h-[calc(100vh-200px)]">
+          {/* Main content */}
+          <div className={`w-full md:w-3/4 ${isMobileView && showMobileMenu ? 'hidden' : 'block'}`}>
+            <ScrollArea className="h-[calc(100vh-220px)] sm:h-[calc(100vh-200px)] pr-4">
               {renderSectionContent()}
             </ScrollArea>
           </div>
