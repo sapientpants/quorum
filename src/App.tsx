@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ErrorProvider } from './contexts/ErrorContext'
 import { LanguageProvider } from './contexts/LanguageContext'
+import { ChatProvider } from './contexts/ChatContext'
 import { Toaster } from 'sonner'
 import './lib/i18n' // Initialize i18n
 import { AppRoutes } from './routes'
@@ -16,11 +17,13 @@ export function App() {
       <ThemeProvider>
         <ErrorProvider>
           <LanguageProvider>
-            <Router>
-              <AppRoutes />
-              <Toaster richColors position="top-right" />
-              <KeyboardShortcutsOverlay />
-            </Router>
+            <ChatProvider>
+              <Router>
+                <AppRoutes />
+                <Toaster richColors position="top-right" />
+                <KeyboardShortcutsOverlay />
+              </Router>
+            </ChatProvider>
           </LanguageProvider>
         </ErrorProvider>
       </ThemeProvider>
