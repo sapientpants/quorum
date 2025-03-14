@@ -48,7 +48,7 @@
     "apiKeys": "API-Schlüssel",
     "participants": "Teilnehmer",
     "appearance": "Erscheinungsbild",
-    "privacy": "Datenschutz & Speicherung",
+    "privacy": "Datenschutz & Sicherheit",
     "about": "Über",
     "llmDefaults": "LLM-Standardeinstellungen",
     "apiKeysDescription": "Gib deine API-Schlüssel für die Sprachmodell-Anbieter ein, die du verwenden möchtest.",

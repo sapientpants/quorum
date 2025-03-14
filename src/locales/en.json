@@ -48,7 +48,7 @@
     "apiKeys": "API Keys",
     "participants": "Participants",
     "appearance": "Appearance",
-    "privacy": "Privacy & Storage",
+    "privacy": "Privacy & Security",
     "about": "About",
     "llmDefaults": "LLM Defaults",
     "apiKeysDescription": "Enter your API keys for the language model providers you want to use.",
