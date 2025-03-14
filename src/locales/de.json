@@ -110,6 +110,7 @@
     "downloadError": "Fehler beim Herunterladen der Daten",
     "apiKeyManager": {
       "title": "API-Schlüssel-Verwaltung",
+      "description": "Gib deine API-Schlüssel für die Sprachmodell-Anbieter ein, die du verwenden möchtest.",
       "yourApiKeys": "Deine API-Schlüssel",
       "addNewApiKey": "Neuen API-Schlüssel hinzufügen",
       "provider": "Anbieter",

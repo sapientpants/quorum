@@ -163,7 +163,7 @@ export function Settings() {
   
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">{t('settings.title')}</h1>
+      <h1 className="text-3xl font-bold mb-6 mt-6">{t('settings.title')}</h1>
       
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:w-1/4">
@@ -235,7 +235,10 @@ export function Settings() {
                 {t('settings.apiKeysDescription')}
               </p>
               
-              <ApiKeyManager onApiKeyChange={handleApiKeyChange} />
+              <ApiKeyManager 
+                onApiKeyChange={handleApiKeyChange} 
+                storageOption={{ storage: preferences.keyStoragePreference }}
+              />
             </div>
           )}
           

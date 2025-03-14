@@ -19,6 +19,25 @@ vi.mock('../services/apiKeyService', () => ({
   clearApiKeys: vi.fn()
 }))
 
+// Mock react-i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: { [key: string]: string } = {
+        'settings.apiKeyManager.title': 'API Key Management',
+        'settings.apiKeyManager.description': 'Enter your API keys for the language model providers you want to use.',
+        'settings.apiKeyManager.addNewApiKey': 'Add New API Key',
+        'settings.apiKeyManager.provider': 'Provider',
+        'settings.apiKeyManager.apiKey': 'API Key',
+        'settings.apiKeyManager.addKey': 'Add Key',
+        'settings.apiKeyManager.enterApiKey': 'Enter your {{provider}} API key',
+        'settings.apiKeyManager.noKeysConfigured': 'No API keys configured yet.'
+      }
+      return translations[key] || key
+    }
+  })
+}))
+
 // Get the mocked functions with proper typing
 const mockedLoadApiKeys = vi.mocked(loadApiKeys)
 const mockedSaveApiKeys = vi.mocked(saveApiKeys)

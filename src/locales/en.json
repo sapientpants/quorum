@@ -107,7 +107,23 @@
     "close": "Close",
     "download": "Download",
     "exportError": "Error exporting data",
-    "downloadError": "Error downloading data"
+    "downloadError": "Error downloading data",
+    "apiKeyManager": {
+      "title": "API Key Management",
+      "description": "Enter your API keys for the language model providers you want to use.",
+      "yourApiKeys": "Your API Keys",
+      "addNewApiKey": "Add New API Key",
+      "provider": "Provider",
+      "apiKey": "API Key",
+      "label": "Label (Optional)",
+      "labelPlaceholder": "My API Key",
+      "addKey": "Add Key",
+      "clearAllKeys": "Clear All Keys",
+      "noKeysConfigured": "No API keys configured yet. Add a key to get started.",
+      "apiKeyRequired": "API key is required",
+      "invalidApiKey": "Invalid API key",
+      "clearConfirmation": "Are you sure you want to remove all API keys? This cannot be undone."
+    }
   },
   "errors": {
     "unknownError": "An unknown error occurred",

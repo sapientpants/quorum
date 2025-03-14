@@ -12,7 +12,7 @@ import { Icon } from '@iconify/react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card'
 import { Badge } from './ui/badge'
 import { useTranslation } from 'react-i18next'
 
@@ -162,6 +162,7 @@ export function ApiKeyManager({
       <Card>
         <CardHeader>
           <CardTitle>{t('settings.apiKeyManager.title')}</CardTitle>
+          <CardDescription>{t('settings.apiKeyManager.description')}</CardDescription>
         </CardHeader>
         <CardContent>
           {/* Existing API keys */}

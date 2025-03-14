@@ -34,7 +34,7 @@ export function LanguageToggle() {
         />
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-40">
+      <DropdownMenuContent align="end" className="bg-card w-40">
         {availableLanguages.map((lang) => (
           <DropdownMenuItem 
             key={lang.code}
