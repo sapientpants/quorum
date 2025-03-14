@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { Welcome } from './Welcome'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useNavigate } from 'react-router-dom'
@@ -62,45 +62,65 @@ describe('Welcome', () => {
     expect(continueButton).not.toBeDisabled()
   })
 
-  it('shows API key setup after consent', () => {
+  it('shows API key setup after consent', async () => {
     render(<Welcome />)
     fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
     const consentCheckbox2 = screen.getByRole('checkbox')
     fireEvent.click(consentCheckbox2)
-    // Accept consent directly
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    
+    // Wrap the state-changing click in act()
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    })
+    
     expect(screen.getByText('Setup Your API Keys')).toBeInTheDocument()
   })
 
-  it('navigates to chat after API key setup', () => {
+  it('navigates to chat after API key setup', async () => {
     render(<Welcome />)
     fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
     const consentCheckbox3 = screen.getByRole('checkbox')
     fireEvent.click(consentCheckbox3)
-    // Accept consent directly
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
     
-    // Complete API key setup
-    fireEvent.change(screen.getByPlaceholderText('sk-...'), {
-      target: { value: 'sk-1234567890abcdef1234567890abcdef1234567890abcdef' }
+    // Wrap the state-changing interactions in act()
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    
+    // Complete API key setup - also wrapped in act()
+    await act(async () => {
+      fireEvent.change(screen.getByPlaceholderText('sk-...'), {
+        target: { value: 'sk-1234567890abcdef1234567890abcdef1234567890abcdef' }
+      })
+    })
+    
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    })
     
     expect(mockNavigate).toHaveBeenCalledWith('/chat')
   })
 
-  it('skips consent for returning users but shows API key setup if needed', () => {
+  it('skips consent for returning users but shows API key setup if needed', async () => {
     localStorage.setItem('hasConsented', 'true')
     render(<Welcome />)
-    fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
+    
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
+    })
+    
     expect(screen.getByText('Setup Your API Keys')).toBeInTheDocument()
   })
 
-  it('navigates directly to chat for fully set up users', () => {
+  it('navigates directly to chat for fully set up users', async () => {
     localStorage.setItem('hasConsented', 'true')
     localStorage.setItem('hasApiKeys', 'true')
     render(<Welcome />)
-    fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
+    
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
+    })
+    
     expect(mockNavigate).toHaveBeenCalledWith('/chat')
   })
 }) 

@@ -22,10 +22,23 @@ interface Shortcut {
   platform?: 'mac' | 'windows' | 'linux' | 'all'
 }
 
-export function KeyboardShortcutsOverlay() {
-  const [isOpen, setIsOpen] = useState(false)
+interface KeyboardShortcutsOverlayProps {
+  isOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+export function KeyboardShortcutsOverlay({ 
+  isOpen: externalIsOpen, 
+  onOpenChange: externalOnOpenChange 
+}: KeyboardShortcutsOverlayProps = {}) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false)
   const [platform, setPlatform] = useState<'mac' | 'windows' | 'linux' | 'all'>('all')
   const [activeTab, setActiveTab] = useState('general')
+
+  // Determine if we're using internal or external state
+  const isControlled = externalIsOpen !== undefined
+  const isOpen = isControlled ? externalIsOpen : internalIsOpen
+  const onOpenChange = isControlled ? externalOnOpenChange : setInternalIsOpen
 
   // Detect platform on mount
   useEffect(() => {
@@ -47,18 +60,26 @@ export function KeyboardShortcutsOverlay() {
       // Show shortcuts overlay when the user presses the '?' key
       if (event.key === '?' && !event.ctrlKey && !event.metaKey && !event.altKey) {
         event.preventDefault()
-        setIsOpen(prev => !prev)
+        if (onOpenChange) {
+          onOpenChange(!isOpen)
+        } else {
+          setInternalIsOpen(!internalIsOpen)
+        }
       }
       
       // Close when ESC is pressed (in addition to the built-in dialog behavior)
       if (event.key === 'Escape' && isOpen) {
-        setIsOpen(false)
+        if (onOpenChange) {
+          onOpenChange(false)
+        } else {
+          setInternalIsOpen(false)
+        }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen])
+  }, [isOpen, internalIsOpen, onOpenChange])
 
   // Shortcut data definition
   const shortcutCategories: ShortcutCategory[] = [
@@ -247,7 +268,7 @@ export function KeyboardShortcutsOverlay() {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange || setInternalIsOpen}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-bold">Keyboard Shortcuts</DialogTitle>
