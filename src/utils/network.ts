@@ -135,7 +135,6 @@ export async function getConnectionQuality(): Promise<ConnectionQuality> {
  * This is useful for measuring latency on the server side
  */
 export function pingHandler(
-  req: { [key: string]: unknown }, 
   res: { status: (code: number) => { send: (body: string) => void } }
 ) {
   res.status(200).send('pong');

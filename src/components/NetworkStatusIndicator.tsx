@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useError } from '../contexts/ErrorContext';
 import { ConnectionQuality } from '../utils/network';

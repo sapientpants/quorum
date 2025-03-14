@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
@@ -12,8 +11,8 @@ export function Help() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredTopics, setFilteredTopics] = useState<HelpTopic[]>([])
   
-  // Help content data structure
-  const helpTopics: HelpTopic[] = [
+  // Help content data structure - wrapped in useMemo to prevent unnecessary re-renders
+  const helpTopics = useMemo<HelpTopic[]>(() => [
     {
       id: 'getting-started',
       title: 'Getting Started',
@@ -228,7 +227,7 @@ export function Help() {
         }
       ]
     }
-  ]
+  ], [])
   
   // Filter topics based on search term
   useEffect(() => {

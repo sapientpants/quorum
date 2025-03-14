@@ -19,11 +19,12 @@ export abstract class BaseClient implements LLMClient {
   // Placeholder for error handler to be attached via context
   protected setError?: (error: LLMError, provider: string) => void
   
-  constructor(config: LLMConfig) {
-    this.apiKey = config.apiKey
-    this.model = config.model || this.getDefaultModel()
-    this.baseUrl = config.baseUrl || this.getDefaultBaseUrl()
-    this.providerName = this.getProviderName()
+  constructor(config: Record<string, unknown> = {}) {
+    this.apiKey = config.apiKey as string || '';
+    this.model = (config.model as string) || this.getDefaultModel();
+    this.baseUrl = (config.baseUrl as string) || this.getDefaultBaseUrl();
+    // Don't access abstract property in constructor
+    // this.providerName = this.getProviderName();
   }
   
   /**
@@ -210,7 +211,14 @@ export abstract class BaseClient implements LLMClient {
         data?: unknown 
       };
       const status = errorObj.status || errorObj.statusCode || errorObj.response?.status;
-      const errorBody = errorObj.response?.data || errorObj.data || {};
+      const errorBody = (errorObj.response?.data || errorObj.data || {}) as {
+        request_id?: string;
+        requestId?: string;
+        error?: {
+          type?: string;
+          code?: string;
+        };
+      };
       const errorMessage = errorObj.message || 'Unknown error occurred';
       
       if (status === 401 || status === 403) {

@@ -54,6 +54,14 @@ export class OpenAIStreamClient extends BaseClient {
     supportsTool: true
   }
 
+  constructor(config: Record<string, unknown> = {}) {
+    super({ ...config });
+  }
+
+  protected getDefaultBaseUrl(): string {
+    return 'https://api.openai.com/v1'
+  }
+
   /**
    * Convert our app's message format to OpenAI's format
    */
@@ -278,5 +286,76 @@ export class OpenAIStreamClient extends BaseClient {
           : new LLMError(ErrorType.UNKNOWN, String(error))
       }
     }
+  }
+
+  async chat(
+    messages: import('./types').LLMChatMessage[],
+    config?: Partial<import('./types').LLMConfig>
+  ): Promise<import('./types').LLMResponse> {
+    const apiKey = config?.apiKey as string || this.apiKey;
+    const model = config?.model as string || this.defaultModelName;
+    const settings = config as import('../../types/llm').LLMSettings;
+    const abortSignal = undefined;
+    
+    const content = await this.sendMessage(
+      this.convertToMessages(messages), 
+      apiKey, 
+      model, 
+      settings, 
+      undefined, 
+      abortSignal
+    );
+    
+    return {
+      content,
+      model,
+      provider: this.providerName
+    };
+  }
+
+  async chatStream(
+    messages: import('./types').LLMChatMessage[],
+    onChunk: (chunk: string) => void,
+    config?: Partial<import('./types').LLMConfig>
+  ): Promise<import('./types').LLMResponse> {
+    const apiKey = config?.apiKey as string || this.apiKey;
+    const model = config?.model as string || this.defaultModelName;
+    const settings = config as import('../../types/llm').LLMSettings;
+    const abortSignal = undefined;
+    
+    let fullContent = '';
+    
+    const streamingOptions: import('../../types/llm').StreamingOptions = {
+      onToken: (token) => {
+        onChunk(token);
+        fullContent += token;
+      }
+    };
+    
+    await this.sendMessage(
+      this.convertToMessages(messages), 
+      apiKey, 
+      model, 
+      settings, 
+      streamingOptions, 
+      abortSignal
+    );
+    
+    return {
+      content: fullContent,
+      model,
+      provider: this.providerName
+    };
+  }
+  
+  // Helper method to convert LLMChatMessage[] to Message[]
+  private convertToMessages(messages: import('./types').LLMChatMessage[]): import('../../types/chat').Message[] {
+    return messages.map((msg, index) => ({
+      id: `msg-${index}`,
+      senderId: msg.role,
+      text: msg.content,
+      timestamp: Date.now(),
+      role: msg.role
+    }));
   }
 }

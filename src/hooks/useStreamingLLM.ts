@@ -56,7 +56,7 @@ export function useStreamingLLM() {
         )
       }
       
-      const client = new OpenAIStreamClient()
+      const client = new OpenAIStreamClient({ apiKey })
       let fullText = ''
       
       // Stream the response

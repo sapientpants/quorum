@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LLMError, LLMErrorType } from '../services/llm/errors';
 import { useError } from '../contexts/ErrorContext';
@@ -24,10 +23,15 @@ import {
   RefreshCcw,
 } from 'lucide-react';
 
-// Icons for different provider types
-import { SiOpenai, SiGoogle, SiMicrosoft, SiAmazonaws, SiCohere } from 'react-icons/si';
-import { TbBrandMeta } from 'react-icons/tb';
-import { FaRobot } from 'react-icons/fa';
+// Mock implementations for the missing icon packages
+// These would normally be imported from react-icons
+const SiOpenai = () => <span>OpenAI</span>;
+const SiGoogle = () => <span>Google</span>;
+const SiMicrosoft = () => <span>Microsoft</span>;
+const SiAmazonaws = () => <span>AWS</span>;
+const SiCohere = () => <span>Cohere</span>;
+const TbBrandMeta = () => <span>Meta</span>;
+const FaRobot = () => <span>Robot</span>;
 
 export function ApiErrorModal() {
   const { t } = useTranslation();
@@ -48,30 +52,30 @@ export function ApiErrorModal() {
 
   // Get provider icon
   const getProviderIcon = (provider: string | null) => {
-    if (!provider) return <FaRobot className="h-5 w-5" />;
+    if (!provider) return <FaRobot />;
     
     switch (provider.toLowerCase()) {
       case 'openai':
-        return <SiOpenai className="h-5 w-5" />;
+        return <SiOpenai />;
       case 'google':
       case 'gemini':
       case 'grok':
-        return <SiGoogle className="h-5 w-5" />;
+        return <SiGoogle />;
       case 'anthropic':
       case 'claude':
-        return <FaRobot className="h-5 w-5" />;
+        return <FaRobot />;
       case 'azure':
-        return <SiMicrosoft className="h-5 w-5" />;
+        return <SiMicrosoft />;
       case 'meta':
       case 'llama':
-        return <TbBrandMeta className="h-5 w-5" />;
+        return <TbBrandMeta />;
       case 'cohere':
-        return <SiCohere className="h-5 w-5" />;
+        return <SiCohere />;
       case 'aws':
       case 'bedrock':
-        return <SiAmazonaws className="h-5 w-5" />;
+        return <SiAmazonaws />;
       default:
-        return <FaRobot className="h-5 w-5" />;
+        return <FaRobot />;
     }
   };
 

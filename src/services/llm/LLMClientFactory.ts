@@ -104,7 +104,6 @@ export function createEnhancedClient(
 
       // Then try to validate with the provider's API
       try {
-        /* eslint-disable no-case-declarations */
         let response: Response
         let endpoint: string
         let headers: Record<string, string>
@@ -139,7 +138,6 @@ export function createEnhancedClient(
             headers = {}
             response = new Response(null, { status: 200 })
         }
-        /* eslint-enable no-case-declarations */
 
         if (!response.ok) {
           console.error(`API validation failed for ${provider}: ${response.status} ${response.statusText}`)

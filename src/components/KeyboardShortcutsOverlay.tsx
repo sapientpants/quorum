@@ -6,9 +6,9 @@ import {
   DialogDescription, 
   DialogHeader, 
   DialogTitle 
-} from '../components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
-import { ScrollArea } from '../components/ui/scroll-area'
+} from './ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
+import { ScrollArea } from './ui/scroll-area'
 
 interface ShortcutCategory {
   id: string

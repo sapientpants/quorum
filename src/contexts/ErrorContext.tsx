@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { LLMError } from '../services/llm/errors';
