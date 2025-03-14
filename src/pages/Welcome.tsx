@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ApiKeySetup } from '../components/ApiKeySetup'
 import type { ApiKeyStorageOptions } from '../types/api'
 import { useState } from 'react'
+import { API_KEY_STORAGE_KEY } from '../types/api'
 
 export function Welcome() {
   const navigate = useNavigate()
@@ -20,9 +21,46 @@ export function Welcome() {
     setIsVisible(true)
   }, [])
 
+  // Check if any API keys exist in local or session storage
+  const hasApiKeys = (): boolean => {
+    // Check localStorage
+    const localKeys = localStorage.getItem(API_KEY_STORAGE_KEY)
+    if (localKeys) {
+      try {
+        const parsedKeys = JSON.parse(localKeys)
+        if (Object.keys(parsedKeys).length > 0) return true
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_) {
+        // Invalid JSON, ignore
+      }
+    }
+    
+    // Check sessionStorage
+    const sessionKeys = sessionStorage.getItem(API_KEY_STORAGE_KEY)
+    if (sessionKeys) {
+      try {
+        const parsedKeys = JSON.parse(sessionKeys)
+        if (Object.keys(parsedKeys).length > 0) return true
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_) {
+        // Invalid JSON, ignore
+      }
+    }
+    
+    // Check individual provider keys
+    const providers = ['openai', 'anthropic', 'grok', 'google']
+    for (const provider of providers) {
+      if (localStorage.getItem(`${provider}_api_key`) || sessionStorage.getItem(`${provider}_api_key`)) {
+        return true
+      }
+    }
+    
+    return false
+  }
+
   const handleGetStarted = () => {
-    if (localStorage.getItem('hasConsented') && localStorage.getItem('hasApiKeys')) {
-      navigate('/chat')
+    if (localStorage.getItem('hasConsented') && hasApiKeys()) {
+      navigate('/participants')
     } else if (localStorage.getItem('hasConsented')) {
       setShowApiKeySetup(true)
     } else {
@@ -128,8 +166,7 @@ export function Welcome() {
             <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10 rounded-xl -z-10"></div>
             <ApiKeySetup
               onComplete={() => {
-                localStorage.setItem('hasApiKeys', 'true')
-                navigate('/chat')
+                navigate('/participants')
               }}
               storageType={storageType}
             />

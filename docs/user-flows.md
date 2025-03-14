@@ -31,7 +31,7 @@ This document outlines the key user flows that implement the features described 
 3. User enters at least one API key
 4. User clicks "Save and Continue"
 5. System validates key format
-6. System redirects to main chat interface
+6. System redirects to the Participants page to set up AI participants
 
 ### 1.4 Returning User Experience
 1. Returning user visits the application
@@ -209,7 +209,7 @@ This document outlines the key user flows that implement the features described 
 4. System displays template details and preview
 5. User clicks "Use Template"
 6. System loads the template configuration
-7. System redirects to Chat page with configured participants
+7. System redirects to Participants page with configured participants
 
 ### 6.2 Creating a Template
 1. After configuring participants, user clicks "Save as Template"

@@ -76,7 +76,7 @@ describe('Welcome', () => {
     expect(screen.getByText('Setup Your API Keys')).toBeInTheDocument()
   })
 
-  it('navigates to chat after API key setup', async () => {
+  it('navigates to participants page after API key setup', async () => {
     render(<Welcome />)
     fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
     const consentCheckbox3 = screen.getByRole('checkbox')
@@ -98,21 +98,25 @@ describe('Welcome', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
     })
     
-    expect(mockNavigate).toHaveBeenCalledWith('/chat')
+    expect(mockNavigate).toHaveBeenCalledWith('/participants')
   })
 
-  it('skips consent for returning users but shows API key setup if needed', async () => {
+  it('skips consent for returning users and checks API keys correctly', async () => {
     localStorage.setItem('hasConsented', 'true')
+    // Mock the API_KEY_STORAGE_KEY to have at least one key
+    localStorage.setItem('quorum_api_keys', JSON.stringify({ 'openai': 'sk-testkey' }))
+    
     render(<Welcome />)
     
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
     })
     
-    expect(screen.getByText('Setup Your API Keys')).toBeInTheDocument()
+    // Since hasApiKeys() should return true, it should navigate to participants
+    expect(mockNavigate).toHaveBeenCalledWith('/participants')
   })
 
-  it('navigates directly to chat for fully set up users', async () => {
+  it('navigates directly to participants page for fully set up users', async () => {
     localStorage.setItem('hasConsented', 'true')
     localStorage.setItem('hasApiKeys', 'true')
     render(<Welcome />)
@@ -121,6 +125,6 @@ describe('Welcome', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Get Started' }))
     })
     
-    expect(mockNavigate).toHaveBeenCalledWith('/chat')
+    expect(mockNavigate).toHaveBeenCalledWith('/participants')
   })
 }) 

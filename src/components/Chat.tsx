@@ -1,6 +1,5 @@
 import ChatList from './ChatList'
 import ChatInput from './ChatInput'
-import ApiKeyManager from './ApiKeyManager'
 import ProviderSelector from './ProviderSelector'
 import ModelSelector from './ModelSelector'
 import SettingsPanel from './SettingsPanel'
@@ -25,7 +24,6 @@ export function Chat() {
     setActiveModel,
     availableModels,
     apiKeys,
-    handleApiKeyChange,
     supportedProviders,
     isStreamingSupported,
     
@@ -43,10 +41,6 @@ export function Chat() {
 
   return (
     <div className="container mx-auto p-4 flex flex-col h-[calc(100vh-64px)]">
-      <div className="mb-4">
-        <ApiKeyManager onApiKeyChange={handleApiKeyChange} />
-      </div>
-      
       {/* Provider and Model Selection */}
       <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <ProviderSelector
@@ -93,13 +87,11 @@ export function Chat() {
           isLoading={isLoading} 
           placeholder={!activeProvider 
             ? "Please select a provider to start chatting..." 
-            : !apiKeys[activeProvider] 
-              ? `Please add a ${activeProvider} API key to start chatting...` 
-              : !activeModel
-                ? "Please select a model to start chatting..."
-                : "Type your message here..."
+            : !activeModel
+              ? "Please select a model to start chatting..."
+              : "Type your message here..."
           }
-          disabled={!activeProvider || !apiKeys[activeProvider] || !activeModel}
+          disabled={!activeProvider || !activeModel}
         />
       </div>
     </div>

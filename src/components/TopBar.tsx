@@ -24,12 +24,10 @@ export function TopBar() {
   }
   
   return (
-    <Navbar 
-      isBordered
+    <Navbar
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
-      className="bg-card border-b border-app transition-colors duration-300"
-      maxWidth="xl"
+      className="bg-card h-16 z-50 transition-colors duration-300"
     >
       <NavbarContent>
         <NavbarBrand>
