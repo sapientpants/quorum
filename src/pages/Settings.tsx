@@ -162,8 +162,8 @@ export function Settings() {
   }
   
   return (
-    <div className="pl-6 pr-6 mx-auto">
-      <h1 className="text-3xl font-bold mb-6 mt-6">{t('settings.title')}</h1>
+    <div className="mb-6 mt-6 pl-6 pr-6 mx-auto">
+      <h1 className="text-3xl font-bold mb-6">{t('settings.title')}</h1>
       
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:shrink-0">

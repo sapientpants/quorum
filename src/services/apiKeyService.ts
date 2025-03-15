@@ -92,12 +92,11 @@ export function loadApiKeys(
 }
 
 // Create a new API key object
-export function createApiKey(provider: LLMProvider, key: string, label?: string): ApiKey {
+export function createApiKey(provider: LLMProvider, key: string): ApiKey {
   return {
     id: nanoid(),
     provider,
     key,
-    label: label || `${provider.charAt(0).toUpperCase() + provider.slice(1)} API Key`,
     isVisible: false
   }
 }

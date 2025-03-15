@@ -31,7 +31,6 @@ export function ApiKeyManager({
   const [apiKeys, setApiKeys] = useState<ApiKey[]>(initialApiKeys)
   const [selectedProvider, setSelectedProvider] = useState<LLMProvider>('openai')
   const [newKeyValue, setNewKeyValue] = useState<string>('')
-  const [newKeyLabel, setNewKeyLabel] = useState<string>('')
   const [validationError, setValidationError] = useState<string | null>(null)
   const [isAddingNew, setIsAddingNew] = useState<boolean>(false)
   const [storageType] = useState<'local' | 'session' | 'none'>(
@@ -113,8 +112,7 @@ export function ApiKeyManager({
     // Create and add the new key
     const newKey = createApiKey(
       selectedProvider as LLMProvider, 
-      newKeyValue, 
-      newKeyLabel || undefined
+      newKeyValue
     )
     
     setApiKeys(prev => [...prev, newKey])
@@ -124,7 +122,6 @@ export function ApiKeyManager({
     
     // Reset form
     setNewKeyValue('')
-    setNewKeyLabel('')
     setIsAddingNew(false)
   }
 
@@ -264,11 +261,11 @@ export function ApiKeyManager({
                     value={selectedProvider}
                     onChange={(e) => setSelectedProvider(e.target.value as LLMProvider)}
                   >
-                    <option value="openai">OpenAI</option>
                     <option value="anthropic">Anthropic</option>
                     <option value="cohere">Cohere</option>
-                    <option value="grok">Grok</option>
                     <option value="google">Google</option>
+                    <option value="grok">Grok</option>
+                    <option value="openai">OpenAI</option>
                     <option value="other">Other</option>
                   </select>
                   <Icon 
@@ -290,17 +287,6 @@ export function ApiKeyManager({
                 {validationError && (
                   <p className="text-sm text-destructive mt-1">{validationError}</p>
                 )}
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="key-label">{t('settings.apiKeyManager.label')}</Label>
-                <Input
-                  id="key-label"
-                  type="text"
-                  value={newKeyLabel}
-                  onChange={(e) => setNewKeyLabel(e.target.value)}
-                  placeholder={t('settings.apiKeyManager.labelPlaceholder')}
-                />
               </div>
               
               <div className="flex justify-end space-x-2 pt-2">
