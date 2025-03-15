@@ -4,7 +4,6 @@ export interface ApiKey {
   id: string
   provider: LLMProvider
   key: string
-  label?: string
   isVisible?: boolean
 }
 

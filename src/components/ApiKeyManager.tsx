@@ -13,7 +13,6 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card'
-import { Badge } from './ui/badge'
 import { useTranslation } from 'react-i18next'
 
 interface ApiKeyManagerProps {
@@ -174,14 +173,8 @@ export function ApiKeyManager({
                     </div>
                     <div className="p-4 space-y-3">
                       {keys.map(key => (
-                        <div key={key.id} className="flex items-center justify-between bg-muted/40 border border-border/30 rounded-md p-3">
+                        <div key={key.id} className="flex items-center justify-between bg-muted/40 p-3">
                           <div className="flex-1 overflow-hidden">
-                            <div className="font-medium text-sm flex items-center">
-                              {key.label || provider}
-                              <Badge variant="outline" className="ml-2 text-xs">
-                                {key.provider}
-                              </Badge>
-                            </div>
                             <div className="text-sm text-muted-foreground font-mono mt-1 overflow-hidden overflow-ellipsis">
                               {key.isVisible 
                                 ? key.key 
