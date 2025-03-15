@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react'
 import type { Message } from '../types/chat'
-import type { LLMProvider, LLMSettings } from '../types/llm'
+import type { LLMProviderId, LLMSettings } from '../types/llm'
 import { OpenAIStreamClient } from '../services/llm/openaiStreamClient'
 import { LLMError, ErrorType } from '../services/llm/LLMError'
 
@@ -17,7 +17,7 @@ export function useStreamingLLM() {
    */
   const streamMessage = useCallback(async (
     messages: Message[],
-    provider: LLMProvider,
+    provider: LLMProviderId,
     apiKey: string,
     model: string,
     settings?: LLMSettings,

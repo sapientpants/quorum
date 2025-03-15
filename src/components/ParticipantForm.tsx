@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
 import type { Participant } from '../types/participant'
-import type { LLMProvider } from '../types/llm'
-import { PROVIDER_MODELS, SUPPORTED_PROVIDERS } from '../types/llm'
+import type { LLMProviderId } from '../types/llm'
+import { LLM_PROVIDERS } from '../types/llm'
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -50,7 +50,7 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [showExamples, setShowExamples] = useState(false)
   const [isMobileView, setIsMobileView] = useState(false)
-  const sortedProviders = [...SUPPORTED_PROVIDERS].sort() as LLMProvider[]
+  const sortedProviders = [...LLM_PROVIDERS].sort((a, b) => a.displayName.localeCompare(b.displayName))
 
   // Detect mobile view
   useEffect(() => {
@@ -80,8 +80,9 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
     }
   })
 
-  const selectedProvider = watch('provider') as LLMProvider
-  const models = [...PROVIDER_MODELS[selectedProvider]].sort()
+  const providerID = watch('provider') as LLMProviderId
+  const selectedProvider = LLM_PROVIDERS.find(p => p.id === providerID)
+  const models = selectedProvider ? [...selectedProvider.models].sort() : []
 
   function onFormSubmit(data: FormData) {
     onSubmit({
@@ -144,8 +145,8 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
               {...register('provider')}
             >
               {sortedProviders.map(provider => (
-                <option key={provider} value={provider}>
-                  {provider.charAt(0).toUpperCase() + provider.slice(1)}
+                <option key={provider.id} value={provider.id}>
+                  {provider.displayName}
                 </option>
               ))}
             </select>
@@ -330,4 +331,4 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
       </div>
     </form>
   )
-} 
+}

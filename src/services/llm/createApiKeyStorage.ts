@@ -1,4 +1,4 @@
-import type { LLMProvider } from '../../types/llm'
+import type { LLMProviderId } from '../../types/llm'
 import type { ApiKeyStorageOptions } from '../../types/api'
 import { API_KEY_STORAGE_KEY } from '../../types/api'
 
@@ -9,7 +9,7 @@ export function createApiKeyStorage(options: {
   storageType?: ApiKeyStorageOptions['storage'] 
 } = {}) {
   let storageOption: ApiKeyStorageOptions['storage'] = options.storageType || 'session'
-  const keys: Map<LLMProvider, string> = new Map()
+  const keys: Map<LLMProviderId, string> = new Map()
   
   /**
    * Load keys from storage
@@ -32,7 +32,7 @@ export function createApiKeyStorage(options: {
       if (storedKeys) {
         const parsedKeys = JSON.parse(storedKeys) as Record<string, string>
         Object.entries(parsedKeys).forEach(([provider, key]) => {
-          keys.set(provider as LLMProvider, key)
+          keys.set(provider as LLMProviderId, key)
         })
       }
     } catch (error) {
@@ -90,7 +90,7 @@ export function createApiKeyStorage(options: {
     /**
      * Set an API key for a provider
      */
-    setKey(provider: LLMProvider, key: string): void {
+    setKey(provider: LLMProviderId, key: string): void {
       keys.set(provider, key)
       saveKeys()
     },
@@ -98,21 +98,21 @@ export function createApiKeyStorage(options: {
     /**
      * Get an API key for a provider
      */
-    getKey(provider: LLMProvider): string | undefined {
+    getKey(provider: LLMProviderId): string | undefined {
       return keys.get(provider)
     },
     
     /**
      * Check if a key exists for a provider
      */
-    hasKey(provider: LLMProvider): boolean {
+    hasKey(provider: LLMProviderId): boolean {
       return keys.has(provider) && !!keys.get(provider)
     },
     
     /**
      * Remove an API key for a provider
      */
-    removeKey(provider: LLMProvider): void {
+    removeKey(provider: LLMProviderId): void {
       keys.delete(provider)
       saveKeys()
     },

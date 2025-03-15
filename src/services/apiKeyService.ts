@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
 import type { ApiKey, ApiKeyValidationResult, ApiKeyStorageOptions } from '../types/api'
-import type { LLMProvider } from '../types/llm'
+import type { LLMProviderId } from '../types/llm'
 import { API_KEY_STORAGE_KEY } from '../types/api'
 
 // Validate API keys for different providers
@@ -92,7 +92,7 @@ export function loadApiKeys(
 }
 
 // Create a new API key object
-export function createApiKey(provider: LLMProvider, key: string): ApiKey {
+export function createApiKey(provider: LLMProviderId, key: string): ApiKey {
   return {
     id: nanoid(),
     provider,
@@ -109,4 +109,4 @@ export function clearApiKeys(
 
   const storage = options.storage === 'local' ? localStorage : sessionStorage
   storage.removeItem(API_KEY_STORAGE_KEY)
-} 
+}

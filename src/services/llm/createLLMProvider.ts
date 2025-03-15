@@ -1,5 +1,5 @@
 import type { Message } from '../../types/chat'
-import type { LLMProvider as ProviderType } from '../../types/llm'
+import type { LLMProviderId } from '../../types/llm'
 import type { Participant } from '../../types/participant'
 import { createLLMService } from './createLLMService'
 import { ApiKeyManager } from './ApiKeyManager'
@@ -44,21 +44,21 @@ export function createLLMProvider(options?: {
   /**
    * Get available models for a provider
    */
-  async function getAvailableModels(provider: ProviderType): Promise<Result<string[]>> {
+  async function getAvailableModels(provider: LLMProviderId): Promise<Result<string[]>> {
     return service.getAvailableModels(provider)
   }
   
   /**
    * Check if a provider is configured (has API key)
    */
-  function isProviderConfigured(provider: ProviderType): boolean {
+  function isProviderConfigured(provider: LLMProviderId): boolean {
     return apiKeyManager.hasKey(provider)
   }
   
   /**
    * Get all supported providers
    */
-  function getSupportedProviders(): ProviderType[] {
+  function getSupportedProviders(): LLMProviderId[] {
     return service.getSupportedProviders()
   }
   
@@ -72,14 +72,14 @@ export function createLLMProvider(options?: {
   /**
    * Check if a provider supports streaming
    */
-  function supportsStreaming(provider: ProviderType): boolean {
+  function supportsStreaming(provider: LLMProviderId): boolean {
     return service.supportsStreaming(provider)
   }
   
   /**
    * Validate an API key for a provider
    */
-  async function validateApiKey(provider: ProviderType, apiKey: string): Promise<Result<boolean>> {
+  async function validateApiKey(provider: LLMProviderId, apiKey: string): Promise<Result<boolean>> {
     return service.validateApiKey(provider, apiKey)
   }
   

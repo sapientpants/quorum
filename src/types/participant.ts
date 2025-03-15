@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { LLMProvider } from './llm'
+import type { LLMProviderId } from './llm'
 
 export type ParticipantType = 'human' | 'llm'
 
@@ -15,7 +15,7 @@ export interface HumanParticipant extends BaseParticipant {
 
 export interface LLMParticipant extends BaseParticipant {
   type: 'llm'
-  provider: LLMProvider
+  provider: LLMProviderId
   model: string
   roleDescription?: string
   systemPrompt: string
@@ -77,4 +77,4 @@ export function createParticipant(data: Partial<Participant> & Pick<Participant,
       maxTokens: data.settings?.maxTokens || 1000
     }
   }
-} 
+}

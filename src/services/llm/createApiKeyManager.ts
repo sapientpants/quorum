@@ -1,4 +1,4 @@
-import type { LLMProvider } from '../../types/llm'
+import type { LLMProviderId } from '../../types/llm'
 import type { ApiKeyStorageOptions } from '../../types/api'
 import { API_KEY_STORAGE_KEY } from '../../types/api'
 import { createApiKeyValidator } from './createApiKeyValidator'
@@ -7,19 +7,19 @@ import { Result } from '../../types/result'
 interface ApiKeyManager {
   setStorageOption: (option: ApiKeyStorageOptions['storage']) => void
   getStorageOption: () => ApiKeyStorageOptions['storage']
-  setKey: (provider: LLMProvider, key: string) => void
-  getKey: (provider: LLMProvider) => string | undefined
-  hasKey: (provider: LLMProvider) => boolean
-  removeKey: (provider: LLMProvider) => void
+  setKey: (provider: LLMProviderId, key: string) => void
+  getKey: (provider: LLMProviderId) => string | undefined
+  hasKey: (provider: LLMProviderId) => boolean
+  removeKey: (provider: LLMProviderId) => void
   clearKeys: () => void
-  validateKey: (provider: LLMProvider, apiKey: string) => Promise<Result<boolean>>
+  validateKey: (provider: LLMProviderId, apiKey: string) => Promise<Result<boolean>>
 }
 
 /**
  * Creates an API key manager for handling LLM provider API keys
  */
 export function createApiKeyManager(): ApiKeyManager {
-  const keys: Map<LLMProvider, string> = new Map()
+  const keys: Map<LLMProviderId, string> = new Map()
   let storageOption: ApiKeyStorageOptions['storage'] = 'session'
   const validator = createApiKeyValidator()
   
@@ -44,7 +44,7 @@ export function createApiKeyManager(): ApiKeyManager {
   /**
    * Set an API key for a provider
    */
-  function setKey(provider: LLMProvider, key: string): void {
+  function setKey(provider: LLMProviderId, key: string): void {
     keys.set(provider, key)
     saveKeys()
   }
@@ -52,21 +52,21 @@ export function createApiKeyManager(): ApiKeyManager {
   /**
    * Get an API key for a provider
    */
-  function getKey(provider: LLMProvider): string | undefined {
+  function getKey(provider: LLMProviderId): string | undefined {
     return keys.get(provider)
   }
   
   /**
    * Check if a key exists for a provider
    */
-  function hasKey(provider: LLMProvider): boolean {
+  function hasKey(provider: LLMProviderId): boolean {
     return keys.has(provider) && !!keys.get(provider)
   }
   
   /**
    * Remove an API key for a provider
    */
-  function removeKey(provider: LLMProvider): void {
+  function removeKey(provider: LLMProviderId): void {
     keys.delete(provider)
     saveKeys()
   }
@@ -82,7 +82,7 @@ export function createApiKeyManager(): ApiKeyManager {
   /**
    * Validate an API key for a provider
    */
-  async function validateKey(provider: LLMProvider, apiKey: string): Promise<Result<boolean>> {
+  async function validateKey(provider: LLMProviderId, apiKey: string): Promise<Result<boolean>> {
     return validator.validateKey(provider, apiKey)
   }
   
@@ -107,7 +107,7 @@ export function createApiKeyManager(): ApiKeyManager {
       if (storedKeys) {
         const parsedKeys = JSON.parse(storedKeys) as Record<string, string>
         Object.entries(parsedKeys).forEach(([provider, key]) => {
-          keys.set(provider as LLMProvider, key)
+          keys.set(provider as LLMProviderId, key)
         })
       }
     } catch (error) {

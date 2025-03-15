@@ -3,7 +3,7 @@ import { OpenAIClient } from './openaiClient'
 import { AnthropicClient } from './anthropicClient'
 import { GrokClient } from './grokClient'
 import { GoogleClient } from './googleClient'
-import type { LLMProvider } from '../../types/llm'
+import type { LLMProviderId } from '../../types/llm'
 import { LLMError, ErrorType } from './LLMError'
 import { validateApiKey } from '../../services/apiKeyService'
 
@@ -30,7 +30,7 @@ export function registerLLMClient(
 /**
  * Get the appropriate LLM client based on the provider
  */
-export function getLLMClient(provider: LLMProvider): LLMClient {
+export function getLLMClient(provider: LLMProviderId): LLMClient {
   const providerKey = provider.toLowerCase()
   
   // Return cached client if available
@@ -64,7 +64,7 @@ export function getLLMClient(provider: LLMProvider): LLMClient {
  */
 export function createEnhancedClient(
   baseClient: Partial<LLMClient>,
-  provider: LLMProvider
+  provider: LLMProviderId
 ): LLMClient {
   // Ensure the base client has the required methods
   if (!baseClient.sendMessage || 

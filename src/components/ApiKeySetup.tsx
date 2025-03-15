@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { ApiKey, ApiKeyStorageOptions } from '../types/api'
-import type { LLMProvider } from '../types/llm'
+import type { LLMProviderId } from '../types/llm'
 import { validateApiKey } from '../services/apiKeyService'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,13 +14,13 @@ export interface ApiKeySetupProps {
 }
 
 export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'session' }: ApiKeySetupProps) {
-  const [apiKeys, setApiKeys] = useState<Record<LLMProvider, string>>({
+  const [apiKeys, setApiKeys] = useState<Record<LLMProviderId, string>>({
     openai: '',
     anthropic: '',
     grok: '',
     google: ''
   })
-  const [errors, setErrors] = useState<Record<LLMProvider, string | null>>({
+  const [errors, setErrors] = useState<Record<LLMProviderId, string | null>>({
     openai: null,
     anthropic: null,
     grok: null,
@@ -31,7 +31,7 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
 
   // Load initial keys if provided
   useEffect(() => {
-    const defaultKeys: Record<LLMProvider, string> = {
+    const defaultKeys: Record<LLMProviderId, string> = {
       openai: '',
       anthropic: '',
       grok: '',
@@ -41,12 +41,12 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
       const keyMap = initialKeys.reduce((acc, key) => {
         acc[key.provider] = key.key;
         return acc;
-      }, {} as Record<LLMProvider, string>);
+      }, {} as Record<LLMProviderId, string>);
       setApiKeys({ ...defaultKeys, ...keyMap });
     }
   }, [initialKeys]);
 
-  function handleKeyChange(provider: LLMProvider, value: string) {
+  function handleKeyChange(provider: LLMProviderId, value: string) {
     setApiKeys(prev => ({ ...prev, [provider]: value }))
     // Clear error when user starts typing
     setErrors(prev => ({ ...prev, [provider]: null }))
@@ -54,7 +54,7 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
 
   async function handleSubmit() {
     setIsSubmitting(true)
-    const newErrors: Record<LLMProvider, string | null> = {
+    const newErrors: Record<LLMProviderId, string | null> = {
       openai: null,
       anthropic: null,
       grok: null,
@@ -78,7 +78,7 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
       if (key) {
         const validation = validateApiKey(provider, key)
         if (!validation.isValid) {
-          newErrors[provider as LLMProvider] = validation.message || 'Invalid API key'
+          newErrors[provider as LLMProviderId] = validation.message || 'Invalid API key'
         }
       }
     }
@@ -175,7 +175,7 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
                 setErrors(prev => ({ ...prev, anthropic: 'Invalid API key' }))
               }
             }}
-            onChange={(e) => handleKeyChange('anthropic', e.target.value)}
+            onChange={(e) => handleKeyChange('anthropic' as LLMProviderId, e.target.value)}
             placeholder="sk-ant-..."
             className={errors.anthropic ? 'border-error' : ''}
           />
@@ -200,7 +200,7 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
             id="grok"
             type="password"
             value={apiKeys.grok}
-            onChange={(e) => handleKeyChange('grok', e.target.value)}
+            onChange={(e) => handleKeyChange('grok' as LLMProviderId, e.target.value)}
             placeholder="grok-..."
             className={errors.grok ? 'border-error' : ''}
           />
@@ -225,7 +225,7 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
             id="google"
             type="password"
             value={apiKeys.google}
-            onChange={(e) => handleKeyChange('google', e.target.value)}
+            onChange={(e) => handleKeyChange('google' as LLMProviderId, e.target.value)}
             placeholder="Enter your Google AI API key"
             className={errors.google ? 'border-error' : ''}
           />
@@ -251,4 +251,4 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
   )
 }
 
-export default ApiKeySetup 
+export default ApiKeySetup

@@ -2,8 +2,15 @@
  * LLM provider and model type definitions
  */
 
-// Provider types
-export type LLMProvider = 'openai' | 'anthropic' | 'grok' | 'google'
+// Provider ID type (for backward compatibility)
+export type LLMProviderId = 'openai' | 'anthropic' | 'grok' | 'google'
+
+// LLM Provider interface
+export interface LLMProvider {
+  id: LLMProviderId
+  displayName: string
+  models: LLMModel[]
+}
 
 // Model types by provider
 export type OpenAIModel = 'gpt-4.5' | 'o3-mini' | 'gpt-4o' | 'gpt-4o-mini' | string
@@ -14,17 +21,41 @@ export type GoogleModel = 'gemini-2.0-pro' | 'gemini-2.0-flash' | string
 // Combined model type
 export type LLMModel = OpenAIModel | AnthropicModel | GrokModel | GoogleModel
 
-// Provider-specific constants
+// Provider-specific model constants
 export const OPENAI_MODELS: OpenAIModel[] = ['gpt-4.5', 'o3-mini', 'gpt-4o', 'gpt-4o-mini']
 export const ANTHROPIC_MODELS: AnthropicModel[] = ['claude-3.7-sonnet', 'claude-3.5-sonnet', 'claude-3.5-haiku']
 export const GROK_MODELS: GrokModel[] = ['grok-2', 'grok-3']
 export const GOOGLE_MODELS: GoogleModel[] = ['gemini-2.0-pro', 'gemini-2.0-flash']
 
-// All supported providers
-export const SUPPORTED_PROVIDERS: LLMProvider[] = ['openai', 'anthropic', 'grok', 'google']
+// LLM Provider definitions
+export const LLM_PROVIDERS: LLMProvider[] = [
+  {
+    id: 'openai',
+    displayName: 'OpenAI',
+    models: OPENAI_MODELS
+  },
+  {
+    id: 'anthropic',
+    displayName: 'Anthropic',
+    models: ANTHROPIC_MODELS
+  },
+  {
+    id: 'grok',
+    displayName: 'Grok',
+    models: GROK_MODELS
+  },
+  {
+    id: 'google',
+    displayName: 'Google',
+    models: GOOGLE_MODELS
+  }
+]
 
-// Provider to models mapping
-export const PROVIDER_MODELS: Record<LLMProvider, string[]> = {
+// All supported provider IDs (for backward compatibility)
+export const SUPPORTED_PROVIDERS: LLMProviderId[] = LLM_PROVIDERS.map(provider => provider.id)
+
+// Provider to models mapping (for backward compatibility)
+export const PROVIDER_MODELS: Record<LLMProviderId, string[]> = {
   openai: OPENAI_MODELS,
   anthropic: ANTHROPIC_MODELS,
   grok: GROK_MODELS,

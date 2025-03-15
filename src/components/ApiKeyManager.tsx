@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { ApiKey, ApiKeyStorageOptions } from '../types/api'
-import type { LLMProvider } from '../types/llm'
+import type { LLMProviderId } from '../types/llm'
 import { 
   saveApiKeys, 
   loadApiKeys, 
@@ -28,7 +28,7 @@ export function ApiKeyManager({
 }: ApiKeyManagerProps) {
   const { t } = useTranslation()
   const [apiKeys, setApiKeys] = useState<ApiKey[]>(initialApiKeys)
-  const [selectedProvider, setSelectedProvider] = useState<LLMProvider>('openai')
+  const [selectedProvider, setSelectedProvider] = useState<LLMProviderId>('openai')
   const [newKeyValue, setNewKeyValue] = useState<string>('')
   const [validationError, setValidationError] = useState<string | null>(null)
   const [isAddingNew, setIsAddingNew] = useState<boolean>(false)
@@ -110,7 +110,7 @@ export function ApiKeyManager({
     
     // Create and add the new key
     const newKey = createApiKey(
-      selectedProvider as LLMProvider, 
+      selectedProvider as LLMProviderId, 
       newKeyValue
     )
     
@@ -252,7 +252,7 @@ export function ApiKeyManager({
                     id="provider-select"
                     className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm appearance-none"
                     value={selectedProvider}
-                    onChange={(e) => setSelectedProvider(e.target.value as LLMProvider)}
+                    onChange={(e) => setSelectedProvider(e.target.value as LLMProviderId)}
                   >
                     <option value="anthropic">Anthropic</option>
                     <option value="cohere">Cohere</option>
@@ -317,4 +317,4 @@ export function ApiKeyManager({
 }
 
 // Add default export
-export default ApiKeyManager 
+export default ApiKeyManager

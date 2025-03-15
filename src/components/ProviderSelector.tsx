@@ -21,13 +21,13 @@ function ProviderSelector({
       <div className="btn-group">
         {providers.map((provider) => (
           <button
-            key={provider}
-            className={`btn btn-sm ${provider === activeProvider ? 'btn-primary' : 'btn-outline'}`}
+            key={provider.id}
+            className={`btn btn-sm ${provider.id === activeProvider?.id ? 'btn-primary' : 'btn-outline'}`}
             onClick={() => onSelect(provider)}
-            disabled={!apiKeys[provider]}
+            disabled={!apiKeys[provider.id]}
           >
-            {provider.charAt(0).toUpperCase() + provider.slice(1)}
-            {!apiKeys[provider] && ' (No API Key)'}
+            {provider.displayName}
+            {!apiKeys[provider.id] && ' (No API Key)'}
           </button>
         ))}
       </div>

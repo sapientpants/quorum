@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { LLMProvider, LLMModel } from '../types/llm'
+import { LLM_PROVIDERS } from '../types/llm'
 import { 
   getAvailableModels, 
   getDefaultModel, 
-  getSupportedProviders,
   supportsStreaming
 } from '../services/llm'
 
@@ -16,11 +16,11 @@ export function useProviderSelection() {
   // Update available models when provider changes
   useEffect(() => {
     if (activeProvider) {
-      const models = getAvailableModels(activeProvider)
+      const models = getAvailableModels(activeProvider.id)
       setAvailableModels(models)
       
       // Set default model for the provider
-      const defaultModel = getDefaultModel(activeProvider)
+      const defaultModel = getDefaultModel(activeProvider.id)
       setActiveModel(defaultModel)
     } else {
       setAvailableModels([])
@@ -36,15 +36,15 @@ export function useProviderSelection() {
   }, [])
   
   const isProviderConfigured = useCallback((provider: LLMProvider) => {
-    return !!apiKeys[provider]
+    return !!apiKeys[provider.id]
   }, [apiKeys])
   
   const isStreamingSupported = useCallback(() => {
-    return activeProvider ? supportsStreaming(activeProvider) : false
+    return activeProvider ? supportsStreaming(activeProvider.id) : false
   }, [activeProvider])
   
   const getSupportedProvidersList = useCallback(() => {
-    return getSupportedProviders()
+    return LLM_PROVIDERS
   }, [])
   
   return {

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import ApiKeyManager from './ApiKeyManager'
 import { loadApiKeys, saveApiKeys } from '../services/apiKeyService'
-import type { LLMProvider } from '../types/llm'
+import type { LLMProviderId } from '../types/llm'
 
 // Mock the API key service functions
 vi.mock('../services/apiKeyService', () => ({
@@ -93,8 +93,8 @@ describe('ApiKeyManager', () => {
   it('loads saved API keys on mount', () => {
     // Setup mock to return some API keys
     const mockApiKeys = [
-      { id: '1', provider: 'openai' as LLMProvider, key: 'openai-key', label: 'OpenAI Key', isVisible: false },
-      { id: '2', provider: 'anthropic' as LLMProvider, key: 'anthropic-key', label: 'Anthropic Key', isVisible: false }
+      { id: '1', provider: 'openai' as LLMProviderId, key: 'openai-key', label: 'OpenAI Key', isVisible: false },
+      { id: '2', provider: 'anthropic' as LLMProviderId, key: 'anthropic-key', label: 'Anthropic Key', isVisible: false }
     ]
     
     mockedLoadApiKeys.mockReturnValueOnce(mockApiKeys)
@@ -129,4 +129,4 @@ describe('ApiKeyManager', () => {
       { storage: 'session' }
     )
   })
-}) 
+})

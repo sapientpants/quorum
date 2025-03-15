@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { LLMProvider } from '../services/llm/LLMProvider'
-import type { LLMProvider as LLMProviderType } from '../types/llm'
+import type { LLMProviderId } from '../types/llm'
 import type { Message } from '../types/chat'
 import type { Participant } from '../types/participant'
 import { LLMError, ErrorType } from '../services/llm/LLMError'
@@ -76,7 +76,7 @@ export function useLLM() {
   }, [])
   
   const validateApiKey = useCallback(async (
-    provider: LLMProviderType,
+    provider: LLMProviderId,
     apiKey: string
   ) => {
     try {
@@ -92,11 +92,11 @@ export function useLLM() {
     error,
     sendMessage,
     validateApiKey,
-    getAvailableModels: useCallback((provider: LLMProviderType) => 
+    getAvailableModels: useCallback((provider: LLMProviderId) => 
       llmProvider.getAvailableModels(provider), []),
     getSupportedProviders: useCallback(() => 
       llmProvider.getSupportedProviders(), []),
-    supportsStreaming: useCallback((provider: LLMProviderType) => 
+    supportsStreaming: useCallback((provider: LLMProviderId) => 
       llmProvider.supportsStreaming(provider), []),
     apiKeyManager: llmProvider.getApiKeyManager()
   }

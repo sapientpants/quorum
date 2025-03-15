@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react'
 import { vi } from 'vitest'
 import { useTemplatesStore } from '../templatesStore'
-import type { LLMProvider } from '../../types/llm'
+import type { LLMProviderId } from '../../types/llm'
 
 // Mock crypto.randomUUID
 const mockRandomUUID = vi.fn().mockReturnValue('test-uuid')
@@ -134,7 +134,7 @@ describe('templatesStore', () => {
         id: '1', 
         name: 'Participant 1', 
         type: 'llm' as const,
-        provider: 'openai' as LLMProvider,
+        provider: 'openai' as LLMProviderId,
         model: 'gpt-4o',
         systemPrompt: 'System 1', 
         roleDescription: '',
@@ -144,7 +144,7 @@ describe('templatesStore', () => {
         id: '2', 
         name: 'Participant 2', 
         type: 'llm' as const,
-        provider: 'openai' as LLMProvider,
+        provider: 'openai' as LLMProviderId,
         model: 'gpt-4o',
         systemPrompt: 'System 2', 
         roleDescription: '',
@@ -154,7 +154,7 @@ describe('templatesStore', () => {
         id: '3', 
         name: 'Participant 3', 
         type: 'llm' as const,
-        provider: 'openai' as LLMProvider,
+        provider: 'openai' as LLMProviderId,
         model: 'gpt-4o',
         systemPrompt: 'System 3', 
         roleDescription: '',
@@ -186,7 +186,7 @@ describe('templatesStore', () => {
         id: '1', 
         name: 'Participant 1', 
         type: 'llm' as const,
-        provider: 'openai' as LLMProvider,
+        provider: 'openai' as LLMProviderId,
         model: 'gpt-4o',
         systemPrompt: 'System 1', 
         roleDescription: '',

@@ -66,7 +66,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
 
     // Check if API key is provided for the active provider
-    if (!apiKeys[activeProvider]) {
+    if (activeProvider && !apiKeys[activeProvider.id]) {
       setError(`Please enter your ${activeProvider} API key to continue`)
       return
     }
@@ -93,8 +93,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         // Use streaming API with async iterables
         await streamMessage(
           [...messages, userMessage],
-          activeProvider,
-          apiKeys[activeProvider],
+          activeProvider!.id,
+          apiKeys[activeProvider!.id],
           activeModel,
           settings,
           {
@@ -129,8 +129,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           },
           body: JSON.stringify({
             messages: [...messages, userMessage],
-            provider: activeProvider,
-            apiKey: apiKeys[activeProvider],
+            provider: activeProvider.id,
+            apiKey: apiKeys[activeProvider.id],
             model: activeModel,
             settings
           })
@@ -150,7 +150,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setIsLoading(false)
       }
     } catch (err) {
-      console.error(`Error calling ${activeProvider}:`, err)
+      console.error(`Error calling ${activeProvider?.id}:`, err)
       
       // Update the AI message with error
       updateAIMessage(aiMessageId, {
@@ -159,7 +159,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         error: err instanceof Error ? err : new Error('Unknown error')
       })
       
-      setError(err instanceof Error ? err.message : `An error occurred while calling the ${activeProvider} API`)
+      setError(err instanceof Error ? err.message : `An error occurred while calling the ${activeProvider?.id} API`)
       setIsLoading(false)
     }
   }, [

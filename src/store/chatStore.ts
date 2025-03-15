@@ -102,7 +102,7 @@ export const useChatStore = create<ChatState>((set) => ({
       senderId: 'assistant',
       text: '',
       timestamp: Date.now(),
-      provider,
+      provider: provider.id,
       model,
       status: 'sending'
     }

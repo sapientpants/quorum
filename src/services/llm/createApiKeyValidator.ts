@@ -1,4 +1,4 @@
-import type { LLMProvider } from '../../types/llm'
+import type { LLMProviderId } from '../../types/llm'
 import { getLLMClient } from './LLMClientFactory'
 import { Result, success, tryCatch } from '../../types/result'
 import { LLMError, ErrorType } from './LLMError'
@@ -15,7 +15,7 @@ export function createApiKeyValidator() {
      * @param apiKey The API key to validate
      * @returns A Result indicating whether the key is valid
      */
-    async validateKey(provider: LLMProvider, apiKey: string): Promise<Result<boolean>> {
+    async validateKey(provider: LLMProviderId, apiKey: string): Promise<Result<boolean>> {
       if (!provider || !apiKey) {
         return success(false)
       }

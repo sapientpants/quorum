@@ -1,5 +1,5 @@
 import type { Message } from '../../types/chat'
-import type { LLMProvider, LLMSettings, StreamingOptions } from '../../types/llm'
+import type { LLMProviderId, LLMSettings, StreamingOptions } from '../../types/llm'
 import { getLLMClient } from './LLMClientFactory'
 import { ApiKeyManager } from './ApiKeyManager'
 import { Result, success, tryCatch } from '../../types/result'
@@ -20,7 +20,7 @@ export function createLLMService(dependencies: {
    */
   async function sendMessage(
     messages: Message[],
-    provider: LLMProvider,
+    provider: LLMProviderId,
     model: string,
     systemPrompt: string = '',
     settings?: LLMSettings,
@@ -94,7 +94,7 @@ export function createLLMService(dependencies: {
   /**
    * Get available models for a provider
    */
-  async function getAvailableModels(provider: LLMProvider): Promise<Result<string[]>> {
+  async function getAvailableModels(provider: LLMProviderId): Promise<Result<string[]>> {
     if (!provider) {
       return success([])
     }
@@ -108,7 +108,7 @@ export function createLLMService(dependencies: {
   /**
    * Get the default model for a provider
    */
-  function getDefaultModel(provider: LLMProvider): string {
+  function getDefaultModel(provider: LLMProviderId): string {
     if (!provider) {
       return ''
     }
@@ -125,14 +125,14 @@ export function createLLMService(dependencies: {
   /**
    * Get all supported providers
    */
-  function getSupportedProviders(): LLMProvider[] {
+  function getSupportedProviders(): LLMProviderId[] {
     return SUPPORTED_PROVIDERS
   }
   
   /**
    * Check if a provider supports streaming
    */
-  function supportsStreaming(provider: LLMProvider): boolean {
+  function supportsStreaming(provider: LLMProviderId): boolean {
     if (!provider) {
       return false
     }
@@ -149,7 +149,7 @@ export function createLLMService(dependencies: {
   /**
    * Get provider capabilities
    */
-  function getProviderCapabilities(provider: LLMProvider) {
+  function getProviderCapabilities(provider: LLMProviderId) {
     if (!provider) {
       return {
         supportsStreaming: false,
@@ -174,7 +174,7 @@ export function createLLMService(dependencies: {
   /**
    * Validate an API key for a provider
    */
-  async function validateApiKey(provider: LLMProvider, apiKey: string): Promise<Result<boolean>> {
+  async function validateApiKey(provider: LLMProviderId, apiKey: string): Promise<Result<boolean>> {
     if (!provider || !apiKey) {
       return success(false)
     }

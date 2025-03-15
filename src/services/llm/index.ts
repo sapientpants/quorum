@@ -3,14 +3,14 @@ export { createLLMService } from './createLLMService'
 export { createLLMProvider, llmProvider } from './createLLMProvider'
 export { createApiKeyStorage } from './createApiKeyStorage'
 export { createApiKeyValidator } from './createApiKeyValidator'
-export { createApiKeyManager } from './createApiKeyManager'
+// export { createApiKeyManager } from './createApiKeyManager'
 
 // Export legacy class implementations for backward compatibility
 export { ApiKeyManager } from './ApiKeyManager'
 
 // Import types
 import type { Message } from '../../types/chat'
-import type { LLMProvider as ProviderType, LLMSettings } from '../../types/llm'
+import type { LLMProviderId, LLMSettings } from '../../types/llm'
 import { SUPPORTED_PROVIDERS } from '../../types/llm'
 import type { StreamingOptions } from '../../types/llm'
 import { getLLMClient } from './LLMClientFactory'
@@ -20,7 +20,7 @@ import { llmProvider } from './createLLMProvider'
 // Legacy exports for backward compatibility
 export const sendMessageToLLM = async (
   messages: Message[],
-  provider: ProviderType,
+  provider: LLMProviderId,
   apiKey: string,
   model?: string,
   settings?: LLMSettings,
@@ -53,19 +53,19 @@ export const sendMessageToLLM = async (
   }
 };
 
-export const getAvailableModels = (provider: ProviderType): string[] => {
+export const getAvailableModels = (provider: LLMProviderId): string[] => {
   return getLLMClient(provider).getAvailableModels();
 };
 
-export const getDefaultModel = (provider: ProviderType): string => {
+export const getDefaultModel = (provider: LLMProviderId): string => {
   return getLLMClient(provider).getDefaultModel();
 };
 
-export const getSupportedProviders = (): ProviderType[] => {
+export const getSupportedProviders = (): LLMProviderId[] => {
   return SUPPORTED_PROVIDERS;
 };
 
-export const supportsStreaming = (provider: ProviderType): boolean => {
+export const supportsStreaming = (provider: LLMProviderId): boolean => {
   return getLLMClient(provider).supportsStreaming();
 };
 

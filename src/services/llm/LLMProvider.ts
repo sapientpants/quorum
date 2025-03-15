@@ -1,5 +1,5 @@
 import type { Message } from '../../types/chat'
-import type { LLMProvider as ProviderType, LLMSettings } from '../../types/llm'
+import type { LLMProviderId, LLMSettings } from '../../types/llm'
 import type { StreamingOptions } from '../../types/llm'
 import { createLLMProvider } from './createLLMProvider'
 import { ApiKeyManager } from './ApiKeyManager'
@@ -19,7 +19,7 @@ export class LLMProvider {
   
   async sendMessage(
     messages: Message[],
-    provider: ProviderType,
+    provider: LLMProviderId,
     apiKey: string,
     model: string,
     systemPrompt: string = '',
@@ -54,31 +54,31 @@ export class LLMProvider {
     }
   }
   
-  getAvailableModels(provider: ProviderType): string[] {
+  getAvailableModels(provider: LLMProviderId): string[] {
     // Use the exported function directly
     return getModels(provider)
   }
   
-  getDefaultModel(provider: ProviderType): string {
+  getDefaultModel(provider: LLMProviderId): string {
     // Use the exported function directly
     return getModel(provider)
   }
   
-  getSupportedProviders(): ProviderType[] {
+  getSupportedProviders(): LLMProviderId[] {
     // Use the exported function directly
     return getProviders()
   }
   
-  isProviderConfigured(provider: ProviderType): boolean {
+  isProviderConfigured(provider: LLMProviderId): boolean {
     return this.provider.isProviderConfigured(provider)
   }
   
-  supportsStreaming(provider: ProviderType): boolean {
+  supportsStreaming(provider: LLMProviderId): boolean {
     // Use the exported function directly
     return checkStreaming(provider)
   }
   
-  validateApiKey(provider: ProviderType, apiKey: string): Promise<boolean> {
+  validateApiKey(provider: LLMProviderId, apiKey: string): Promise<boolean> {
     return this.provider.validateApiKey(provider, apiKey).then(result => {
       if (result.success) {
         return result.data

@@ -45,7 +45,7 @@ export function useChatState(initialMessages: Message[] = []) {
         senderId: 'assistant',
         text: '',
         timestamp: Date.now(),
-        provider,
+        provider: provider.id,
         model,
         status
       }

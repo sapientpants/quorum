@@ -1,11 +1,11 @@
-import type { LLMProvider } from '../../types/llm'
+import type { LLMProviderId } from '../../types/llm'
 import type { ApiKeyStorageOptions } from '../../types/api'
 import { API_KEY_STORAGE_KEY } from '../../types/api'
 import { createApiKeyValidator } from './createApiKeyValidator'
 import { Result } from '../../types/result'
 
 export class ApiKeyManager {
-  private keys: Map<LLMProvider, string> = new Map()
+  private keys: Map<LLMProviderId, string> = new Map()
   private storageOption: ApiKeyStorageOptions['storage'] = 'session'
   private validator = createApiKeyValidator()
   
@@ -31,7 +31,7 @@ export class ApiKeyManager {
   /**
    * Set an API key for a provider
    */
-  setKey(provider: LLMProvider, key: string): void {
+  setKey(provider: LLMProviderId, key: string): void {
     this.keys.set(provider, key)
     this.saveKeys()
   }
@@ -39,21 +39,21 @@ export class ApiKeyManager {
   /**
    * Get an API key for a provider
    */
-  getKey(provider: LLMProvider): string | undefined {
+  getKey(provider: LLMProviderId): string | undefined {
     return this.keys.get(provider)
   }
   
   /**
    * Check if a key exists for a provider
    */
-  hasKey(provider: LLMProvider): boolean {
+  hasKey(provider: LLMProviderId): boolean {
     return this.keys.has(provider) && !!this.keys.get(provider)
   }
   
   /**
    * Remove an API key for a provider
    */
-  removeKey(provider: LLMProvider): void {
+  removeKey(provider: LLMProviderId): void {
     this.keys.delete(provider)
     this.saveKeys()
   }
@@ -69,7 +69,7 @@ export class ApiKeyManager {
   /**
    * Validate an API key for a provider
    */
-  async validateKey(provider: LLMProvider, apiKey: string): Promise<Result<boolean>> {
+  async validateKey(provider: LLMProviderId, apiKey: string): Promise<Result<boolean>> {
     return this.validator.validateKey(provider, apiKey)
   }
   
@@ -94,7 +94,7 @@ export class ApiKeyManager {
       if (storedKeys) {
         const parsedKeys = JSON.parse(storedKeys) as Record<string, string>
         Object.entries(parsedKeys).forEach(([provider, key]) => {
-          this.keys.set(provider as LLMProvider, key)
+          this.keys.set(provider as LLMProviderId, key)
         })
       }
     } catch (error) {
