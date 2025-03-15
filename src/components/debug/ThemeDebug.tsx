@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useThemeContext } from '../hooks/useThemeContext'
+import { useThemeContext } from '../../hooks/useThemeContext'
 import { Button } from '@heroui/react'
 
 export function ThemeDebug() {

@@ -5,9 +5,9 @@ import { ParticipantList } from '../components/ParticipantList'
 import { Icon } from '@iconify/react'
 import { useLanguageContext } from '../hooks/useLanguageContext'
 import { useTranslation } from 'react-i18next'
-import { ThemeSelectorWithErrorBoundary } from '../components/ThemeSelectorWithErrorBoundary'
-import { ThemeDebug } from '../components/ThemeDebug'
-import { HeroUIThemeTest } from '../components/HeroUIThemeTest'
+import { ThemeSelector } from '../components/ThemeSelector'
+import { ThemeDebug } from '../components/debug/ThemeDebug'
+import { HeroUIThemeTest } from '../components/debug/HeroUIThemeTest'
 import { usePreferencesStore } from '../store/preferencesStore'
 import { type KeyStoragePreference } from '../types/preferences'
 import { useState } from 'react'
@@ -323,7 +323,7 @@ export function Settings() {
                   <span className="label-text">{t('settings.theme')}</span>
                 </label>
                 <div className="mt-2">
-                  <ThemeSelectorWithErrorBoundary />
+                  <ThemeSelector />
                 </div>
                 <label className="label">
                   <span className="label-text-alt text-muted-foreground">

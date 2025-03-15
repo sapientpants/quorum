@@ -1,10 +1,13 @@
 import type { LLMProvider } from '../../types/llm'
 import type { ApiKeyStorageOptions } from '../../types/api'
 import { API_KEY_STORAGE_KEY } from '../../types/api'
+import { createApiKeyValidator } from './createApiKeyValidator'
+import { Result } from '../../types/result'
 
 export class ApiKeyManager {
   private keys: Map<LLMProvider, string> = new Map()
   private storageOption: ApiKeyStorageOptions['storage'] = 'session'
+  private validator = createApiKeyValidator()
   
   constructor() {
     this.loadKeys()
@@ -61,6 +64,13 @@ export class ApiKeyManager {
   clearKeys(): void {
     this.keys.clear()
     this.saveKeys()
+  }
+
+  /**
+   * Validate an API key for a provider
+   */
+  async validateKey(provider: LLMProvider, apiKey: string): Promise<Result<boolean>> {
+    return this.validator.validateKey(provider, apiKey)
   }
   
   /**
