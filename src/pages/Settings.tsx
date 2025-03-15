@@ -5,9 +5,6 @@ import { ParticipantList } from '../components/ParticipantList'
 import { Icon } from '@iconify/react'
 import { useLanguageContext } from '../hooks/useLanguageContext'
 import { useTranslation } from 'react-i18next'
-import { ThemeSelector } from '../components/ThemeSelector'
-import { ThemeDebug } from '../components/debug/ThemeDebug'
-import { HeroUIThemeTest } from '../components/debug/HeroUIThemeTest'
 import { usePreferencesStore } from '../store/preferencesStore'
 import { type KeyStoragePreference } from '../types/preferences'
 import { useState } from 'react'
@@ -24,42 +21,12 @@ import { toast } from 'sonner'
 
 export function Settings() {
   const [activeTab, setActiveTab] = React.useState('api-keys')
-  const [displayName, setDisplayName] = React.useState<string>(localStorage.getItem('displayName') || '')
-  const [autoAdvance, setAutoAdvance] = React.useState<boolean>(localStorage.getItem('autoAdvance') !== 'false')
-  const [showThinking, setShowThinking] = React.useState<boolean>(localStorage.getItem('showThinking') !== 'false')
-  const [autoSummarize, setAutoSummarize] = React.useState<boolean>(localStorage.getItem('autoSummarize') === 'true')
   const { language, changeLanguage, availableLanguages } = useLanguageContext()
   const { t } = useTranslation()
   const { preferences, updatePreferences, resetPreferences } = usePreferencesStore()
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
   const [exportData, setExportData] = useState('')
-  
-  function handleDisplayNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setDisplayName(e.target.value)
-    localStorage.setItem('displayName', e.target.value)
-  }
-  
-  function handleAutoAdvanceChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setAutoAdvance(e.target.checked)
-    localStorage.setItem('autoAdvance', e.target.checked.toString())
-    // Also update in preferences store
-    updatePreferences({ autoAdvance: e.target.checked })
-  }
-  
-  function handleShowThinkingChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setShowThinking(e.target.checked)
-    localStorage.setItem('showThinking', e.target.checked.toString())
-    // Also update in preferences store
-    updatePreferences({ showThinkingIndicators: e.target.checked })
-  }
-  
-  function handleAutoSummarizeChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setAutoSummarize(e.target.checked)
-    localStorage.setItem('autoSummarize', e.target.checked.toString())
-    // Also update in preferences store
-    updatePreferences({ autoSummarize: e.target.checked })
-  }
   
   function handleApiKeyChange(provider: string, key: string) {
     // Store in localStorage
@@ -71,18 +38,6 @@ export function Settings() {
   }
   
   function handleResetDefaults() {
-    // Reset to default settings
-    setDisplayName('')
-    setAutoAdvance(true)
-    setShowThinking(true)
-    setAutoSummarize(false)
-    
-    // Update localStorage
-    localStorage.setItem('displayName', '')
-    localStorage.setItem('autoAdvance', 'true')
-    localStorage.setItem('showThinking', 'true')
-    localStorage.setItem('autoSummarize', 'false')
-    
     // Close the dialog
     setIsResetDialogOpen(false)
     
@@ -103,12 +58,6 @@ export function Settings() {
     
     // Reset preferences to defaults
     resetPreferences()
-    
-    // Reset UI state
-    setDisplayName('')
-    setAutoAdvance(true)
-    setShowThinking(true)
-    setAutoSummarize(false)
     
     // Close the dialog
     setIsResetDialogOpen(false)
@@ -183,14 +132,6 @@ export function Settings() {
             >
               <Icon icon="solar:users-group-rounded-linear" className="mr-2 h-4 w-4 shrink-0" />
               <span className="whitespace-nowrap">{t('settings.participants')}</span>
-            </Button>
-            <Button 
-              variant={activeTab === 'appearance' ? 'default' : 'ghost'}
-              onClick={() => setActiveTab('appearance')}
-              className="justify-start"
-            >
-              <Icon icon="solar:palette-linear" className="mr-2 h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">{t('settings.appearance')}</span>
             </Button>
             <Button 
               variant={activeTab === 'llm-defaults' ? 'default' : 'ghost'}
@@ -293,94 +234,6 @@ export function Settings() {
                       )}
                     </div>
                   ))}
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {activeTab === 'appearance' && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">{t('settings.appearance')}</h2>
-              <p className="mb-6">
-                {t('settings.appearanceDescription')}
-              </p>
-              
-              <div className="form-control w-full max-w-md mb-6">
-                <label className="label">
-                  <span className="label-text">{t('settings.displayName')}</span>
-                </label>
-                <input 
-                  type="text" 
-                  className="input input-bordered w-full" 
-                  value={displayName}
-                  onChange={handleDisplayNameChange}
-                  placeholder={t('settings.displayName')}
-                />
-              </div>
-              
-              <div className="form-control w-full max-w-md mb-6">
-                <label className="label">
-                  <span className="label-text">{t('settings.theme')}</span>
-                </label>
-                <div className="mt-2">
-                  <ThemeSelector />
-                </div>
-                <label className="label">
-                  <span className="label-text-alt text-muted-foreground">
-                    {t('settings.themeDescription')}
-                  </span>
-                </label>
-              </div>
-              
-              {/* Theme Debug Component */}
-              <div className="mb-6">
-                <h4 className="font-bold mb-2">Theme Debug</h4>
-                <ThemeDebug />
-              </div>
-              
-              {/* HeroUI Theme Test */}
-              <div className="mb-6">
-                <h4 className="font-bold mb-2">HeroUI Theme Test</h4>
-                <HeroUIThemeTest />
-              </div>
-              
-              <div className="mb-6">
-                <h4 className="font-bold mb-2">{t('settings.roundTableBehavior')}</h4>
-                
-                <div className="form-control">
-                  <label className="label cursor-pointer justify-start gap-2">
-                    <input 
-                      type="checkbox" 
-                      className="checkbox" 
-                      checked={autoAdvance}
-                      onChange={handleAutoAdvanceChange}
-                    />
-                    <span className="label-text">{t('settings.autoAdvance')}</span>
-                  </label>
-                </div>
-                
-                <div className="form-control">
-                  <label className="label cursor-pointer justify-start gap-2">
-                    <input 
-                      type="checkbox" 
-                      className="checkbox" 
-                      checked={showThinking}
-                      onChange={handleShowThinkingChange}
-                    />
-                    <span className="label-text">{t('settings.showThinking')}</span>
-                  </label>
-                </div>
-                
-                <div className="form-control">
-                  <label className="label cursor-pointer justify-start gap-2">
-                    <input 
-                      type="checkbox" 
-                      className="checkbox" 
-                      checked={autoSummarize}
-                      onChange={handleAutoSummarizeChange}
-                    />
-                    <span className="label-text">{t('settings.autoSummarize')}</span>
-                  </label>
                 </div>
               </div>
             </div>
@@ -641,21 +494,6 @@ export function Settings() {
           )}
         </div>
       </div>
-      
-      {activeTab === 'appearance' && (
-        <div className="flex justify-end mt-6">
-          <Button 
-            variant="outline"
-            className="mr-2"
-            onClick={() => setIsResetDialogOpen(true)}
-          >
-            {t('settings.resetDefaults')}
-          </Button>
-          <Button>
-            {t('settings.saveChanges')}
-          </Button>
-        </div>
-      )}
       
       {/* Reset Confirmation Dialog */}
       <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
