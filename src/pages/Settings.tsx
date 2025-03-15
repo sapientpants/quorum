@@ -3,7 +3,6 @@ import { Button } from '../components/ui/button'
 import ApiKeyManager from '../components/ApiKeyManager'
 import { ParticipantList } from '../components/ParticipantList'
 import { Icon } from '@iconify/react'
-import { useLanguageContext } from '../hooks/useLanguageContext'
 import { useTranslation } from 'react-i18next'
 import { usePreferencesStore } from '../store/preferencesStore'
 import { type KeyStoragePreference } from '../types/preferences'
@@ -21,7 +20,6 @@ import { toast } from 'sonner'
 
 export function Settings() {
   const [activeTab, setActiveTab] = React.useState('api-keys')
-  const { language, changeLanguage, availableLanguages } = useLanguageContext()
   const { t } = useTranslation()
   const { preferences, updatePreferences, resetPreferences } = usePreferencesStore()
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
@@ -134,22 +132,6 @@ export function Settings() {
               <span className="whitespace-nowrap">{t('settings.participants')}</span>
             </Button>
             <Button 
-              variant={activeTab === 'llm-defaults' ? 'default' : 'ghost'}
-              onClick={() => setActiveTab('llm-defaults')}
-              className="justify-start"
-            >
-              <Icon icon="solar:settings-linear" className="mr-2 h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">{t('settings.llmDefaults')}</span>
-            </Button>
-            <Button 
-              variant={activeTab === 'language' ? 'default' : 'ghost'}
-              onClick={() => setActiveTab('language')}
-              className="justify-start"
-            >
-              <Icon icon="solar:global-linear" className="mr-2 h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">{t('settings.language')}</span>
-            </Button>
-            <Button 
               variant={activeTab === 'privacy' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('privacy')}
               className="justify-start"
@@ -191,121 +173,6 @@ export function Settings() {
               </p>
               
               <ParticipantList />
-            </div>
-          )}
-          
-          {activeTab === 'language' && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">{t('settings.language')}</h2>
-              <p className="mb-6">
-                {t('languageToggle.selectLanguage')}
-              </p>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {availableLanguages.map((lang) => (
-                    <div 
-                      key={lang.code}
-                      className={`flex items-center gap-3 p-4 border rounded-md cursor-pointer transition-colors ${
-                        language === lang.code 
-                          ? 'border-primary bg-primary/5 text-primary' 
-                          : 'border-border hover:border-primary/50'
-                      }`}
-                      onClick={() => changeLanguage(lang.code)}
-                    >
-                      <Icon 
-                        icon={`emojione:flag-for-${lang.code === 'en' ? 'united-kingdom' : 'germany'}`}
-                        width="24" 
-                        height="24" 
-                      />
-                      <div>
-                        <div className="font-medium">{lang.name}</div>
-                        <div className="text-sm opacity-70">
-                          {lang.code === 'en' ? 'English' : 'Deutsch'}
-                        </div>
-                      </div>
-                      {language === lang.code && (
-                        <Icon 
-                          icon="solar:check-circle-bold" 
-                          className="ml-auto text-primary" 
-                          width="20" 
-                          height="20" 
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'llm-defaults' && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">{t('settings.llmDefaults')}</h2>
-              <p className="mb-6">
-                {t('settings.llmDefaultsDescription')}
-              </p>
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{t('settings.defaultParameters')}</h3>
-                  
-                  <div className="form-control w-full max-w-md mb-4">
-                    <label className="label">
-                      <span className="label-text">{t('settings.defaultTemperature')}</span>
-                      <span className="label-text-alt">{preferences.defaultTemperature || 0.7}</span>
-                    </label>
-                    <input 
-                      type="range" 
-                      min="0" 
-                      max="2" 
-                      step="0.1" 
-                      className="range" 
-                      value={preferences.defaultTemperature || 0.7}
-                      onChange={(e) => updatePreferences({ defaultTemperature: parseFloat(e.target.value) })}
-                    />
-                    <div className="flex justify-between text-xs px-2 mt-1">
-                      <span>Precise</span>
-                      <span>Balanced</span>
-                      <span>Creative</span>
-                    </div>
-                  </div>
-                  
-                  <div className="form-control w-full max-w-md mb-4">
-                    <label className="label">
-                      <span className="label-text">{t('settings.defaultMaxTokens')}</span>
-                      <span className="label-text-alt">{preferences.defaultMaxTokens || 1000}</span>
-                    </label>
-                    <input 
-                      type="range" 
-                      min="100" 
-                      max="4000" 
-                      step="100" 
-                      className="range" 
-                      value={preferences.defaultMaxTokens || 1000}
-                      onChange={(e) => updatePreferences({ defaultMaxTokens: parseInt(e.target.value) })}
-                    />
-                    <div className="flex justify-between text-xs px-2 mt-1">
-                      <span>Short</span>
-                      <span>Medium</span>
-                      <span>Long</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{t('settings.defaultSystemPrompt')}</h3>
-                  <textarea 
-                    className="textarea textarea-bordered w-full h-32" 
-                    placeholder={t('settings.defaultSystemPromptPlaceholder')}
-                    value={preferences.defaultSystemPrompt || ""}
-                    onChange={(e) => updatePreferences({ defaultSystemPrompt: e.target.value })}
-                  ></textarea>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('settings.defaultSystemPromptDescription')}
-                  </p>
-                </div>
-              </div>
             </div>
           )}
           
