@@ -92,19 +92,6 @@ export function TopBar() {
             {t('navigation.settings')}
           </Link>
         </NavbarItem>
-        <NavbarItem isActive={isActive('/help')}>
-          <Link 
-            to="/help"
-            className={`flex items-center gap-1.5 ${
-              isActive('/help')
-                ? 'text-primary'
-                : 'text-foreground/70 hover:text-foreground'
-            }`}
-          >
-            <Icon icon="solar:info-circle-linear" />
-            {t('navigation.help')}
-          </Link>
-        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent justify="end">
@@ -181,20 +168,6 @@ export function TopBar() {
           >
             <Icon icon="solar:settings-linear" />
             {t('navigation.settings')}
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem isActive={isActive('/help')}>
-          <Link
-            to="/help"
-            className={`flex items-center gap-2 py-2 ${
-              isActive('/help')
-                ? 'text-primary'
-                : 'text-foreground/70 hover:text-foreground'
-            }`}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <Icon icon="solar:info-circle-linear" />
-            {t('navigation.help')}
           </Link>
         </NavbarMenuItem>
       </NavbarMenu>

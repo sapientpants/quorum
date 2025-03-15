@@ -5,8 +5,7 @@
   "navigation": {
     "chat": "Chat",
     "templates": "Templates",
-    "settings": "Settings",
-    "help": "Help"
+    "settings": "Settings"
   },
   "welcome": {
     "title": "Welcome to Quorum",

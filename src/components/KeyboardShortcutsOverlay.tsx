@@ -102,16 +102,6 @@ export function KeyboardShortcutsOverlay({
           platform: 'mac',
         },
         {
-          keys: ['Ctrl', '/'],
-          description: 'Toggle help panel',
-          platform: 'windows',
-        },
-        {
-          keys: ['⌘', '/'],
-          description: 'Toggle help panel',
-          platform: 'mac',
-        },
-        {
           keys: ['Esc'],
           description: 'Close current modal/dialog',
         },
@@ -299,4 +289,4 @@ export function KeyboardShortcutsOverlay({
       </DialogContent>
     </Dialog>
   )
-} 
+}
