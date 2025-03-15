@@ -162,72 +162,72 @@ export function Settings() {
   }
   
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="pl-6 pr-6 mx-auto">
       <h1 className="text-3xl font-bold mb-6 mt-6">{t('settings.title')}</h1>
       
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full md:w-1/4">
+        <div className="md:shrink-0">
           <div className="flex flex-col gap-2 sticky top-20">
             <Button 
               variant={activeTab === 'api-keys' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('api-keys')}
               className="justify-start"
             >
-              <Icon icon="solar:key-linear" className="mr-2 h-4 w-4" />
-              {t('settings.apiKeys')}
+              <Icon icon="solar:key-linear" className="mr-2 h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t('settings.apiKeys')}</span>
             </Button>
             <Button 
               variant={activeTab === 'participants' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('participants')}
               className="justify-start"
             >
-              <Icon icon="solar:users-group-rounded-linear" className="mr-2 h-4 w-4" />
-              {t('settings.participants')}
+              <Icon icon="solar:users-group-rounded-linear" className="mr-2 h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t('settings.participants')}</span>
             </Button>
             <Button 
               variant={activeTab === 'appearance' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('appearance')}
               className="justify-start"
             >
-              <Icon icon="solar:palette-linear" className="mr-2 h-4 w-4" />
-              {t('settings.appearance')}
+              <Icon icon="solar:palette-linear" className="mr-2 h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t('settings.appearance')}</span>
             </Button>
             <Button 
               variant={activeTab === 'llm-defaults' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('llm-defaults')}
               className="justify-start"
             >
-              <Icon icon="solar:settings-linear" className="mr-2 h-4 w-4" />
-              {t('settings.llmDefaults')}
+              <Icon icon="solar:settings-linear" className="mr-2 h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t('settings.llmDefaults')}</span>
             </Button>
             <Button 
               variant={activeTab === 'language' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('language')}
               className="justify-start"
             >
-              <Icon icon="solar:global-linear" className="mr-2 h-4 w-4" />
-              {t('settings.language')}
+              <Icon icon="solar:global-linear" className="mr-2 h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t('settings.language')}</span>
             </Button>
             <Button 
               variant={activeTab === 'privacy' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('privacy')}
               className="justify-start"
             >
-              <Icon icon="solar:shield-user-linear" className="mr-2 h-4 w-4" />
-              {t('settings.privacy')}
+              <Icon icon="solar:shield-user-linear" className="mr-2 h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t('settings.privacy')}</span>
             </Button>
             <Button 
               variant={activeTab === 'about' ? 'default' : 'ghost'}
               onClick={() => setActiveTab('about')}
               className="justify-start"
             >
-              <Icon icon="solar:info-circle-linear" className="mr-2 h-4 w-4" />
-              {t('settings.about')}
+              <Icon icon="solar:info-circle-linear" className="mr-2 h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t('settings.about')}</span>
             </Button>
           </div>
         </div>
         
-        <div className="w-full md:w-3/4">
+        <div className="w-full md:grow">
           {activeTab === 'api-keys' && (
             <div>
               <h2 className="text-2xl font-bold mb-4">{t('settings.apiKeys')}</h2>
@@ -706,4 +706,4 @@ export function Settings() {
       </Dialog>
     </div>
   )
-} 
+}
