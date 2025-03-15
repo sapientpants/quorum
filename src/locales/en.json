@@ -41,6 +41,10 @@
     "title": "Settings",
     "language": "Language",
     "theme": "Theme",
+    "setupWizard": "Setup Wizard",
+    "setupWizardDescription": "Restart the setup wizard to reconfigure your application from scratch.",
+    "restartWizard": "Restart Setup Wizard",
+    "wizardRestarted": "Setup wizard restarted",
     "themeDescription": "Choose from a variety of themes to customize the appearance of the application. Your last selected light and dark themes will be remembered when toggling.",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
@@ -196,5 +200,76 @@
     "system": "System",
     "preferences": "Preferences",
     "followSystem": "Follow system preference"
+  },
+  "wizard": {
+    "steps": {
+      "welcome": "Welcome",
+      "security": "Security",
+      "apiKeys": "API Keys",
+      "participants": "Participants"
+    },
+    "navigation": {
+      "back": "Back",
+      "next": "Next",
+      "complete": "Complete"
+    },
+    "welcome": {
+      "title": "Welcome to Quorum",
+      "heading": "A round-table conversation with AI participants",
+      "description": "Quorum helps you create engaging conversations between multiple AI participants with different roles and perspectives.",
+      "features": {
+        "customParticipants": {
+          "title": "Custom Participants",
+          "description": "Create AI participants with different roles, personalities, and expertise."
+        },
+        "multiModel": {
+          "title": "Multiple Models",
+          "description": "Use different AI models from various providers for each participant."
+        },
+        "saveConfigs": {
+          "title": "Save Configurations",
+          "description": "Save and reuse your favorite participant configurations and templates."
+        },
+        "analyze": {
+          "title": "Analyze Conversations",
+          "description": "Gain insights from conversations between different AI perspectives."
+        }
+      },
+      "apiNote": "You'll need API keys for the AI providers you want to use. We'll help you set this up in the next steps.",
+      "getStarted": "Get Started"
+    },
+    "security": {
+      "title": "Security Settings",
+      "description": "Choose how you want to store your API keys. This affects how long your keys are saved and whether they persist between sessions.",
+      "localStorage": {
+        "title": "Local Storage",
+        "description": "Keys will be saved in your browser and persist between sessions. They will remain until you clear your browser data or manually remove them."
+      },
+      "sessionOnly": {
+        "title": "Session Only",
+        "description": "Keys will be saved only for this session and cleared when you close the browser. You'll need to re-enter them next time."
+      },
+      "noStorage": {
+        "title": "No Storage",
+        "description": "Keys will not be saved at all. You'll need to re-enter them every time you use the application. Most secure option."
+      },
+      "note": "Your API keys are never sent to our servers. They are only used to communicate directly with the AI providers from your browser.",
+      "changeNote": "You can change this setting later in the Security section of the Settings page.",
+      "continue": "Continue"
+    },
+    "apiKeys": {
+      "title": "API Key Setup",
+      "description": "Configure your API keys for the AI providers you want to use. You need at least one valid API key to continue.",
+      "continue": "Continue"
+    },
+    "participants": {
+      "title": "Configure Participants",
+      "description": "Set up at least one AI participant for your conversations. You can add more participants later.",
+      "currentParticipants": "Current Participants",
+      "addParticipant": "Add Participant",
+      "noParticipants": "No participants added yet. Add at least one participant to continue.",
+      "addFirst": "Add Your First Participant",
+      "complete": "Complete Setup"
+    }
   }
 }

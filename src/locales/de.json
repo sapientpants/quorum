@@ -41,6 +41,10 @@
     "title": "Einstellungen",
     "language": "Sprache",
     "theme": "Thema",
+    "setupWizard": "Einrichtungsassistent",
+    "setupWizardDescription": "Starte den Einrichtungsassistenten neu, um deine Anwendung von Grund auf neu zu konfigurieren.",
+    "restartWizard": "Einrichtungsassistenten neu starten",
+    "wizardRestarted": "Einrichtungsassistent neu gestartet",
     "themeDescription": "Wähle aus verschiedenen Themen, um das Erscheinungsbild der Anwendung anzupassen. Deine zuletzt ausgewählten hellen und dunklen Themen werden beim Umschalten gespeichert.",
     "darkMode": "Dunkelmodus",
     "lightMode": "Hellmodus",
@@ -196,5 +200,76 @@
     "system": "System",
     "preferences": "Voreinstellungen",
     "followSystem": "Systemvoreinstellung folgen"
+  },
+  "wizard": {
+    "steps": {
+      "welcome": "Willkommen",
+      "security": "Sicherheit",
+      "apiKeys": "API-Schlüssel",
+      "participants": "Teilnehmer"
+    },
+    "navigation": {
+      "back": "Zurück",
+      "next": "Weiter",
+      "complete": "Abschließen"
+    },
+    "welcome": {
+      "title": "Willkommen bei Quorum",
+      "heading": "Ein Rundtischgespräch mit KI-Teilnehmern",
+      "description": "Quorum hilft dir, ansprechende Gespräche zwischen mehreren KI-Teilnehmern mit unterschiedlichen Rollen und Perspektiven zu erstellen.",
+      "features": {
+        "customParticipants": {
+          "title": "Benutzerdefinierte Teilnehmer",
+          "description": "Erstelle KI-Teilnehmer mit unterschiedlichen Rollen, Persönlichkeiten und Fachkenntnissen."
+        },
+        "multiModel": {
+          "title": "Mehrere Modelle",
+          "description": "Verwende verschiedene KI-Modelle von verschiedenen Anbietern für jeden Teilnehmer."
+        },
+        "saveConfigs": {
+          "title": "Konfigurationen speichern",
+          "description": "Speichere und verwende deine Lieblings-Teilnehmerkonfigurationen und Vorlagen wieder."
+        },
+        "analyze": {
+          "title": "Gespräche analysieren",
+          "description": "Gewinne Erkenntnisse aus Gesprächen zwischen verschiedenen KI-Perspektiven."
+        }
+      },
+      "apiNote": "Du benötigst API-Schlüssel für die KI-Anbieter, die du verwenden möchtest. Wir helfen dir, dies in den nächsten Schritten einzurichten.",
+      "getStarted": "Loslegen"
+    },
+    "security": {
+      "title": "Sicherheitseinstellungen",
+      "description": "Wähle aus, wie du deine API-Schlüssel speichern möchtest. Dies beeinflusst, wie lange deine Schlüssel gespeichert werden und ob sie zwischen Sitzungen bestehen bleiben.",
+      "localStorage": {
+        "title": "Lokaler Speicher",
+        "description": "Schlüssel werden in deinem Browser gespeichert und bleiben zwischen Sitzungen bestehen. Sie bleiben erhalten, bis du deine Browser-Daten löschst oder sie manuell entfernst."
+      },
+      "sessionOnly": {
+        "title": "Nur Sitzung",
+        "description": "Schlüssel werden nur für diese Sitzung gespeichert und gelöscht, wenn du den Browser schließt. Du musst sie beim nächsten Mal erneut eingeben."
+      },
+      "noStorage": {
+        "title": "Kein Speicher",
+        "description": "Schlüssel werden überhaupt nicht gespeichert. Du musst sie jedes Mal neu eingeben, wenn du die Anwendung verwendest. Sicherste Option."
+      },
+      "note": "Deine API-Schlüssel werden niemals an unsere Server gesendet. Sie werden nur verwendet, um direkt von deinem Browser aus mit den KI-Anbietern zu kommunizieren.",
+      "changeNote": "Du kannst diese Einstellung später im Bereich Sicherheit der Einstellungsseite ändern.",
+      "continue": "Fortfahren"
+    },
+    "apiKeys": {
+      "title": "API-Schlüssel-Einrichtung",
+      "description": "Konfiguriere deine API-Schlüssel für die KI-Anbieter, die du verwenden möchtest. Du benötigst mindestens einen gültigen API-Schlüssel, um fortzufahren.",
+      "continue": "Fortfahren"
+    },
+    "participants": {
+      "title": "Teilnehmer konfigurieren",
+      "description": "Richte mindestens einen KI-Teilnehmer für deine Gespräche ein. Du kannst später weitere Teilnehmer hinzufügen.",
+      "currentParticipants": "Aktuelle Teilnehmer",
+      "addParticipant": "Teilnehmer hinzufügen",
+      "noParticipants": "Noch keine Teilnehmer hinzugefügt. Füge mindestens einen Teilnehmer hinzu, um fortzufahren.",
+      "addFirst": "Füge deinen ersten Teilnehmer hinzu",
+      "complete": "Einrichtung abschließen"
+    }
   }
 }

@@ -8,12 +8,11 @@ import { Toaster } from 'sonner'
 import './lib/i18n' // Initialize i18n
 import { AppRoutes } from './routes'
 import { KeyboardShortcutsOverlay } from './components/KeyboardShortcutsOverlay'
-
-const Loading = () => <div>Loading...</div>
+import { PageLoader } from './components/ui/PageLoader'
 
 export function App() {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<PageLoader />}>
       <ThemeProvider>
         <ErrorProvider>
           <LanguageProvider>

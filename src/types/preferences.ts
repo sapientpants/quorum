@@ -43,4 +43,6 @@ export interface UserPreferences {
   defaultTemperature?: number
   defaultMaxTokens?: number
   defaultSystemPrompt?: string
-} 
+  wizardCompleted?: boolean
+  wizardStep?: number
+}

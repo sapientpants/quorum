@@ -9,6 +9,8 @@ interface PreferencesState {
   updatePreferences: (updates: Partial<UserPreferences>) => void
   resetPreferences: () => void
   setTheme: (theme: Theme) => void
+  setWizardCompleted: (completed: boolean) => void
+  setWizardStep: (step: number) => void
 }
 
 const defaultPreferences: UserPreferences = {
@@ -21,7 +23,8 @@ const defaultPreferences: UserPreferences = {
   language: 'en',
   defaultTemperature: 0.7,
   defaultMaxTokens: 1000,
-  defaultSystemPrompt: ''
+  defaultSystemPrompt: '',
+  wizardCompleted: false
 }
 
 export const usePreferencesStore = create<PreferencesState>()(
@@ -45,6 +48,16 @@ export const usePreferencesStore = create<PreferencesState>()(
         }))
       },
 
+      setWizardCompleted: (completed: boolean) =>
+        set((state) => ({
+          preferences: { ...state.preferences, wizardCompleted: completed }
+        })),
+        
+      setWizardStep: (step: number) =>
+        set((state) => ({
+          preferences: { ...state.preferences, wizardStep: step }
+        })),
+
       resetPreferences: () =>
         set({ preferences: defaultPreferences, hasConsented: false })
     }),
@@ -52,4 +65,4 @@ export const usePreferencesStore = create<PreferencesState>()(
       name: 'preferences-storage'
     }
   )
-) 
+)

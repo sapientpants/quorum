@@ -4,6 +4,7 @@ import ApiKeyManager from '../components/ApiKeyManager'
 import { ParticipantList } from '../components/ParticipantList'
 import { Icon } from '@iconify/react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { usePreferencesStore } from '../store/preferencesStore'
 import { type KeyStoragePreference } from '../types/preferences'
 import { useState } from 'react'
@@ -21,10 +22,21 @@ import { toast } from 'sonner'
 export function Settings() {
   const [activeTab, setActiveTab] = React.useState('api-keys')
   const { t } = useTranslation()
-  const { preferences, updatePreferences, resetPreferences } = usePreferencesStore()
+  const navigate = useNavigate()
+  const { preferences, updatePreferences, resetPreferences, setWizardCompleted } = usePreferencesStore()
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
   const [exportData, setExportData] = useState('')
+  
+  function handleRestartWizard() {
+    // Reset wizard state
+    setWizardCompleted(false)
+    
+    // Navigate to root (wizard will show)
+    navigate('/')
+    
+    toast.success(t('settings.wizardRestarted', 'Setup wizard restarted'))
+  }
   
   function handleApiKeyChange(provider: string, key: string) {
     // Store in localStorage
@@ -266,6 +278,24 @@ export function Settings() {
                         {t('settings.clearAllData')}
                       </Button>
                     </div>
+                  </div>
+                </div>
+                
+                <div className="card bg-base-200 shadow-sm">
+                  <div className="card-body">
+                    <h3 className="text-xl font-semibold">{t('settings.setupWizard', 'Setup Wizard')}</h3>
+                    <p className="mb-4">
+                      {t('settings.setupWizardDescription', 'Restart the setup wizard to reconfigure your application from scratch.')}
+                    </p>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center gap-2 w-fit"
+                      onClick={handleRestartWizard}
+                    >
+                      <Icon icon="solar:restart-linear" className="h-4 w-4" />
+                      {t('settings.restartWizard', 'Restart Setup Wizard')}
+                    </Button>
                   </div>
                 </div>
                 
