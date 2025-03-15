@@ -122,7 +122,17 @@
       "noKeysConfigured": "No API keys configured yet. Add a key to get started.",
       "apiKeyRequired": "API key is required",
       "invalidApiKey": "Invalid API key",
-      "clearConfirmation": "Are you sure you want to remove all API keys? This cannot be undone."
+      "clearConfirmation": "Are you sure you want to remove all API keys? This cannot be undone.",
+      "saved": "Saved",
+      "error": "Error saving",
+      "showKey": "Show API key",
+      "hideKey": "Hide API key",
+      "keyPresent": "API key is set",
+      "enterApiKey": "Enter your API key",
+      "openaiDescription": "Required for GPT-4o and GPT-4.5 models",
+      "anthropicDescription": "Required for Claude models",
+      "googleDescription": "Required for Gemini models",
+      "grokDescription": "Required for Grok models"
     }
   },
   "errors": {
@@ -188,4 +198,4 @@
     "preferences": "Preferences",
     "followSystem": "Follow system preference"
   }
-} 
+}

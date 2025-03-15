@@ -6,14 +6,12 @@ import type { LLMProviderId } from '../types/llm'
 
 // Mock the API key service functions
 vi.mock('../services/apiKeyService', () => ({
-  validateApiKey: vi.fn().mockReturnValue({ isValid: true }),
   loadApiKeys: vi.fn().mockReturnValue([]),
   saveApiKeys: vi.fn(),
-  createApiKey: vi.fn((provider, key, label) => ({
+  createApiKey: vi.fn((provider, key) => ({
     id: 'test-id',
     provider,
     key,
-    label: label || `${provider} API Key`,
     isVisible: false
   })),
   clearApiKeys: vi.fn()
@@ -24,18 +22,26 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const translations: { [key: string]: string } = {
-        'settings.apiKeyManager.title': 'API Key Management',
-        'settings.apiKeyManager.description': 'Enter your API keys for the language model providers you want to use.',
-        'settings.apiKeyManager.addNewApiKey': 'Add New API Key',
-        'settings.apiKeyManager.provider': 'Provider',
-        'settings.apiKeyManager.apiKey': 'API Key',
-        'settings.apiKeyManager.addKey': 'Add Key',
-        'settings.apiKeyManager.enterApiKey': 'Enter your {{provider}} API key',
-        'settings.apiKeyManager.noKeysConfigured': 'No API keys configured yet.'
+        'settings.apiKeyManager.openaiDescription': 'Required for GPT-4o and GPT-4.5 models',
+        'settings.apiKeyManager.anthropicDescription': 'Required for Claude models',
+        'settings.apiKeyManager.googleDescription': 'Required for Gemini models',
+        'settings.apiKeyManager.grokDescription': 'Required for Grok models',
+        'settings.apiKeyManager.enterApiKey': 'Enter your API key',
+        'settings.apiKeyManager.clearAllKeys': 'Clear All Keys',
+        'settings.apiKeyManager.saved': 'Saved',
+        'settings.apiKeyManager.showKey': 'Show API key',
+        'settings.apiKeyManager.hideKey': 'Hide API key',
+        'settings.apiKeyManager.keyPresent': 'API key is set',
+        'common.loading': 'Loading...'
       }
       return translations[key] || key
     }
   })
+}))
+
+// Mock iconify
+vi.mock('@iconify/react', () => ({
+  Icon: () => <span />
 }))
 
 // Get the mocked functions with proper typing
@@ -57,34 +63,27 @@ describe('ApiKeyManager', () => {
   it('renders correctly', () => {
     render(<ApiKeyManager onApiKeyChange={onApiKeyChangeMock} />)
     
-    // Check that the component renders with the correct title
-    expect(screen.getByText('API Key Management')).toBeInTheDocument()
-    expect(screen.getByText('Add New API Key')).toBeInTheDocument()
+    // Check that the component renders with the provider labels
+    expect(screen.getByText('OpenAI')).toBeInTheDocument()
+    expect(screen.getByText('Anthropic')).toBeInTheDocument()
+    expect(screen.getByText('Google')).toBeInTheDocument()
+    expect(screen.getByText('Grok')).toBeInTheDocument()
+    
+    // Check that the clear all button is present
+    expect(screen.getByText('Clear All Keys')).toBeInTheDocument()
   })
   
-  it('allows adding a new API key', () => {
+  it('allows entering API keys directly', () => {
     render(<ApiKeyManager onApiKeyChange={onApiKeyChangeMock} />)
     
-    // Click the "Add New API Key" button
-    fireEvent.click(screen.getByText('Add New API Key'))
-    
-    // Check that the form appears
-    expect(screen.getByText('Provider')).toBeInTheDocument()
-    expect(screen.getByText('API Key')).toBeInTheDocument()
-    
-    // Select a provider
-    const providerSelect = screen.getByRole('combobox')
-    fireEvent.change(providerSelect, { target: { value: 'anthropic' } })
+    // Find the OpenAI input field
+    const openaiInput = screen.getByLabelText('OpenAI')
     
     // Enter an API key
-    const keyInput = screen.getByPlaceholderText('Enter your anthropic API key')
-    fireEvent.change(keyInput, { target: { value: 'test-api-key' } })
-    
-    // Click the "Add Key" button
-    fireEvent.click(screen.getByText('Add Key'))
+    fireEvent.change(openaiInput, { target: { value: 'sk-test-key' } })
     
     // Check that onApiKeyChange was called with the correct arguments
-    expect(onApiKeyChangeMock).toHaveBeenCalledWith('anthropic', 'test-api-key')
+    expect(onApiKeyChangeMock).toHaveBeenCalledWith('openai', 'sk-test-key')
     
     // Check that saveApiKeys was called
     expect(mockedSaveApiKeys).toHaveBeenCalled()
@@ -93,8 +92,8 @@ describe('ApiKeyManager', () => {
   it('loads saved API keys on mount', () => {
     // Setup mock to return some API keys
     const mockApiKeys = [
-      { id: '1', provider: 'openai' as LLMProviderId, key: 'openai-key', label: 'OpenAI Key', isVisible: false },
-      { id: '2', provider: 'anthropic' as LLMProviderId, key: 'anthropic-key', label: 'Anthropic Key', isVisible: false }
+      { id: '1', provider: 'openai' as LLMProviderId, key: 'openai-key', isVisible: false },
+      { id: '2', provider: 'anthropic' as LLMProviderId, key: 'anthropic-key', isVisible: false }
     ]
     
     mockedLoadApiKeys.mockReturnValueOnce(mockApiKeys)
@@ -115,13 +114,11 @@ describe('ApiKeyManager', () => {
       />
     )
     
-    // Click the "Add New API Key" button
-    fireEvent.click(screen.getByText('Add New API Key'))
+    // Find the OpenAI input field
+    const openaiInput = screen.getByLabelText('OpenAI')
     
-    // Enter and save a key
-    const keyInput = screen.getByPlaceholderText('Enter your openai API key')
-    fireEvent.change(keyInput, { target: { value: 'test-key' } })
-    fireEvent.click(screen.getByText('Add Key'))
+    // Enter an API key
+    fireEvent.change(openaiInput, { target: { value: 'sk-test-key' } })
     
     // Check that the correct storage option was passed
     expect(mockedSaveApiKeys).toHaveBeenCalledWith(

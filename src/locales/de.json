@@ -110,8 +110,8 @@
     "downloadError": "Fehler beim Herunterladen der Daten",
     "apiKeyManager": {
       "title": "API-Schlüssel-Verwaltung",
-      "description": "Gib deine API-Schlüssel für die Sprachmodell-Anbieter ein, die du verwenden möchtest.",
-      "yourApiKeys": "Deine API-Schlüssel",
+      "description": "Geben Sie Ihre API-Schlüssel für die gewünschten Sprachmodell-Anbieter ein.",
+      "yourApiKeys": "Ihre API-Schlüssel",
       "addNewApiKey": "Neuen API-Schlüssel hinzufügen",
       "provider": "Anbieter",
       "apiKey": "API-Schlüssel",
@@ -119,10 +119,20 @@
       "labelPlaceholder": "Mein API-Schlüssel",
       "addKey": "Schlüssel hinzufügen",
       "clearAllKeys": "Alle Schlüssel löschen",
-      "noKeysConfigured": "Keine API-Schlüssel konfiguriert. Füge einen Schlüssel hinzu, um zu beginnen.",
+      "noKeysConfigured": "Noch keine API-Schlüssel konfiguriert. Fügen Sie einen Schlüssel hinzu, um zu beginnen.",
       "apiKeyRequired": "API-Schlüssel ist erforderlich",
       "invalidApiKey": "Ungültiger API-Schlüssel",
-      "clearConfirmation": "Bist du sicher, dass du alle API-Schlüssel entfernen möchtest? Dies kann nicht rückgängig gemacht werden."
+      "clearConfirmation": "Sind Sie sicher, dass Sie alle API-Schlüssel entfernen möchten? Dies kann nicht rückgängig gemacht werden.",
+      "saved": "Gespeichert",
+      "error": "Fehler beim Speichern",
+      "showKey": "API-Schlüssel anzeigen",
+      "hideKey": "API-Schlüssel verbergen",
+      "keyPresent": "API-Schlüssel ist gesetzt",
+      "enterApiKey": "Geben Sie Ihren API-Schlüssel ein",
+      "openaiDescription": "Erforderlich für GPT-4o und GPT-4.5 Modelle",
+      "anthropicDescription": "Erforderlich für Claude Modelle",
+      "googleDescription": "Erforderlich für Gemini Modelle",
+      "grokDescription": "Erforderlich für Grok Modelle"
     }
   },
   "errors": {
@@ -188,4 +198,4 @@
     "preferences": "Voreinstellungen",
     "followSystem": "Systemvoreinstellung folgen"
   }
-} 
+}
