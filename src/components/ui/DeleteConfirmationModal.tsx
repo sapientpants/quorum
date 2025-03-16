@@ -35,9 +35,9 @@ function DeleteConfirmationModal({
           </button>
         </div>
       </div>
-      <div className="modal-backdrop" onClick={onCancel}></div>
+      <div className="modal-backdrop" data-testid="modal-backdrop" onClick={onCancel}></div>
     </div>
   )
 }
 
-export default DeleteConfirmationModal 
+export default DeleteConfirmationModal
