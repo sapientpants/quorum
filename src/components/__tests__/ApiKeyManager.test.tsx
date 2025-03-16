@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import ApiKeyManager from './ApiKeyManager'
-import { loadApiKeys, saveApiKeys } from '../services/apiKeyService'
-import type { LLMProviderId } from '../types/llm'
+import ApiKeyManager from '../ApiKeyManager'
+import { loadApiKeys, saveApiKeys } from '../../services/apiKeyService'
+import type { LLMProviderId } from '../../types/llm'
 
 // Mock the API key service functions
-vi.mock('../services/apiKeyService', () => ({
+vi.mock('../../services/apiKeyService', () => ({
   loadApiKeys: vi.fn().mockReturnValue([]),
   saveApiKeys: vi.fn(),
   createApiKey: vi.fn((provider, key) => ({
