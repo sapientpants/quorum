@@ -37,6 +37,11 @@ jobs:
         with:
           name: coverage-report
           path: coverage/
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
       # Optional: Cache build output for other jobs
       - name: Cache build output
