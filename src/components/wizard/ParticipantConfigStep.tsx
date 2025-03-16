@@ -18,6 +18,9 @@ export function ParticipantConfigStep({ onNext, onBack }: ParticipantConfigStepP
   const [showForm, setShowForm] = useState(participants.length === 0)
   const [formKey, setFormKey] = useState(0) // Used to reset the form
   
+  // Check if there's at least one non-user participant
+  const hasNonUserParticipant = participants.some(p => p.type === 'llm')
+  
   function handleAddParticipant(participantData: Omit<Participant, 'id'>) {
     // Add an ID to the participant data
     const participant = {
@@ -138,7 +141,7 @@ export function ParticipantConfigStep({ onNext, onBack }: ParticipantConfigStepP
         
         <Button 
           onClick={handleComplete}
-          disabled={participants.length === 0 || showForm}
+          disabled={!hasNonUserParticipant || showForm}
           variant="default" 
           className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >

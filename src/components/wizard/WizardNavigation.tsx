@@ -6,13 +6,15 @@ interface WizardNavigationProps {
   totalSteps: number
   onNext: () => void
   onBack: () => void
+  nextDisabled?: boolean
 }
 
 export function WizardNavigation({ 
   currentStep, 
   totalSteps, 
   onNext, 
-  onBack 
+  onBack,
+  nextDisabled = false
 }: WizardNavigationProps) {
   const { t } = useTranslation()
   const isFirstStep = currentStep === 0
@@ -32,6 +34,7 @@ export function WizardNavigation({
         onClick={onNext}
         variant="default" 
         className="bg-primary hover:bg-primary/90 text-primary-foreground"
+        disabled={nextDisabled}
       >
         {isLastStep 
           ? t('wizard.navigation.complete') 

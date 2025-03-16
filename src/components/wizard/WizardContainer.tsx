@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePreferencesStore } from '../../store/preferencesStore'
+import { useParticipantsStore } from '../../store/participants'
 import { SecurityStep } from './SecurityStep'
 import { ApiKeyStep } from './ApiKeyStep'
 import { ParticipantConfigStep } from './ParticipantConfigStep'
@@ -11,8 +12,12 @@ import { TopBar } from '../TopBar'
 export function WizardContainer() {
   const [currentStep, setCurrentStep] = useState(0)
   const { setWizardCompleted } = usePreferencesStore()
+  const { participants } = useParticipantsStore()
   const navigate = useNavigate()
   const steps = ['security', 'api-keys', 'participants']
+  
+  // Check if there's at least one non-user participant
+  const hasNonUserParticipant = participants.some(p => p.type === 'llm')
   
   function handleNext() {
     if (currentStep < steps.length - 1) {
@@ -51,6 +56,7 @@ export function WizardContainer() {
             totalSteps={steps.length}
             onNext={handleNext}
             onBack={handleBack}
+            nextDisabled={currentStep === 2 && !hasNonUserParticipant}
           />
         </div>
       </main>
