@@ -10,9 +10,14 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    reporters: ['json', 'verbose', 'vitest-sonar-reporter'],
+    outputFile: {
+      json: 'test-results.json',
+      'vitest-sonar-reporter': 'sonar-report.xml',
+    },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
+      reporter: ['text', 'lcov'],
       exclude: [
         'node_modules/',
         'src/setupTests.ts',
