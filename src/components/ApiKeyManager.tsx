@@ -19,7 +19,7 @@ interface ApiKeyManagerProps {
   storageOption?: ApiKeyStorageOptions
 }
 
-export function ApiKeyManager({ 
+function ApiKeyManager({ 
   onApiKeyChange, 
   storageOption = { storage: 'local' } 
 }: ApiKeyManagerProps) {
