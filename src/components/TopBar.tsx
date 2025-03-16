@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useTranslation } from 'react-i18next'
@@ -8,19 +7,15 @@ import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle
+  NavbarItem
 } from '@heroui/react'
 
 export function TopBar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { t } = useTranslation()
   
   return (
     <Navbar
-      isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
-      className="bg-card h-16 z-50 transition-colors duration-300"
+      className="bg-card h-16 z-50 transition-colors duration-300 pl-6 pr-6"
     >
       <NavbarContent>
         <NavbarBrand>
@@ -41,12 +36,6 @@ export function TopBar() {
         <NavbarItem>
           <ThemeSelectorWithErrorBoundary />
         </NavbarItem>
-        
-        {/* Mobile menu toggle */}
-        <NavbarMenuToggle 
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"} 
-          className="md:hidden" 
-        />
       </NavbarContent>
     </Navbar>
   )

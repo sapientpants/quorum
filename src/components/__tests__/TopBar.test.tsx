@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { TopBar } from '../TopBar'
 import { BrowserRouter } from 'react-router-dom'
 
@@ -93,51 +93,6 @@ describe('TopBar', () => {
     
     // Check that the theme selector is rendered
     expect(screen.getByTestId('theme-selector')).toBeInTheDocument()
-    
-    // Check that the menu toggle is rendered
-    expect(screen.getByTestId('navbar-menu-toggle')).toBeInTheDocument()
-  })
-  
-  it('toggles the menu when the toggle button is clicked', () => {
-    render(
-      <BrowserRouter>
-        <TopBar />
-      </BrowserRouter>
-    )
-    
-    // Initially, the menu should be closed
-    const navbar = screen.getByTestId('navbar')
-    expect(navbar).toHaveAttribute('data-is-menu-open', 'false')
-    
-    // Click the navbar to simulate menu toggle (since we mocked the component)
-    fireEvent.click(navbar)
-    
-    // The menu should now be open
-    expect(navbar).toHaveAttribute('data-is-menu-open', 'true')
-    
-    // Click again to close
-    fireEvent.click(navbar)
-    
-    // The menu should now be closed again
-    expect(navbar).toHaveAttribute('data-is-menu-open', 'false')
-  })
-  
-  it('has the correct aria-label on the menu toggle button', () => {
-    render(
-      <BrowserRouter>
-        <TopBar />
-      </BrowserRouter>
-    )
-    
-    // Initially, the menu is closed
-    const menuToggle = screen.getByTestId('navbar-menu-toggle')
-    expect(menuToggle).toHaveAttribute('aria-label', 'Open menu')
-    
-    // Click the navbar to open the menu
-    fireEvent.click(screen.getByTestId('navbar'))
-    
-    // Now the aria-label should change
-    expect(menuToggle).toHaveAttribute('aria-label', 'Close menu')
   })
   
   it('has a link to the home page in the navbar brand', () => {
