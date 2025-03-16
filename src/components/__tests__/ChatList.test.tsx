@@ -6,7 +6,7 @@ import type { Message } from '../../types/chat'
 
 // Mock the ChatMessage component
 vi.mock('../ChatMessage', () => ({
-  default: vi.fn(({ message, onRetry }) => (
+  ChatMessage: vi.fn(({ message, onRetry }) => (
     <div data-testid={`chat-message-${message.id}`}>
       <span>{message.text}</span>
       {message.status === 'error' && onRetry && (
@@ -23,7 +23,7 @@ vi.mock('../ChatMessage', () => ({
 
 // Mock the ChatScrollAnchor component
 vi.mock('../ChatScrollAnchor', () => ({
-  default: vi.fn(() => <div data-testid="chat-scroll-anchor" />)
+  ChatScrollAnchor: vi.fn(() => <div data-testid="chat-scroll-anchor" />)
 }))
 
 describe('ChatList', () => {

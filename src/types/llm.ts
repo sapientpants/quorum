@@ -22,9 +22,9 @@ type GoogleModel = 'gemini-2.0-pro' | 'gemini-2.0-flash' | string
 export type LLMModel = OpenAIModel | AnthropicModel | GrokModel | GoogleModel
 
 // Provider-specific model constants
-export const OPENAI_MODELS: OpenAIModel[] = ['gpt-4.5', 'o3-mini', 'gpt-4o', 'gpt-4o-mini']
-export const ANTHROPIC_MODELS: AnthropicModel[] = ['claude-3.7-sonnet', 'claude-3.5-sonnet', 'claude-3.5-haiku']
-export const GROK_MODELS: GrokModel[] = ['grok-2', 'grok-3']
+const OPENAI_MODELS: OpenAIModel[] = ['gpt-4.5', 'o3-mini', 'gpt-4o', 'gpt-4o-mini']
+const ANTHROPIC_MODELS: AnthropicModel[] = ['claude-3.7-sonnet', 'claude-3.5-sonnet', 'claude-3.5-haiku']
+const GROK_MODELS: GrokModel[] = ['grok-2', 'grok-3']
 export const GOOGLE_MODELS: GoogleModel[] = ['gemini-2.0-pro', 'gemini-2.0-flash']
 
 // LLM Provider definitions
@@ -50,17 +50,6 @@ export const LLM_PROVIDERS: LLMProvider[] = [
     models: GOOGLE_MODELS
   }
 ]
-
-// All supported provider IDs (for backward compatibility)
-export const SUPPORTED_PROVIDERS: LLMProviderId[] = LLM_PROVIDERS.map(provider => provider.id)
-
-// Provider to models mapping (for backward compatibility)
-export const PROVIDER_MODELS: Record<LLMProviderId, string[]> = {
-  openai: OPENAI_MODELS,
-  anthropic: ANTHROPIC_MODELS,
-  grok: GROK_MODELS,
-  google: GOOGLE_MODELS
-}
 
 // LLM settings interface
 export interface LLMSettings {

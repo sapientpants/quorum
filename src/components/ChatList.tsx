@@ -1,5 +1,5 @@
-import ChatMessage from './ChatMessage'
-import ChatScrollAnchor from './ChatScrollAnchor'
+import { ChatMessage } from './ChatMessage'
+import { ChatScrollAnchor } from './ChatScrollAnchor'
 import type { Message } from '../types/chat'
 
 interface ChatListProps {
@@ -29,6 +29,3 @@ export function ChatList({ messages, isLoading = false, onRetry }: ChatListProps
     </div>
   )
 }
-
-// Add default export
-export default ChatList 

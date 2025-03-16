@@ -15,7 +15,7 @@ const clientCache: Record<string, LLMClient> = {}
  * Register an LLM client factory for a provider
  * This allows for extending the system with new providers without modifying existing code
  */
-export function registerLLMClient(
+function registerLLMClient(
   provider: string, 
   factory: () => Partial<LLMClient>
 ): void {
@@ -62,7 +62,7 @@ export function getLLMClient(provider: LLMProviderId): LLMClient {
  * Create a client with enhanced capabilities
  * This is a helper function to create clients with consistent behavior
  */
-export function createEnhancedClient(
+function createEnhancedClient(
   baseClient: Partial<LLMClient>,
   provider: LLMProviderId
 ): LLMClient {

@@ -50,5 +50,3 @@ export function RoundTablePage() {
     </div>
   )
 }
-
-export default RoundTablePage

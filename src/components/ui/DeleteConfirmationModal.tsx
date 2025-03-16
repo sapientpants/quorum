@@ -7,7 +7,7 @@ interface DeleteConfirmationModalProps {
   onCancel: () => void
 }
 
-function DeleteConfirmationModal({
+export function DeleteConfirmationModal({
   title,
   message,
   confirmLabel,
@@ -39,5 +39,3 @@ function DeleteConfirmationModal({
     </div>
   )
 }
-
-export default DeleteConfirmationModal

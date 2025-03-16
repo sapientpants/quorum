@@ -39,5 +39,3 @@ export function ParticipantsPage() {
     </div>
   )
 }
-
-export default ParticipantsPage

@@ -17,7 +17,7 @@ export enum ConnectionQuality {
 /**
  * Network connection type mapping to connection quality
  */
-export const CONNECTION_TYPE_QUALITY: Record<string, ConnectionQuality> = {
+const CONNECTION_TYPE_QUALITY: Record<string, ConnectionQuality> = {
   'slow-2g': ConnectionQuality.POOR,
   '2g': ConnectionQuality.POOR,
   '3g': ConnectionQuality.FAIR,

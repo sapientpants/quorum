@@ -151,5 +151,3 @@ export function ParticipantConfigStep({ onNext, onBack }: ParticipantConfigStepP
     </div>
   )
 }
-
-export default ParticipantConfigStep

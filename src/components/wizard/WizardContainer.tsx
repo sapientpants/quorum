@@ -63,5 +63,3 @@ export function WizardContainer() {
     </div>
   )
 }
-
-export default WizardContainer

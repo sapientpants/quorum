@@ -39,5 +39,3 @@ export function ApiKeysPage() {
     </div>
   )
 }
-
-export default ApiKeysPage

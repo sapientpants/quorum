@@ -10,21 +10,21 @@ export class GrokError extends Error {
   }
 }
 
-export class GrokAuthError extends GrokError {
+class GrokAuthError extends GrokError {
   constructor(message = 'Invalid or missing API key') {
     super(message, 'auth_error')
     this.name = 'GrokAuthError'
   }
 }
 
-export class GrokRateLimitError extends GrokError {
+class GrokRateLimitError extends GrokError {
   constructor(message = 'Rate limit exceeded') {
     super(message, 'rate_limit_error')
     this.name = 'GrokRateLimitError'
   }
 }
 
-export class GrokModelError extends GrokError {
+class GrokModelError extends GrokError {
   constructor(message = 'Invalid model or model not available') {
     super(message, 'model_error')
     this.name = 'GrokModelError'

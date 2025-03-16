@@ -1,5 +1,3 @@
-import { z } from 'zod'
-
 /**
  * Template interface for storing round table configurations
  */
@@ -12,19 +10,6 @@ export interface Template {
   createdAt: number
   updatedAt: number
 }
-
-/**
- * Zod schema for template validation
- */
-export const templateSchema = z.object({
-  id: z.string(),
-  name: z.string().min(1, 'Name is required'),
-  description: z.string(),
-  participantIds: z.array(z.string()).min(1, 'At least one participant is required'),
-  defaultConversationStarter: z.string().optional(),
-  createdAt: z.number(),
-  updatedAt: z.number()
-})
 
 /**
  * Type for template creation form data

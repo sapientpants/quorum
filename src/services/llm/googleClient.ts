@@ -4,7 +4,7 @@ import type { LLMSettings } from '../../types/llm'
 import { GOOGLE_MODELS } from '../../types/llm'
 
 // Provider-specific error types
-export class GoogleError extends Error {
+class GoogleError extends Error {
   constructor(message: string, public code?: string, public details?: unknown) {
     super(message)
     this.name = 'GoogleError'

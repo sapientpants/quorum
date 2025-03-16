@@ -54,6 +54,3 @@ export function ChatInput({
     </div>
   )
 }
-
-// Add default export
-export default ChatInput 

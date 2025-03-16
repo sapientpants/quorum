@@ -44,5 +44,3 @@ export function WizardNavigation({
     </div>
   )
 }
-
-export default WizardNavigation

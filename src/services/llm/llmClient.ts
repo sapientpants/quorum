@@ -1,9 +1,5 @@
 import type { Message } from '../../types/chat'
 import type { LLMSettings } from '../../types/llm'
-import { OpenAIClient } from './openaiClient'
-import { AnthropicClient } from './anthropicClient'
-import { GrokClient } from './grokClient'
-import { GoogleClient } from './googleClient'
 
 export interface StreamingOptions {
   onToken?: (token: string) => void
@@ -52,44 +48,4 @@ export interface LLMClient {
    * @returns Whether streaming is supported
    */
   supportsStreaming(): boolean
-}
-
-// Cache clients to avoid creating new instances for each request
-const clientCache: Record<string, LLMClient> = {}
-
-/**
- * Factory function to get the appropriate LLM client based on the provider
- * @param provider The LLM provider
- * @returns The LLM client for the provider
- */
-export function getLLMClient(provider: string): LLMClient {
-  // Return cached client if available
-  if (clientCache[provider]) {
-    return clientCache[provider]
-  }
-
-  // Create a new client based on the provider
-  let client: LLMClient
-  
-  switch (provider.toLowerCase()) {
-    case 'openai':
-      client = new OpenAIClient()
-      break
-    case 'anthropic':
-      client = new AnthropicClient()
-      break
-    case 'grok':
-      client = new GrokClient()
-      break
-    case 'google':
-      client = new GoogleClient()
-      break
-    default:
-      throw new Error(`LLM client for provider ${provider} not implemented`)
-  }
-  
-  // Cache the client for future use
-  clientCache[provider] = client
-  
-  return client
 }

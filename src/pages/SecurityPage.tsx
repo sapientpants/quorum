@@ -40,5 +40,3 @@ export function SecurityPage() {
     </div>
   )
 }
-
-export default SecurityPage

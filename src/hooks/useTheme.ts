@@ -3,7 +3,7 @@ import type { Theme } from '../types/preferences'
 import { usePreferencesStore } from '../store/preferencesStore'
 
 // Theme categories for organization
-export const themeCategories = {
+const themeCategories = {
   light: ['light', 'cupcake', 'bumblebee', 'emerald', 'corporate', 'retro', 'garden', 'aqua', 'lofi', 'pastel', 'fantasy', 'wireframe', 'cmyk', 'autumn', 'business', 'acid', 'lemonade', 'winter'],
   dark: ['dark', 'synthwave', 'cyberpunk', 'valentine', 'halloween', 'forest', 'black', 'luxury', 'dracula', 'night', 'coffee']
 }
@@ -120,5 +120,3 @@ export function useTheme() {
     setTheme: setThemeMode
   }
 }
-
-export default useTheme

@@ -10,21 +10,21 @@ export class AnthropicError extends Error {
   }
 }
 
-export class AnthropicAuthError extends AnthropicError {
+class AnthropicAuthError extends AnthropicError {
   constructor(message = 'Invalid or missing API key') {
     super(message, 'auth_error')
     this.name = 'AnthropicAuthError'
   }
 }
 
-export class AnthropicRateLimitError extends AnthropicError {
+class AnthropicRateLimitError extends AnthropicError {
   constructor(message = 'Rate limit exceeded') {
     super(message, 'rate_limit_error')
     this.name = 'AnthropicRateLimitError'
   }
 }
 
-export class AnthropicModelError extends AnthropicError {
+class AnthropicModelError extends AnthropicError {
   constructor(message = 'Invalid model or model not available') {
     super(message, 'model_error')
     this.name = 'AnthropicModelError'

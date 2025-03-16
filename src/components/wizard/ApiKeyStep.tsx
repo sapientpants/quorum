@@ -114,5 +114,3 @@ export function ApiKeyStep({ onNext, onBack }: ApiKeyStepProps) {
     </div>
   )
 }
-
-export default ApiKeyStep
