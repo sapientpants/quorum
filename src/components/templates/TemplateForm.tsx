@@ -95,37 +95,37 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Template Name */}
       <div className="form-control">
-        <label className="label">
+        <label className="block">
           <span className="label-text font-medium">{t('Template Name')}</span>
+          <input
+            type="text"
+            className={`input input-bordered w-full mt-2 ${errors.name ? 'input-error' : ''}`}
+            placeholder={t('Enter template name')}
+            {...register('name')}
+          />
         </label>
-        <input
-          type="text"
-          className={`input input-bordered w-full ${errors.name ? 'input-error' : ''}`}
-          placeholder={t('Enter template name')}
-          {...register('name')}
-        />
         {errors.name && (
-          <label className="label">
+          <div className="mt-1">
             <span className="label-text-alt text-error">{errors.name.message}</span>
-          </label>
+          </div>
         )}
       </div>
       
       {/* Description */}
       <div className="form-control">
-        <label className="label">
+        <label className="block">
           <span className="label-text font-medium">{t('Description')}</span>
+          <textarea
+            className="textarea textarea-bordered h-24 w-full mt-2"
+            placeholder={t('Enter template description (optional)')}
+            {...register('description')}
+          />
         </label>
-        <textarea
-          className="textarea textarea-bordered h-24"
-          placeholder={t('Enter template description (optional)')}
-          {...register('description')}
-        />
       </div>
       
       {/* Participants Selection */}
       <div className="form-control">
-        <label className="label">
+        <label className="block">
           <span className="label-text font-medium">{t('Select Participants')}</span>
         </label>
         
@@ -157,13 +157,14 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
                   )}
                 </div>
                 <div className="ml-auto">
-                  <input
-                    type="checkbox"
-                    className="checkbox checkbox-primary"
-                    checked={isParticipantSelected(participant.id)}
-                    onChange={() => toggleParticipant(participant.id)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
+                  <label className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      className="checkbox checkbox-primary"
+                      checked={isParticipantSelected(participant.id)}
+                      onChange={() => toggleParticipant(participant.id)}
+                    />
+                  </label>
                 </div>
               </div>
             </div>

@@ -37,7 +37,7 @@ describe('SettingsPanel', () => {
     expect(screen.getByText('Creative')).toBeInTheDocument()
     
     // Check that max tokens settings are rendered
-    expect(screen.getByText('Max Tokens')).toBeInTheDocument()
+    expect(screen.getByText('Maximum Length')).toBeInTheDocument()
     expect(screen.getByText('1000')).toBeInTheDocument() // Max tokens value
     expect(screen.getByText('Short')).toBeInTheDocument()
     expect(screen.getByText('Long')).toBeInTheDocument()

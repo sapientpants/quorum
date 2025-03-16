@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -39,16 +39,8 @@ const defaultValues: FormData = {
   }
 }
 
-// Sample system prompts for inspiration
-const systemPromptExamples = [
-  "You are an expert in medical diagnosis. Focus on providing accurate information based on symptoms and medical history.",
-  "You are a creative storyteller. Create engaging narratives with vivid descriptions and interesting characters.",
-  "You are a debate moderator. Maintain neutrality while ensuring both sides get fair representation."
-]
-
 export function ParticipantForm({ initialData, onSubmit, onCancel }: ParticipantFormProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
-  const [showExamples, setShowExamples] = useState(false)
   const [isMobileView, setIsMobileView] = useState(false)
   const sortedProviders = [...LLM_PROVIDERS].sort((a, b) => a.displayName.localeCompare(b.displayName))
 
@@ -91,11 +83,6 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
     })
   }
 
-  const handleExamplePrompt = useCallback((example: string) => {
-    setValue('systemPrompt', example)
-    setShowExamples(false)
-  }, [setValue, setShowExamples])
-
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 bg-base-100 p-3 sm:p-5 rounded-lg shadow-sm max-w-4xl mx-auto">
       <div className="flex justify-between items-center">
@@ -119,16 +106,15 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
       {/* Basic Information */}
       <div className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1">
+          <label className="block text-sm font-medium mb-1">
             Name
+            <input
+              type="text"
+              className="input input-bordered w-full p-3 text-base mt-1"
+              placeholder="e.g., Medical Expert"
+              {...register('name')}
+            />
           </label>
-          <input
-            type="text"
-            id="name"
-            className="input input-bordered w-full p-3 text-base"
-            placeholder="e.g., Medical Expert"
-            {...register('name')}
-          />
           {errors.name && (
             <p className="text-error text-sm mt-1">{errors.name.message}</p>
           )}
@@ -136,40 +122,38 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="provider" className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1">
               Provider
+              <select
+                className="select select-bordered w-full p-3 text-base h-auto min-h-12 mt-1"
+                {...register('provider')}
+              >
+                {sortedProviders.map(provider => (
+                  <option key={provider.id} value={provider.id}>
+                    {provider.displayName}
+                  </option>
+                ))}
+              </select>
             </label>
-            <select
-              id="provider"
-              className="select select-bordered w-full p-3 text-base h-auto min-h-12"
-              {...register('provider')}
-            >
-              {sortedProviders.map(provider => (
-                <option key={provider.id} value={provider.id}>
-                  {provider.displayName}
-                </option>
-              ))}
-            </select>
             {errors.provider && (
               <p className="text-error text-sm mt-1">{errors.provider.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="model" className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1">
               Model
+              <select
+                className="select select-bordered w-full p-3 text-base h-auto min-h-12 mt-1"
+                {...register('model')}
+              >
+                {models.map(model => (
+                  <option key={model} value={model}>
+                    {model}
+                  </option>
+                ))}
+              </select>
             </label>
-            <select
-              id="model"
-              className="select select-bordered w-full p-3 text-base h-auto min-h-12"
-              {...register('model')}
-            >
-              {models.map(model => (
-                <option key={model} value={model}>
-                  {model}
-                </option>
-              ))}
-            </select>
             {errors.model && (
               <p className="text-error text-sm mt-1">{errors.model.message}</p>
             )}
@@ -179,67 +163,37 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
 
       {/* Role Description */}
       <div>
-        <label htmlFor="roleDescription" className="block text-sm font-medium mb-1">
+        <label className="block text-sm font-medium mb-1">
           Role Description
+          <textarea
+            className="textarea textarea-bordered w-full h-28 mt-1"
+            placeholder="Describe the role of this participant"
+            {...register('roleDescription')}
+          />
         </label>
-        <textarea
-          id="roleDescription"
-          className="textarea textarea-bordered w-full p-3 text-base h-20 sm:h-24"
-          placeholder="Describe the role this participant will play in the conversation..."
-          {...register('roleDescription')}
-        />
-        <p className="text-xs mt-1 text-base-content/70">
-          Optional: Provide context about this participant's expertise or perspective.
-        </p>
+        {errors.roleDescription && (
+          <p className="text-error text-sm mt-1">{errors.roleDescription.message}</p>
+        )}
       </div>
 
       {/* System Prompt */}
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <label htmlFor="systemPrompt" className="block text-sm font-medium">
-            System Prompt
-          </label>
-          <button
-            type="button"
-            className="text-xs btn btn-ghost btn-sm"
-            onClick={() => setShowExamples(!showExamples)}
-          >
-            {showExamples ? 'Hide Examples' : 'Show Examples'}
-          </button>
-        </div>
-        
-        {showExamples && (
-          <div className="bg-base-200 p-3 rounded-md mb-2 text-sm">
-            <h4 className="font-medium mb-2">Example Prompts:</h4>
-            <ul className="space-y-3">
-              {systemPromptExamples.map((example, index) => (
-                <li key={index} className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleExamplePrompt(example)}
-                    className="btn btn-sm btn-ghost h-auto py-2"
-                  >
-                    Use
-                  </button>
-                  <p className="line-clamp-2">{example}</p>
-                </li>
-              ))}
-            </ul>
+      <div>
+        <label className="block text-sm font-medium">
+          System Prompt
+          <div className="mt-1">
+            <div className="mb-2 text-sm opacity-70">
+              Instructions that define how the AI responds (not visible to users)
+            </div>
+            <textarea
+              className="textarea textarea-bordered w-full h-40"
+              placeholder="Enter system prompt..."
+              {...register('systemPrompt')}
+            />
           </div>
-        )}
-        
-        <textarea
-          id="systemPrompt"
-          className="textarea textarea-bordered w-full p-3 text-base h-32 sm:h-40"
-          placeholder="Enter the system prompt that defines this participant's behavior..."
-          {...register('systemPrompt')}
-        />
+        </label>
         {errors.systemPrompt && (
           <p className="text-error text-sm mt-1">{errors.systemPrompt.message}</p>
         )}
-        <p className="text-xs text-base-content/70">
-          This prompt instructs the AI how to behave and what role to play in the conversation.
-        </p>
       </div>
 
       {/* Advanced Settings */}
@@ -260,43 +214,47 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
           <div className="mt-4 space-y-4 p-4 bg-base-200 rounded-lg">
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label htmlFor="temperature" className="block text-sm font-medium mb-1">
-                  Temperature (0-2)
-                </label>
-                <div className="flex items-center gap-3">
+                <label className="block text-sm font-medium mb-1">
+                  Temperature ({watch('settings.temperature').toFixed(1)})
                   <input
                     type="range"
-                    id="temperature"
-                    step="0.1"
                     min="0"
                     max="2"
-                    className="range range-sm flex-1"
-                    {...register('settings.temperature', { valueAsNumber: true })}
+                    step="0.1"
+                    className="range range-primary mt-1"
+                    value={watch('settings.temperature')}
+                    onChange={(e) => {
+                      setValue('settings.temperature', parseFloat(e.target.value))
+                    }}
                   />
-                  <span className="text-sm font-mono w-10">
-                    {watch('settings.temperature')}
-                  </span>
+                </label>
+                <div className="flex justify-between text-xs opacity-70">
+                  <span>Precise</span>
+                  <span>Balanced</span>
+                  <span>Creative</span>
                 </div>
-                <p className="text-xs mt-1 text-base-content/70">
-                  Lower values (0-0.5) produce more consistent outputs. Higher values (0.7-2) make responses more creative.
-                </p>
               </div>
 
               <div>
-                <label htmlFor="maxTokens" className="block text-sm font-medium mb-1">
-                  Max Tokens
+                <label className="block text-sm font-medium mb-1">
+                  Max Tokens ({watch('settings.maxTokens')})
+                  <input
+                    type="range"
+                    min="500"
+                    max="16000"
+                    step="500"
+                    className="range range-primary mt-1"
+                    value={watch('settings.maxTokens')}
+                    onChange={(e) => {
+                      setValue('settings.maxTokens', parseInt(e.target.value))
+                    }}
+                  />
                 </label>
-                <input
-                  type="number"
-                  id="maxTokens"
-                  className="input input-bordered w-full p-3 text-base"
-                  min="100"
-                  step="100"
-                  {...register('settings.maxTokens', { valueAsNumber: true })}
-                />
-                <p className="text-xs mt-1 text-base-content/70">
-                  Maximum number of tokens to generate in the response.
-                </p>
+                <div className="flex justify-between text-xs opacity-70">
+                  <span>Short</span>
+                  <span>Medium</span>
+                  <span>Long</span>
+                </div>
               </div>
             </div>
           </div>

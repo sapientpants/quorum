@@ -56,7 +56,7 @@ describe('ApiKeyConsentModal', () => {
     expect(sessionRadioInput.parentElement?.textContent).toContain('Session Storage')
     
     // Check consent checkbox
-    expect(screen.getByText(/I understand and consent/)).toBeInTheDocument()
+    expect(screen.getByText(/I understand and agree to these terms/)).toBeInTheDocument()
     
     // Check buttons
     expect(screen.getByText('Cancel')).toBeInTheDocument()

@@ -91,14 +91,12 @@ describe('ParticipantForm', () => {
     await userEvent.click(advancedButton)
     
     // Fill in advanced settings
-    const temperatureInput = screen.getByLabelText(/temperature/i)
-    const maxTokensInput = screen.getByLabelText(/max tokens/i)
+    const temperatureInput = screen.getByRole('slider', { name: /temperature/i })
+    const maxTokensInput = screen.getByRole('slider', { name: /max tokens/i })
     
-    // Don't try to clear a range input, just set its value directly
+    // Set values directly for range inputs
     fireEvent.change(temperatureInput, { target: { value: '0.8' } })
-    
-    await userEvent.clear(maxTokensInput)
-    await userEvent.type(maxTokensInput, '2000')
+    fireEvent.change(maxTokensInput, { target: { value: '2000' } })
 
     // Submit form
     const submitButton = screen.getByText(/create participant/i)

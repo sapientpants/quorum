@@ -2,7 +2,6 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ApiKeyStorageOptions } from '../types/api'
 import { Button } from './ui/button'
-import { Checkbox } from './ui/checkbox'
 
 interface ApiKeyConsentModalProps {
   onContinue: (storageType: ApiKeyStorageOptions['storage']) => void
@@ -72,21 +71,21 @@ export function ApiKeyConsentModal({ onContinue, onCancel }: ApiKeyConsentModalP
               />
               <div>
                 <div className="font-medium text-foreground">{t('welcome.consent.points.noStorage')}</div>
-                <div className="text-sm text-foreground/70">Must re-enter each time</div>
+                <div className="text-sm text-foreground/70">Keys are forgotten after use</div>
               </div>
             </label>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 mb-6">
-          <Checkbox
-            id="consent"
-            checked={isChecked}
-            onCheckedChange={(checked) => setIsChecked(checked as boolean)}
-            className="checkbox-primary"
-          />
-          <label htmlFor="consent" className="cursor-pointer text-foreground">
-            {t('welcome.consent.agreement')}
+        <div className="form-control">
+          <label className="cursor-pointer flex items-center gap-2 text-foreground">
+            <input 
+              type="checkbox" 
+              className="checkbox checkbox-primary" 
+              checked={isChecked}
+              onChange={(e) => setIsChecked(e.target.checked)}
+            />
+            <span>I understand and agree to these terms</span>
           </label>
         </div>
 
