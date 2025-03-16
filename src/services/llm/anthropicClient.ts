@@ -1,99 +1,103 @@
-import type { Message } from '../../types/chat'
-import type { LLMClient, StreamingOptions } from './llmClient'
-import type { LLMSettings, AnthropicModel } from '../../types/llm'
+import type { Message } from "../../types/chat";
+import type { LLMClient, StreamingOptions } from "./llmClient";
+import type { LLMSettings, AnthropicModel } from "../../types/llm";
 
 // Provider-specific error types
 export class AnthropicError extends Error {
-  constructor(message: string, public code?: string, public details?: unknown) {
-    super(message)
-    this.name = 'AnthropicError'
+  constructor(
+    message: string,
+    public code?: string,
+    public details?: unknown,
+  ) {
+    super(message);
+    this.name = "AnthropicError";
   }
 }
 
 class AnthropicAuthError extends AnthropicError {
-  constructor(message = 'Invalid or missing API key') {
-    super(message, 'auth_error')
-    this.name = 'AnthropicAuthError'
+  constructor(message = "Invalid or missing API key") {
+    super(message, "auth_error");
+    this.name = "AnthropicAuthError";
   }
 }
 
 class AnthropicRateLimitError extends AnthropicError {
-  constructor(message = 'Rate limit exceeded') {
-    super(message, 'rate_limit_error')
-    this.name = 'AnthropicRateLimitError'
+  constructor(message = "Rate limit exceeded") {
+    super(message, "rate_limit_error");
+    this.name = "AnthropicRateLimitError";
   }
 }
 
 class AnthropicModelError extends AnthropicError {
-  constructor(message = 'Invalid model or model not available') {
-    super(message, 'model_error')
-    this.name = 'AnthropicModelError'
+  constructor(message = "Invalid model or model not available") {
+    super(message, "model_error");
+    this.name = "AnthropicModelError";
   }
 }
 
 interface AnthropicMessage {
-  role: 'user' | 'assistant'
-  content: string
+  role: "user" | "assistant";
+  content: string;
 }
 
 interface AnthropicRequest {
-  model: string
-  messages: AnthropicMessage[]
-  system?: string
-  max_tokens?: number
-  temperature?: number
-  top_p?: number
-  stream?: boolean
+  model: string;
+  messages: AnthropicMessage[];
+  system?: string;
+  max_tokens?: number;
+  temperature?: number;
+  top_p?: number;
+  stream?: boolean;
 }
 
 interface AnthropicResponse {
-  id: string
-  type: string
-  model: string
+  id: string;
+  type: string;
+  model: string;
   content: {
-    type: string
-    text: string
-  }[]
+    type: string;
+    text: string;
+  }[];
   usage: {
-    input_tokens: number
-    output_tokens: number
-  }
+    input_tokens: number;
+    output_tokens: number;
+  };
 }
 
 export class AnthropicClient implements LLMClient {
   private readonly supportedModels: AnthropicModel[] = [
-    'claude-3.7-sonnet',
-    'claude-3.5-sonnet',
-    'claude-3.5-haiku'
-  ]
+    "claude-3.7-sonnet",
+    "claude-3.5-sonnet",
+    "claude-3.5-haiku",
+  ];
 
-  private readonly defaultModel: AnthropicModel = 'claude-3.7-sonnet'
+  private readonly defaultModel: AnthropicModel = "claude-3.7-sonnet";
 
   // Convert our app's message format to Anthropic's format
-  private convertToAnthropicMessages(messages: Message[]): { 
-    messages: AnthropicMessage[], 
-    system?: string 
+  private convertToAnthropicMessages(messages: Message[]): {
+    messages: AnthropicMessage[];
+    system?: string;
   } {
     // Extract system message if present
-    const systemMessage = messages.find(m => m.senderId === 'system')
-    const systemPrompt = systemMessage?.text
+    const systemMessage = messages.find((m) => m.senderId === "system");
+    const systemPrompt = systemMessage?.text;
 
     // Filter out system messages and convert the rest
     const anthropicMessages = messages
-      .filter(m => m.senderId !== 'system')
-      .map(message => {
+      .filter((m) => m.senderId !== "system")
+      .map((message) => {
         // Anthropic only supports 'user' or 'assistant' roles
-        const role = message.senderId === 'user' ? 'user' : 'assistant'
+        const role = message.senderId === "user" ? "user" : "assistant";
         return {
-          role: role as 'user' | 'assistant',
-          content: message.text
-        }
-      })
+          role: role as "user" | "assistant",
+          content: message.text,
+        };
+      });
 
     return {
       messages: anthropicMessages,
-      system: systemPrompt
-    }
+      system: systemPrompt,
+    };
   }
 
   async sendMessage(
@@ -101,18 +105,21 @@ export class AnthropicClient implements LLMClient {
     apiKey: string,
     model: string = this.defaultModel,
     settings?: LLMSettings,
-    streamingOptions?: StreamingOptions
+    streamingOptions?: StreamingOptions,
   ): Promise<string> {
     if (!apiKey) {
-      throw new AnthropicAuthError()
+      throw new AnthropicAuthError();
     }
 
     if (!this.supportedModels.includes(model as AnthropicModel)) {
-      throw new AnthropicModelError(`Model ${model} is not available. Available models: ${this.supportedModels.join(', ')}`)
+      throw new AnthropicModelError(
+        `Model ${model} is not available. Available models: ${this.supportedModels.join(", ")}`,
+      );
     }
-    
-    const { messages: anthropicMessages, system } = this.convertToAnthropicMessages(messages)
-    
+
+    const { messages: anthropicMessages, system } =
+      this.convertToAnthropicMessages(messages);
+
     const requestBody: AnthropicRequest = {
       model,
       messages: anthropicMessages,
@@ -120,168 +127,184 @@ export class AnthropicClient implements LLMClient {
       max_tokens: settings?.maxTokens || 1000,
       temperature: settings?.temperature,
       top_p: settings?.topP,
-      stream: !!streamingOptions
-    }
-    
+      stream: !!streamingOptions,
+    };
+
     try {
       if (this.supportsStreaming() && streamingOptions) {
-        return await this.streamResponse(requestBody, apiKey, streamingOptions)
+        return await this.streamResponse(requestBody, apiKey, streamingOptions);
       } else {
-        return await this.standardResponse(requestBody, apiKey)
+        return await this.standardResponse(requestBody, apiKey);
       }
     } catch (error) {
       // Convert generic errors to Anthropic-specific errors
-      const anthropicError = this.handleError(error)
-      
+      const anthropicError = this.handleError(error);
+
       if (streamingOptions?.onError) {
-        streamingOptions.onError(anthropicError)
+        streamingOptions.onError(anthropicError);
       }
-      
-      throw anthropicError
+
+      throw anthropicError;
     }
   }
 
   private handleError(error: unknown): AnthropicError {
     if (error instanceof AnthropicError) {
-      return error
+      return error;
     }
 
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const errorMessage = error instanceof Error ? error.message : String(error);
 
     // Handle common error cases
-    if (errorMessage.includes('401') || errorMessage.includes('403')) {
-      return new AnthropicAuthError('Invalid or expired API key')
+    if (errorMessage.includes("401") || errorMessage.includes("403")) {
+      return new AnthropicAuthError("Invalid or expired API key");
     }
-    if (errorMessage.includes('429')) {
-      return new AnthropicRateLimitError('Too many requests. Please try again later')
+    if (errorMessage.includes("429")) {
+      return new AnthropicRateLimitError(
+        "Too many requests. Please try again later",
+      );
     }
-    if (errorMessage.includes('404')) {
-      return new AnthropicModelError('The requested model is not available')
+    if (errorMessage.includes("404")) {
+      return new AnthropicModelError("The requested model is not available");
     }
 
     // Generic error case
     return new AnthropicError(
-      'An error occurred while calling the Anthropic API: ' + errorMessage,
-      'unknown_error',
-      error
-    )
+      "An error occurred while calling the Anthropic API: " + errorMessage,
+      "unknown_error",
+      error,
+    );
   }
 
   private async streamResponse(
     requestBody: AnthropicRequest,
     apiKey: string,
-    streamingOptions: StreamingOptions
+    streamingOptions: StreamingOptions,
   ): Promise<string> {
-    let response: Response
+    let response: Response;
     try {
-      response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
+      response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
         },
-        body: JSON.stringify({ ...requestBody, stream: true })
-      })
+        body: JSON.stringify({ ...requestBody, stream: true }),
+      });
     } catch (error) {
-      throw this.handleError(error)
+      throw this.handleError(error);
     }
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw this.handleError(new Error(`${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`))
+      const errorData = await response.json().catch(() => ({}));
+      throw this.handleError(
+        new Error(
+          `${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`,
+        ),
+      );
     }
 
     if (!response.body) {
-      throw new AnthropicError('No response body from Anthropic')
+      throw new AnthropicError("No response body from Anthropic");
     }
 
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder()
-    let fullText = ''
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = "";
 
     try {
       while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
+        const { done, value } = await reader.read();
+        if (done) break;
 
-        const chunk = decoder.decode(value)
-        const lines = chunk.split('\n').filter(line => line.trim() !== '')
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n").filter((line) => line.trim() !== "");
 
         for (const line of lines) {
-          if (!line.startsWith('data:') || line.includes('[DONE]')) continue
+          if (!line.startsWith("data:") || line.includes("[DONE]")) continue;
 
           try {
-            const data = JSON.parse(line.slice(5))
-            const content = data.delta?.text || ''
+            const data = JSON.parse(line.slice(5));
+            const content = data.delta?.text || "";
 
             if (content) {
-              fullText += content
+              fullText += content;
               if (streamingOptions.onToken) {
-                streamingOptions.onToken(content)
+                streamingOptions.onToken(content);
               }
             }
           } catch (e) {
-            console.warn('Error parsing streaming response line:', e)
+            console.warn("Error parsing streaming response line:", e);
           }
         }
       }
     } catch (error) {
-      throw this.handleError(error)
+      throw this.handleError(error);
     } finally {
-      reader.releaseLock()
+      reader.releaseLock();
     }
 
     if (streamingOptions.onComplete) {
-      streamingOptions.onComplete(fullText)
+      streamingOptions.onComplete(fullText);
     }
 
-    return fullText
+    return fullText;
   }
 
-  private async standardResponse(requestBody: AnthropicRequest, apiKey: string): Promise<string> {
-    let response: Response
+  private async standardResponse(
+    requestBody: AnthropicRequest,
+    apiKey: string,
+  ): Promise<string> {
+    let response: Response;
     try {
-      response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
+      response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
         },
-        body: JSON.stringify(requestBody)
-      })
+        body: JSON.stringify(requestBody),
+      });
     } catch (error) {
-      throw this.handleError(error)
+      throw this.handleError(error);
     }
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw this.handleError(new Error(`${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`))
+      const errorData = await response.json().catch(() => ({}));
+      throw this.handleError(
+        new Error(
+          `${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`,
+        ),
+      );
     }
 
-    const data: AnthropicResponse = await response.json()
+    const data: AnthropicResponse = await response.json();
 
     if (!data.content || data.content.length === 0) {
-      throw new AnthropicError('No response from Anthropic')
+      throw new AnthropicError("No response from Anthropic");
     }
 
-    return data.content[0].text
+    return data.content[0].text;
   }
 
   getAvailableModels(): string[] {
-    return this.supportedModels
+    return this.supportedModels;
   }
 
   getDefaultModel(): string {
-    return this.defaultModel
+    return this.defaultModel;
   }
 
   getProviderName(): string {
-    return 'anthropic'
+    return "anthropic";
   }
 
   supportsStreaming(): boolean {
-    return typeof ReadableStream !== 'undefined' && typeof TextDecoder !== 'undefined'
+    return (
+      typeof ReadableStream !== "undefined" &&
+      typeof TextDecoder !== "undefined"
+    );
   }
-} 
+}

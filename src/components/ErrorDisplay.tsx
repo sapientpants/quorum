@@ -1,11 +1,11 @@
 interface ErrorDisplayProps {
-  error: string | null
-  onDismiss?: () => void
+  error: string | null;
+  onDismiss?: () => void;
 }
 
 function ErrorDisplay({ error, onDismiss }: ErrorDisplayProps) {
   if (!error) {
-    return null
+    return null;
   }
 
   return (
@@ -30,7 +30,7 @@ function ErrorDisplay({ error, onDismiss }: ErrorDisplayProps) {
         </button>
       )}
     </div>
-  )
+  );
 }
 
-export default ErrorDisplay
+export default ErrorDisplay;

@@ -1,31 +1,31 @@
-import { useState, KeyboardEvent } from 'react'
+import { useState, KeyboardEvent } from "react";
 
 interface ChatInputProps {
-  onSendMessage: (text: string) => void
-  isLoading?: boolean
-  placeholder?: string
-  disabled?: boolean
+  onSendMessage: (text: string) => void;
+  isLoading?: boolean;
+  placeholder?: string;
+  disabled?: boolean;
 }
 
-export function ChatInput({ 
-  onSendMessage, 
-  isLoading = false, 
+export function ChatInput({
+  onSendMessage,
+  isLoading = false,
   placeholder = "Type your message here...",
-  disabled = false
+  disabled = false,
 }: ChatInputProps) {
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState("");
 
   function handleSend() {
     if (message.trim() && !isLoading && !disabled) {
-      onSendMessage(message)
-      setMessage('')
+      onSendMessage(message);
+      setMessage("");
     }
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   }
 
@@ -40,17 +40,13 @@ export function ChatInput({
         rows={2}
         disabled={isLoading || disabled}
       />
-      <button 
-        className="btn btn-primary" 
+      <button
+        className="btn btn-primary"
         onClick={handleSend}
         disabled={!message.trim() || isLoading || disabled}
       >
-        {isLoading ? (
-          <span className="loading loading-spinner"></span>
-        ) : (
-          'Send'
-        )}
+        {isLoading ? <span className="loading loading-spinner"></span> : "Send"}
       </button>
     </div>
-  )
+  );
 }

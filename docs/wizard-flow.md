@@ -66,10 +66,11 @@ We will extend the existing preferences store to track wizard state:
 
 ```typescript
 // Add to UserPreferences interface
-wizardCompleted: boolean
+wizardCompleted: boolean;
 ```
 
 This will allow us to:
+
 - Track whether the user has completed the wizard
 - Reset the wizard when needed
 
@@ -95,39 +96,39 @@ function WizardContainer() {
   const [currentStep, setCurrentStep] = useState(0)
   const { preferences, updatePreferences } = usePreferencesStore()
   const steps = ['welcome', 'security', 'api-keys', 'participants']
-  
+
   function handleNext() {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
       // Complete wizard
-      updatePreferences({ 
+      updatePreferences({
         wizardCompleted: true
       })
       // Redirect to main app
       navigate('/chat')
     }
   }
-  
+
   function handleBack() {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
     }
   }
-  
+
   // Render current step
   return (
     <div className="wizard-container">
       <WizardProgress currentStep={currentStep} totalSteps={steps.length} />
-      
+
       {/* Render current step */}
       {currentStep === 0 && <WelcomeStep onNext={handleNext} />}
       {currentStep === 1 && <SecurityStep onNext={handleNext} onBack={handleBack} />}
       {currentStep === 2 && <ApiKeyStep onNext={handleNext} onBack={handleBack} />}
       {currentStep === 3 && <ParticipantConfigStep onNext={handleNext} onBack={handleBack} />}
-      
-      <WizardNavigation 
-        currentStep={currentStep} 
+
+      <WizardNavigation
+        currentStep={currentStep}
         totalSteps={steps.length}
         onNext={handleNext}
         onBack={handleBack}
@@ -143,8 +144,8 @@ Each wizard step will be a separate component with consistent props:
 
 ```typescript
 interface WizardStepProps {
-  onNext: () => void
-  onBack?: () => void
+  onNext: () => void;
+  onBack?: () => void;
 }
 ```
 
@@ -156,7 +157,7 @@ function WelcomeStep({ onNext }: WizardStepProps) {
     <div className="wizard-step">
       <h2>Welcome to Quorum</h2>
       <p>A round-table conversation with AI participants</p>
-      
+
       {/* Feature highlights */}
       <ul>
         <li>Custom AI participants with different roles</li>
@@ -164,7 +165,7 @@ function WelcomeStep({ onNext }: WizardStepProps) {
         <li>Save and load conversation templates</li>
         <li>Analyze conversations</li>
       </ul>
-      
+
       <Button onClick={onNext}>Get Started</Button>
     </div>
   )
@@ -179,28 +180,28 @@ function SecurityStep({ onNext, onBack }: WizardStepProps) {
   const [keyStoragePreference, setKeyStoragePreference] = useState<KeyStoragePreference>(
     preferences.keyStoragePreference || 'session'
   )
-  
+
   function handleStorageChange(preference: KeyStoragePreference) {
     setKeyStoragePreference(preference)
   }
-  
+
   function handleContinue() {
     updatePreferences({ keyStoragePreference })
     onNext()
   }
-  
+
   return (
     <div className="wizard-step">
       <h2>Security Settings</h2>
       <p>Choose how you want to store your API keys</p>
-      
+
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <input 
-            type="radio" 
-            id="localStorage" 
-            name="keyStorage" 
-            className="radio radio-primary" 
+          <input
+            type="radio"
+            id="localStorage"
+            name="keyStorage"
+            className="radio radio-primary"
             checked={keyStoragePreference === 'local'}
             onChange={() => handleStorageChange('local')}
           />
@@ -211,13 +212,13 @@ function SecurityStep({ onNext, onBack }: WizardStepProps) {
             </span>
           </label>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <input 
-            type="radio" 
-            id="sessionOnly" 
-            name="keyStorage" 
-            className="radio radio-primary" 
+          <input
+            type="radio"
+            id="sessionOnly"
+            name="keyStorage"
+            className="radio radio-primary"
             checked={keyStoragePreference === 'session'}
             onChange={() => handleStorageChange('session')}
           />
@@ -228,13 +229,13 @@ function SecurityStep({ onNext, onBack }: WizardStepProps) {
             </span>
           </label>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <input 
-            type="radio" 
-            id="noStorage" 
-            name="keyStorage" 
-            className="radio radio-primary" 
+          <input
+            type="radio"
+            id="noStorage"
+            name="keyStorage"
+            className="radio radio-primary"
             checked={keyStoragePreference === 'none'}
             onChange={() => handleStorageChange('none')}
           />
@@ -246,7 +247,7 @@ function SecurityStep({ onNext, onBack }: WizardStepProps) {
           </label>
         </div>
       </div>
-      
+
       <Button onClick={handleContinue}>
         Continue
       </Button>
@@ -260,20 +261,20 @@ function SecurityStep({ onNext, onBack }: WizardStepProps) {
 ```typescript
 function ApiKeyStep({ onNext, onBack }: WizardStepProps) {
   const [hasValidKeys, setHasValidKeys] = useState(false)
-  
+
   function handleApiKeysComplete() {
     setHasValidKeys(true)
   }
-  
+
   return (
     <div className="wizard-step">
       <h2>API Key Setup</h2>
       <p>Configure your API keys for the AI providers you want to use</p>
-      
+
       <ApiKeySetup onComplete={handleApiKeysComplete} />
-      
+
       {/* Next button is enabled only when valid keys are provided */}
-      <Button 
+      <Button
         onClick={onNext}
         disabled={!hasValidKeys}
       >
@@ -290,14 +291,14 @@ function ApiKeyStep({ onNext, onBack }: WizardStepProps) {
 function ParticipantConfigStep({ onNext, onBack }: WizardStepProps) {
   const { participants } = useParticipantsStore()
   const [isAddingParticipant, setIsAddingParticipant] = useState(participants.length === 0)
-  
+
   return (
     <div className="wizard-step">
       <h2>Configure Participants</h2>
       <p>Set up at least one AI participant for your conversations</p>
-      
+
       {isAddingParticipant ? (
-        <ParticipantForm 
+        <ParticipantForm
           onSubmit={() => setIsAddingParticipant(false)}
           onCancel={() => setIsAddingParticipant(false)}
         />
@@ -309,8 +310,8 @@ function ParticipantConfigStep({ onNext, onBack }: WizardStepProps) {
           </Button>
         </>
       )}
-      
-      <Button 
+
+      <Button
         onClick={onNext}
         disabled={participants.length === 0}
       >
@@ -330,14 +331,14 @@ function WizardProgress({ currentStep, totalSteps }) {
   return (
     <div className="wizard-progress">
       <div className="progress-bar">
-        <div 
+        <div
           className="progress-fill"
           style={{ width: `${(currentStep / (totalSteps - 1)) * 100}%` }}
         />
       </div>
       <div className="step-indicators">
         {Array.from({ length: totalSteps }).map((_, index) => (
-          <div 
+          <div
             key={index}
             className={`step-indicator ${index <= currentStep ? 'active' : ''}`}
           />
@@ -355,7 +356,7 @@ function WizardNavigation({ currentStep, totalSteps, onNext, onBack }) {
           Back
         </Button>
       )}
-      
+
       <Button onClick={onNext}>
         {currentStep === totalSteps - 1 ? 'Complete' : 'Next'}
       </Button>
@@ -381,7 +382,7 @@ The wizard completion state will be persisted in the preferences store:
 interface PreferencesState {
   preferences: UserPreferences
   // ...existing properties
-  
+
   // Add this property
   setWizardCompleted: (completed: boolean) => void
 }
@@ -402,7 +403,7 @@ Update App.tsx to check for wizard completion and redirect accordingly:
 ```typescript
 function App() {
   const { preferences } = usePreferencesStore()
-  
+
   return (
     <ThemeProvider>
       <ErrorProvider>
@@ -443,28 +444,28 @@ Add a wizard restart option to the Settings page:
 function Settings() {
   const { resetPreferences, updatePreferences } = usePreferencesStore()
   const navigate = useNavigate()
-  
+
   function handleRestartWizard() {
     // Reset wizard state
-    updatePreferences({ 
+    updatePreferences({
       wizardCompleted: false
     })
-    
+
     // Navigate to root (wizard will show)
     navigate('/')
   }
-  
+
   return (
     <div>
       {/* Existing settings content */}
-      
+
       <div className="card bg-base-200 shadow-sm">
         <div className="card-body">
           <h3 className="text-xl font-semibold">Setup Wizard</h3>
           <p>Restart the setup wizard to reconfigure your application</p>
-          
-          <Button 
-            variant="outline" 
+
+          <Button
+            variant="outline"
             onClick={handleRestartWizard}
           >
             Restart Setup Wizard
@@ -483,7 +484,7 @@ Update the TopBar to hide navigation during the wizard flow:
 ```typescript
 function TopBar() {
   const { preferences } = usePreferencesStore()
-  
+
   // Don't show navigation in wizard mode
   if (!preferences.wizardCompleted) {
     return (
@@ -497,7 +498,7 @@ function TopBar() {
       </Navbar>
     )
   }
-  
+
   // Regular navbar for non-wizard pages
   return (
     // Existing TopBar implementation
@@ -508,28 +509,34 @@ function TopBar() {
 ## 6. Implementation Plan
 
 1. **Update Preferences Types and Store**
+
    - Add `wizardCompleted` to UserPreferences
    - Add setter method to the preferences store
 
 2. **Create Wizard Components**
+
    - Implement WizardContainer
    - Implement WizardProgress and WizardNavigation
    - Implement or adapt each wizard step
    - Create new SecurityStep component
 
 3. **Update Routing**
+
    - Implement root-level routing
    - Implement protection for app routes
 
 4. **Integrate with App**
+
    - Update App.tsx to check wizard completion
    - Redirect to wizard if not completed
 
 5. **Update TopBar**
+
    - Hide navigation during wizard flow
    - Show simplified header
 
 6. **Add Restart Option**
+
    - Add wizard restart option to Settings
 
 7. **Testing**
@@ -540,30 +547,36 @@ function TopBar() {
 ## 7. Open Questions
 
 1. **Wizard UI Style**: Should the wizard be a modal overlay or full-page experience?
+
    - [ ] Modal overlay
-   - [X] Full-page experience
+   - [x] Full-page experience
 
 2. **Step Skipping**: Should we allow users to skip certain steps if they've already completed them (e.g., if they already have API keys)?
-   - [X] Allow skipping with validation
+
+   - [x] Allow skipping with validation
    - [ ] Require all steps to be completed in order
 
 3. **Additional Steps**: Do we need to add any additional steps beyond the ones mentioned?
-   - [X] No additional steps needed
-   - [ ] Add step for: _________________
+
+   - [x] No additional steps needed
+   - [ ] Add step for: **\*\*\*\***\_**\*\*\*\***
 
 4. **Progress Persistence**: Should we implement a way to save progress if the user leaves mid-wizard?
+
    - [ ] Save progress automatically
-   - [X] Don't save progress (restart from beginning)
+   - [x] Don't save progress (restart from beginning)
 
 5. **Access Control**: How should we handle the case where a user has no API keys but tries to access other parts of the app?
+
    - [ ] Block access completely until wizard is completed
    - [ ] Allow access but show warnings/prompts
-   - [X] Redirect to API key setup
+   - [x] Redirect to API key setup
 
 6. **Provider Selection**: Should provider selection be a separate step or part of the API key setup?
+
    - [ ] Separate step
-   - [X] Part of API key setup
+   - [x] Part of API key setup
 
 7. **Participant Creation**: Should we require at least one participant to be created during the wizard?
-   - [X] Require at least one participant
+   - [x] Require at least one participant
    - [ ] Make participant creation optional

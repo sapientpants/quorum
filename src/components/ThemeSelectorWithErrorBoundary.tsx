@@ -1,31 +1,31 @@
-import { useThemeContext } from '../hooks/useThemeContext'
-import { useTranslation } from 'react-i18next'
-import { Icon } from '@iconify/react'
-import { Button } from '@heroui/react'
-import ErrorBoundary from './ErrorBoundary'
-import { ThemeSelector } from './ThemeSelector'
+import { useThemeContext } from "../hooks/useThemeContext";
+import { useTranslation } from "react-i18next";
+import { Icon } from "@iconify/react";
+import { Button } from "@heroui/react";
+import ErrorBoundary from "./ErrorBoundary";
+import { ThemeSelector } from "./ThemeSelector";
 
 // A simple fallback component for when the ThemeSelector fails
 function ThemeSelectorFallback() {
-  const { toggleTheme, isDark } = useThemeContext()
-  const { t } = useTranslation()
-  
+  const { toggleTheme, isDark } = useThemeContext();
+  const { t } = useTranslation();
+
   return (
-    <Button 
-      variant="ghost" 
+    <Button
+      variant="ghost"
       size="sm"
       className="flex items-center gap-1 px-2"
-      aria-label={t('theme.toggle')}
+      aria-label={t("theme.toggle")}
       onClick={toggleTheme}
     >
-      <Icon 
-        icon={isDark ? "solar:moon-linear" : "solar:sun-linear"} 
-        width="18" 
-        height="18" 
+      <Icon
+        icon={isDark ? "solar:moon-linear" : "solar:sun-linear"}
+        width="18"
+        height="18"
         className={isDark ? "text-yellow-400" : "text-purple-500"}
       />
     </Button>
-  )
+  );
 }
 
 export function ThemeSelectorWithErrorBoundary() {
@@ -33,10 +33,10 @@ export function ThemeSelectorWithErrorBoundary() {
     <ErrorBoundary
       fallback={<ThemeSelectorFallback />}
       onError={(error) => {
-        console.error('ThemeSelector error:', error)
+        console.error("ThemeSelector error:", error);
       }}
     >
       <ThemeSelector />
     </ErrorBoundary>
-  )
+  );
 }

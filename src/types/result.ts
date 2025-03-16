@@ -1,24 +1,24 @@
-import { LLMError, ErrorType } from '../services/llm/LLMError'
+import { LLMError, ErrorType } from "../services/llm/LLMError";
 
 /**
  * A Result type for handling success and failure cases
  */
-export type Result<T, E = LLMError> = 
+export type Result<T, E = LLMError> =
   | { success: true; data: T }
-  | { success: false; error: E }
+  | { success: false; error: E };
 
 /**
  * Create a success result
  */
 export function success<T>(data: T): Result<T> {
-  return { success: true, data }
+  return { success: true, data };
 }
 
 /**
  * Create a failure result
  */
 function failure<E = LLMError>(error: E): Result<never, E> {
-  return { success: false, error }
+  return { success: false, error };
 }
 
 /**
@@ -26,13 +26,13 @@ function failure<E = LLMError>(error: E): Result<never, E> {
  */
 function defaultErrorTransformer(error: unknown): LLMError {
   if (error instanceof LLMError) {
-    return error
+    return error;
   }
-  
+
   return new LLMError(
     ErrorType.UNKNOWN,
-    error instanceof Error ? error.message : String(error)
-  )
+    error instanceof Error ? error.message : String(error),
+  );
 }
 
 /**
@@ -40,12 +40,12 @@ function defaultErrorTransformer(error: unknown): LLMError {
  */
 export async function tryCatch<T>(
   fn: () => Promise<T>,
-  errorTransformer: (error: unknown) => LLMError = defaultErrorTransformer
+  errorTransformer: (error: unknown) => LLMError = defaultErrorTransformer,
 ): Promise<Result<T>> {
   try {
-    const data = await fn()
-    return success(data)
+    const data = await fn();
+    return success(data);
   } catch (error) {
-    return failure(errorTransformer(error))
+    return failure(errorTransformer(error));
   }
 }

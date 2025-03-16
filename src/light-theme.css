@@ -14,51 +14,61 @@
     --muted-foreground: 71, 85, 105;
     --accent: 248, 250, 252;
     --accent-foreground: 15, 23, 42;
-    
+
     color-scheme: light;
   }
-  
+
   /* Light theme specific overrides */
   .light .bg-card {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 1px 2px rgba(0, 0, 0, 0.1);
   }
-  
+
   .light .feature-card {
     background-color: white;
     border-color: rgba(226, 232, 240, 0.8);
   }
-  
+
   .light .feature-title {
     color: rgb(15, 23, 42);
   }
-  
+
   .light .feature-description {
     color: rgb(71, 85, 105);
   }
-  
+
   .light .feature-icon {
     background-color: rgba(124, 58, 237, 0.1);
   }
-  
+
   /* Gradient text in light mode */
   .light .text-gradient {
-    background-image: linear-gradient(to right, rgb(124, 58, 237), rgb(79, 70, 229));
+    background-image: linear-gradient(
+      to right,
+      rgb(124, 58, 237),
+      rgb(79, 70, 229)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
-  
+
   /* Button styling in light mode */
   .light .btn-primary {
-    background-image: linear-gradient(to right, rgb(124, 58, 237), rgb(79, 70, 229));
+    background-image: linear-gradient(
+      to right,
+      rgb(124, 58, 237),
+      rgb(79, 70, 229)
+    );
     color: white;
   }
-  
+
   .light .btn-outline {
     border-color: rgba(124, 58, 237, 0.3);
     color: rgb(124, 58, 237);
     background-color: transparent;
   }
-  
+
   .light .btn-outline:hover {
     background-color: rgba(124, 58, 237, 0.05);
   }

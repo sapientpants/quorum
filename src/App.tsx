@@ -1,14 +1,14 @@
-import { BrowserRouter as Router } from 'react-router-dom'
-import { Suspense } from 'react'
-import { ThemeProvider } from './contexts/ThemeContext'
-import { ErrorProvider } from './contexts/ErrorContext'
-import { LanguageProvider } from './contexts/LanguageContext'
-import { ChatProvider } from './contexts/ChatContext'
-import { Toaster } from 'sonner'
-import './lib/i18n' // Initialize i18n
-import { AppRoutes } from './routes'
-import { KeyboardShortcutsOverlay } from './components/KeyboardShortcutsOverlay'
-import { PageLoader } from './components/ui/PageLoader'
+import { BrowserRouter as Router } from "react-router-dom";
+import { Suspense } from "react";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { ErrorProvider } from "./contexts/ErrorContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
+import { ChatProvider } from "./contexts/ChatContext";
+import { Toaster } from "sonner";
+import "./lib/i18n"; // Initialize i18n
+import { AppRoutes } from "./routes";
+import { KeyboardShortcutsOverlay } from "./components/KeyboardShortcutsOverlay";
+import { PageLoader } from "./components/ui/PageLoader";
 
 export function App() {
   return (
@@ -27,5 +27,5 @@ export function App() {
         </ErrorProvider>
       </ThemeProvider>
     </Suspense>
-  )
+  );
 }

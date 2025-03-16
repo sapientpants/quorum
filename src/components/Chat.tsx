@@ -1,12 +1,14 @@
-import { useChat } from '../hooks/useChat'
-import { ChatList } from './ChatList'
-import { ChatInput } from './ChatInput'
-import ProviderSelector from './ProviderSelector'
-import ModelSelector from './ModelSelector'
-import SettingsPanel from './SettingsPanel'
-import ErrorDisplay from './ErrorDisplay'
+import { useChat } from "../hooks/useChat";
+import { useTranslation } from "react-i18next";
+import { ChatList } from "./ChatList";
+import { ChatInput } from "./ChatInput";
+import ProviderSelector from "./ProviderSelector";
+import ModelSelector from "./ModelSelector";
+import SettingsPanel from "./SettingsPanel";
+import ErrorDisplay from "./ErrorDisplay";
 
 function Chat() {
+  const { t } = useTranslation();
   const {
     messages,
     isLoading,
@@ -25,10 +27,10 @@ function Chat() {
     setUseStreaming,
     sendMessage,
     handleRetry,
-    clearError
-  } = useChat()
+    clearError,
+  } = useChat();
 
-  const isInputEnabled = activeProvider && activeModel
+  const isInputEnabled = activeProvider && activeModel;
 
   return (
     <div className="chat-container flex flex-col h-full">
@@ -39,7 +41,7 @@ function Chat() {
           onSelect={setActiveProvider}
           apiKeys={apiKeys}
         />
-        
+
         {activeProvider && (
           <ModelSelector
             models={availableModels}
@@ -47,7 +49,7 @@ function Chat() {
             onSelect={setActiveModel}
           />
         )}
-        
+
         <SettingsPanel
           settings={settings}
           onSettingsChange={setSettings}
@@ -56,14 +58,9 @@ function Chat() {
           isStreamingSupported={isStreamingSupported()}
         />
       </div>
-      
-      {error && (
-        <ErrorDisplay
-          error={error}
-          onDismiss={clearError}
-        />
-      )}
-      
+
+      {error && <ErrorDisplay error={error} onDismiss={clearError} />}
+
       <div className="flex-1 overflow-auto p-4">
         <ChatList
           messages={messages}
@@ -71,17 +68,17 @@ function Chat() {
           onRetry={handleRetry}
         />
       </div>
-      
+
       <div className="p-4 border-t">
         <ChatInput
           onSendMessage={sendMessage}
           disabled={!isInputEnabled}
           isLoading={isLoading}
-          placeholder="Type your message here..."
+          placeholder={t("chat.input.placeholder")}
         />
       </div>
     </div>
-  )
+  );
 }
 
-export default Chat
+export default Chat;

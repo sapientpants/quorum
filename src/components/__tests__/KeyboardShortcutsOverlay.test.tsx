@@ -1,43 +1,43 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { KeyboardShortcutsOverlay } from '../KeyboardShortcutsOverlay'
+import { render, screen, fireEvent } from "@testing-library/react";
+import { KeyboardShortcutsOverlay } from "../KeyboardShortcutsOverlay";
 
-describe('KeyboardShortcutsOverlay', () => {
+describe("KeyboardShortcutsOverlay", () => {
   beforeEach(() => {
     // Mock navigator.userAgent for consistent platform detection
-    Object.defineProperty(navigator, 'userAgent', {
-      value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-      writable: true
-    })
-  })
+    Object.defineProperty(navigator, "userAgent", {
+      value: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      writable: true,
+    });
+  });
 
-  it('should not show the dialog by default', () => {
-    render(<KeyboardShortcutsOverlay />)
-    
+  it("should not show the dialog by default", () => {
+    render(<KeyboardShortcutsOverlay />);
+
     // Dialog should not be visible initially
-    expect(screen.queryByText('Keyboard Shortcuts')).not.toBeInTheDocument()
-  })
+    expect(screen.queryByText("Keyboard Shortcuts")).not.toBeInTheDocument();
+  });
 
-  it('should open when ? key is pressed', () => {
-    render(<KeyboardShortcutsOverlay />)
-    
+  it("should open when ? key is pressed", () => {
+    render(<KeyboardShortcutsOverlay />);
+
     // Simulate pressing the ? key
-    fireEvent.keyDown(document, { key: '?' })
-    
-    // Dialog should now be visible
-    expect(screen.getByText('Keyboard Shortcuts')).toBeInTheDocument()
-  })
+    fireEvent.keyDown(document, { key: "?" });
 
-  it('should close when Escape key is pressed', () => {
-    render(<KeyboardShortcutsOverlay />)
-    
+    // Dialog should now be visible
+    expect(screen.getByText("Keyboard Shortcuts")).toBeInTheDocument();
+  });
+
+  it("should close when Escape key is pressed", () => {
+    render(<KeyboardShortcutsOverlay />);
+
     // Open the dialog
-    fireEvent.keyDown(document, { key: '?' })
-    expect(screen.getByText('Keyboard Shortcuts')).toBeInTheDocument()
-    
+    fireEvent.keyDown(document, { key: "?" });
+    expect(screen.getByText("Keyboard Shortcuts")).toBeInTheDocument();
+
     // Close with Escape key
-    fireEvent.keyDown(document, { key: 'Escape' })
-    
+    fireEvent.keyDown(document, { key: "Escape" });
+
     // Dialog should be closed
-    expect(screen.queryByText('Keyboard Shortcuts')).not.toBeInTheDocument()
-  })
-}) 
+    expect(screen.queryByText("Keyboard Shortcuts")).not.toBeInTheDocument();
+  });
+});

@@ -5,15 +5,15 @@ export interface StreamingResponse {
   /**
    * Whether the streaming is done
    */
-  done: boolean
-  
+  done: boolean;
+
   /**
    * The token received from the stream, if any
    */
-  token?: string
-  
+  token?: string;
+
   /**
    * The error that occurred during streaming, if any
    */
-  error?: Error
+  error?: Error;
 }

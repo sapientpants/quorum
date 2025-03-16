@@ -1,0 +1,311 @@
+🔍 Potential non-localized text found in the following files:
+==============================================================
+
+📄 src/components/ui/__tests__/button.test.tsx (9 potential issues)
+--------------------------------------------------------------------------------
+Line 13: render(<Button>Click me</Button>)
+Line 25: render(<Button variant="primary">Primary</Button>)
+Line 33: render(<Button variant="outline">Outline</Button>)
+Line 41: render(<Button variant="ghost">Ghost</Button>)
+Line 48: render(<Button variant="error">Error</Button>)
+Line 56: render(<Button size="sm">Small</Button>)
+Line 64: render(<Button size="lg">Large</Button>)
+Line 83: aria-label="Submit form"
+Line 97: render(<Button disabled>Disabled</Button>)
+
+📄 src/components/ui/__tests__/dialog.test.tsx (9 potential issues)
+--------------------------------------------------------------------------------
+Line 78: <div data-testid="dialog-children">Content</div>
+Line 111: render(<DialogHeader data-testid="header">Header Content</DialogHeader>)
+Line 135: render(<DialogFooter data-testid="footer">Footer Content</DialogFooter>)
+Line 158: render(<DialogTitle>Dialog Title</DialogTitle>)
+Line 177: render(<DialogDescription>Dialog Description</DialogDescription>)
+Line 204: <DialogTitle>Example Dialog</DialogTitle>
+Line 205: <DialogDescription>This is a dialog description</DialogDescription>
+Line 207: <div data-testid="dialog-body">Dialog body content</div>
+Line 209: <button data-testid="dialog-action">Action</button>
+
+📄 src/components/ui/__tests__/scroll-area.test.tsx (10 potential issues)
+--------------------------------------------------------------------------------
+Line 9: <div>Scroll content</div>
+Line 23: <div>Content</div>
+Line 37: aria-label="Scrollable content"
+Line 41: <div>Content</div>
+Line 54: <div data-testid="child-1">First child</div>
+Line 55: <div data-testid="child-2">Second child</div>
+Line 70: <h2>Heading</h2>
+Line 71: <p>Paragraph text</p>
+Line 73: <li>Item 1</li>
+Line 74: <li>Item 2</li>
+
+📄 src/components/ui/__tests__/dropdown-menu.test.tsx (9 potential issues)
+--------------------------------------------------------------------------------
+Line 66: render(<DropdownMenuTrigger>Open Menu</DropdownMenuTrigger>)
+Line 79: <div data-testid="dropdown-children">Content</div>
+Line 119: render(<DropdownMenuItem>Menu Item</DropdownMenuItem>)
+Line 131: render(<DropdownMenuItem inset>Inset Item</DropdownMenuItem>)
+Line 138: render(<DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>)
+Line 160: <DropdownMenuTrigger>Open Menu</DropdownMenuTrigger>
+Line 162: <DropdownMenuItem>Item 1</DropdownMenuItem>
+Line 163: <DropdownMenuItem>Item 2</DropdownMenuItem>
+Line 164: <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+
+📄 src/components/ui/__tests__/input.test.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 14: render(<Input type="text" placeholder="Enter text" data-testid="test-input" />)
+Line 45: placeholder="Test placeholder"
+Line 48: aria-label="Test input"
+
+📄 src/components/ui/__tests__/DeleteConfirmationModal.test.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 8: message: 'Are you sure you want to delete this item?',
+
+📄 src/components/ui/__tests__/alert.test.tsx (7 potential issues)
+--------------------------------------------------------------------------------
+Line 13: render(<Alert>Alert content</Alert>)
+Line 25: render(<Alert variant="destructive">Destructive alert</Alert>)
+Line 55: render(<Alert>Alert with data slot</Alert>)
+Line 66: <AlertTitle>Alert Title</AlertTitle>
+Line 93: <AlertDescription>Alert description text</AlertDescription>
+Line 119: <AlertTitle>Important Notice</AlertTitle>
+Line 120: <AlertDescription>This is an important message that requires your attention.</AlertDescription>
+
+📄 src/components/ui/__tests__/tabs.test.tsx (9 potential issues)
+--------------------------------------------------------------------------------
+Line 65: render(<Tabs>Tabs content</Tabs>)
+Line 88: aria-label="Main tabs"
+Line 103: render(<TabsList>List content</TabsList>)
+Line 124: render(<TabsTrigger value="tab1">Tab 1</TabsTrigger>)
+Line 161: render(<TabsContent value="tab1">Content 1</TabsContent>)
+Line 201: <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+Line 202: <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+Line 204: <TabsContent value="tab1">Content for Tab 1</TabsContent>
+Line 205: <TabsContent value="tab2">Content for Tab 2</TabsContent>
+
+📄 src/components/ui/__tests__/checkbox.test.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 123: aria-label="Accept terms"
+
+📄 src/components/ui/__tests__/separator.test.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 76: aria-label="Content separator"
+
+📄 src/components/ui/__tests__/label.test.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 39: render(<Label>Email</Label>)
+Line 78: render(<Label ref={refCallback}>Password</Label>)
+Line 86: <Label htmlFor="username">Username</Label>
+
+📄 src/components/ApiErrorModal.tsx (6 potential issues)
+--------------------------------------------------------------------------------
+Line 28: const SiOpenai = () => <span>OpenAI</span>;
+Line 29: const SiGoogle = () => <span>Google</span>;
+Line 30: const SiMicrosoft = () => <span>Microsoft</span>;
+Line 32: const SiCohere = () => <span>Cohere</span>;
+Line 33: const TbBrandMeta = () => <span>Meta</span>;
+Line 34: const FaRobot = () => <span>Robot</span>;
+
+📄 src/components/ParticipantList.tsx (5 potential issues)
+--------------------------------------------------------------------------------
+Line 143: <h3 className="text-lg font-medium mb-2">Delete Participant</h3>
+Line 239: <h2 className="text-xl font-medium mb-4">Add New Participant</h2>
+Line 251: <h2 className="text-xl font-medium mb-4">Edit Participant</h2>
+Line 299: <h3 className="text-lg font-medium mb-2">No Participants Yet</h3>
+Line 319: <p className="text-sm">Drag to reorder participants. This order will be used in round table conversations.</p>
+
+📄 src/components/ParticipantAdvancedSettings.tsx (4 potential issues)
+--------------------------------------------------------------------------------
+Line 66: <h3 className="text-lg font-semibold">Advanced Settings</h3>
+Line 107: <span>Precise (0)</span>
+Line 108: <span>Balanced (0.7)</span>
+Line 109: <span>Creative (2)</span>
+
+📄 src/components/wizard/__tests__/ParticipantConfigStep.test.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 71: <button data-testid="cancel-form" onClick={onCancel}>Cancel</button>
+Line 83: <div data-testid="empty-state">No participants configured yet</div>
+Line 84: <button data-testid="button-add">Add</button>
+
+📄 src/components/wizard/__tests__/WizardContainer.test.tsx (7 potential issues)
+--------------------------------------------------------------------------------
+Line 31: <button data-testid="security-next" onClick={onNext}>Next</button>
+Line 32: <button data-testid="security-back" onClick={onBack}>Back</button>
+Line 40: <button data-testid="api-key-next" onClick={onNext}>Next</button>
+Line 41: <button data-testid="api-key-back" onClick={onBack}>Back</button>
+Line 49: <button data-testid="participant-next" onClick={onNext}>Next</button>
+Line 50: <button data-testid="participant-back" onClick={onBack}>Back</button>
+Line 97: TopBar: () => <div data-testid="top-bar">Top Bar</div>
+
+📄 src/components/ApiKeyConsentModal.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 48: <div className="text-sm text-foreground/70">Persists between sessions</div>
+Line 61: <div className="text-sm text-foreground/70">Cleared when browser closes</div>
+Line 74: <div className="text-sm text-foreground/70">Keys are forgotten after use</div>
+
+📄 src/components/ProviderSelector.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 19: <span className="label-text">Select Provider</span>
+
+📄 src/components/__tests__/TopBar.test.tsx (2 potential issues)
+--------------------------------------------------------------------------------
+Line 8: LanguageToggle: () => <div data-testid="language-toggle">Language Toggle</div>
+Line 13: ThemeSelectorWithErrorBoundary: () => <div data-testid="theme-selector">Theme Selector</div>
+
+📄 src/components/__tests__/Chat.test.tsx (6 potential issues)
+--------------------------------------------------------------------------------
+Line 13: ChatList: () => <div data-testid="chat-list">ChatList Component</div>
+Line 17: ChatInput: () => <div data-testid="chat-input">ChatInput Component</div>
+Line 21: default: () => <div data-testid="provider-selector">ProviderSelector Component</div>
+Line 25: default: () => <div data-testid="model-selector">ModelSelector Component</div>
+Line 29: default: () => <div data-testid="settings-panel">SettingsPanel Component</div>
+Line 33: default: () => <div data-testid="error-display">ErrorDisplay Component</div>
+
+📄 src/components/__tests__/ErrorBoundary.test.tsx (2 potential issues)
+--------------------------------------------------------------------------------
+Line 27: <div>Test Content</div>
+Line 52: const customFallback = <div>Custom Error UI</div>
+
+📄 src/components/__tests__/FeatureCard.test.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 51: const customIcon = <div data-testid="custom-icon">Custom Icon</div>
+
+📄 src/components/__tests__/ThemeSelectorWithErrorBoundary.test.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 9: ThemeSelector: () => <div data-testid="theme-selector">Theme Selector</div>
+
+📄 src/components/layouts/__tests__/AppLayout.test.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 7: Outlet: () => <div data-testid="outlet">Outlet Content</div>
+Line 11: NetworkStatusIndicator: () => <div data-testid="network-status">Network Status</div>
+Line 19: TopBar: () => <div data-testid="top-bar">Top Bar</div>
+
+📄 src/components/ParticipantForm.tsx (7 potential issues)
+--------------------------------------------------------------------------------
+Line 105: aria-label="Cancel"
+Line 239: <span>Precise</span>
+Line 240: <span>Balanced</span>
+Line 241: <span>Creative</span>
+Line 261: <span>Short</span>
+Line 262: <span>Medium</span>
+Line 263: <span>Long</span>
+
+📄 src/components/SettingsPanel.tsx (7 potential issues)
+--------------------------------------------------------------------------------
+Line 22: <div className="collapse-title font-medium">Advanced Settings</div>
+Line 28: <span className="label-text block">Temperature</span>
+Line 46: <span>Precise</span>
+Line 47: <span>Creative</span>
+Line 54: <span className="label-text block">Maximum Length</span>
+Line 72: <span>Short</span>
+Line 73: <span>Long</span>
+
+📄 src/components/ApiKeyInput.tsx (2 potential issues)
+--------------------------------------------------------------------------------
+Line 43: placeholder="Enter your OpenAI API key"
+Line 64: <span className="label-text-alt text-warning">Your API key is stored locally in your browser and never sent to our servers.</span>
+
+📄 src/components/templates/__tests__/TemplateForm.test.tsx (2 potential issues)
+--------------------------------------------------------------------------------
+Line 38: name: { message: 'Name is required' },
+Line 39: participantIds: { message: 'At least one participant is required' }
+
+📄 src/components/templates/__tests__/TemplateList.test.tsx (4 potential issues)
+--------------------------------------------------------------------------------
+Line 53: <button data-testid="confirm-delete" onClick={onConfirm}>Confirm</button>
+Line 54: <button data-testid="cancel-delete" onClick={onCancel}>Cancel</button>
+Line 67: <p>Template Form {initialData ? 'Edit' : 'Create'}</p>
+Line 68: <button onClick={onCancel}>Cancel</button>
+
+📄 src/components/Chat.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 80: placeholder="Type your message here..."
+
+📄 src/components/ApiKeySetup.tsx (4 potential issues)
+--------------------------------------------------------------------------------
+Line 139: placeholder="sk-..."
+Line 179: placeholder="sk-ant-..."
+Line 204: placeholder="grok-..."
+Line 229: placeholder="Enter your Google AI API key"
+
+📄 src/components/RoundTable.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 141: <p className="text-sm opacity-70">Click on a participant to view details</p>
+
+📄 src/components/onboarding/ConsentModal.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 20: <p className="font-semibold mb-2">Storage Preference:</p>
+
+📄 src/components/ErrorBoundary.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 46: <div className="font-medium">Something went wrong</div>
+
+📄 src/pages/Settings.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 415: <span>May 2024</span>
+
+📄 src/pages/RoundTablePage.tsx (2 potential issues)
+--------------------------------------------------------------------------------
+Line 44: <p className="text-lg mb-4">No participants configured yet.</p>
+Line 45: <p>Go to the Settings page to add participants.</p>
+
+📄 src/pages/ParticipantConfigPage.tsx (6 potential issues)
+--------------------------------------------------------------------------------
+Line 65: <h2 className="text-xl font-semibold mb-4">Add New Participant</h2>
+Line 77: <h2 className="text-xl font-semibold mb-4">Edit Participant</h2>
+Line 142: <h2 className="text-xl font-semibold mb-4">Configuration</h2>
+Line 147: <p className="text-sm">Select a participant from the round table to view details</p>
+Line 175: <div className="text-xs font-medium uppercase opacity-70">Role</div>
+Line 199: <h3 className="text-sm font-medium mb-2">Active Participant</h3>
+
+📄 src/pages/__tests__/ParticipantsPage.test.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 17: TopBar: () => <div data-testid="top-bar">Top Bar</div>
+Line 31: <button data-testid="next-button" onClick={onNext}>Next</button>
+Line 32: <button data-testid="back-button" onClick={onBack}>Back</button>
+
+📄 src/pages/__tests__/Settings.test.tsx (1 potential issues)
+--------------------------------------------------------------------------------
+Line 92: ParticipantList: () => <div data-testid="participant-list">Participant List</div>
+
+📄 src/pages/__tests__/ApiKeysPage.test.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 17: TopBar: () => <div data-testid="top-bar">Top Bar</div>
+Line 31: <button data-testid="next-button" onClick={onNext}>Next</button>
+Line 32: <button data-testid="back-button" onClick={onBack}>Back</button>
+
+📄 src/pages/__tests__/RoundTablePage.test.tsx (2 potential issues)
+--------------------------------------------------------------------------------
+Line 18: TopBar: () => <div data-testid="top-bar">Top Bar</div>
+Line 32: <div>Active Participant: {activeParticipantId}</div>
+
+📄 src/pages/__tests__/SecurityPage.test.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 17: TopBar: () => <div data-testid="top-bar">Top Bar</div>
+Line 31: <button data-testid="next-button" onClick={onNext}>Next</button>
+Line 32: <button data-testid="back-button" onClick={onBack}>Back</button>
+
+📄 src/pages/__tests__/Welcome.test.tsx (3 potential issues)
+--------------------------------------------------------------------------------
+Line 16: TopBar: () => <div data-testid="top-bar">Top Bar</div>
+Line 21: ConsentModal: () => <div>Mocked ConsentModal</div>
+Line 25: ApiKeySetup: () => <div>Mocked ApiKeySetup</div>
+
+📄 src/routes/__tests__/index.test.tsx (10 potential issues)
+--------------------------------------------------------------------------------
+Line 32: NetworkStatusIndicator: () => <div data-testid="network-status">Network Status</div>
+Line 42: const Component = () => <div>Mocked Lazy Component</div>;
+Line 51: Welcome: () => <div data-testid="welcome-page">Welcome Page</div>
+Line 55: SecurityPage: () => <div data-testid="security-page">Security Page</div>
+Line 63: ParticipantsPage: () => <div data-testid="participants-page">Participants Page</div>
+Line 67: RoundTablePage: () => <div data-testid="round-table-page">Round Table Page</div>
+Line 71: Settings: () => <div data-testid="settings-page">Settings Page</div>
+Line 75: Templates: () => <div data-testid="templates-page">Templates Page</div>
+Line 79: NotFound: () => <div data-testid="not-found-page">Not Found Page</div>
+Line 88: <div data-testid={`navigate-to-${to}`}>Navigate to {to}</div>
+
+==============================================================
+Found 170 potential non-localized strings in 44 files.
+Remember to review each case manually - some might be false positives.
+Use t() from react-i18next to localize text, for example:
+  Before: <button>Submit</button>
+  After:  <button>{t("submit")}</button>

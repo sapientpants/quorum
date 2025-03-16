@@ -1,11 +1,11 @@
-import type { LLMSettings } from '../types/llm'
+import type { LLMSettings } from "../types/llm";
 
 interface SettingsPanelProps {
-  settings: LLMSettings
-  onSettingsChange: (settings: LLMSettings) => void
-  useStreaming: boolean
-  onStreamingChange: (useStreaming: boolean) => void
-  isStreamingSupported: boolean
+  settings: LLMSettings;
+  onSettingsChange: (settings: LLMSettings) => void;
+  useStreaming: boolean;
+  onStreamingChange: (useStreaming: boolean) => void;
+  isStreamingSupported: boolean;
 }
 
 function SettingsPanel({
@@ -13,7 +13,7 @@ function SettingsPanel({
   onSettingsChange,
   useStreaming,
   onStreamingChange,
-  isStreamingSupported
+  isStreamingSupported,
 }: SettingsPanelProps) {
   return (
     <div className="mb-4 collapse collapse-arrow bg-base-200">
@@ -37,7 +37,7 @@ function SettingsPanel({
               onChange={(e) =>
                 onSettingsChange({
                   ...settings,
-                  temperature: parseFloat(e.target.value)
+                  temperature: parseFloat(e.target.value),
                 })
               }
             />
@@ -47,7 +47,7 @@ function SettingsPanel({
             <span>Creative</span>
           </div>
         </div>
-        
+
         {/* Maximum Length */}
         <div>
           <label className="block">
@@ -63,7 +63,7 @@ function SettingsPanel({
               onChange={(e) =>
                 onSettingsChange({
                   ...settings,
-                  maxTokens: parseInt(e.target.value)
+                  maxTokens: parseInt(e.target.value),
                 })
               }
             />
@@ -93,7 +93,7 @@ function SettingsPanel({
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default SettingsPanel
+export default SettingsPanel;

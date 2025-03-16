@@ -1,10 +1,10 @@
-import type { Message } from '../../types/chat'
-import type { LLMSettings } from '../../types/llm'
+import type { Message } from "../../types/chat";
+import type { LLMSettings } from "../../types/llm";
 
 export interface StreamingOptions {
-  onToken?: (token: string) => void
-  onComplete?: (fullText: string) => void
-  onError?: (error: Error) => void
+  onToken?: (token: string) => void;
+  onComplete?: (fullText: string) => void;
+  onError?: (error: Error) => void;
 }
 
 export interface LLMClient {
@@ -22,30 +22,30 @@ export interface LLMClient {
     apiKey: string,
     model: string,
     settings?: LLMSettings,
-    streamingOptions?: StreamingOptions
-  ): Promise<string>
+    streamingOptions?: StreamingOptions,
+  ): Promise<string>;
 
   /**
    * Get the available models for this provider
    * @returns An array of model identifiers
    */
-  getAvailableModels(): string[]
+  getAvailableModels(): string[];
 
   /**
    * Get the default model for this provider
    * @returns The default model identifier
    */
-  getDefaultModel(): string
+  getDefaultModel(): string;
 
   /**
    * Get the provider name
    * @returns The provider name
    */
-  getProviderName(): string
+  getProviderName(): string;
 
   /**
    * Check if this provider supports streaming
    * @returns Whether streaming is supported
    */
-  supportsStreaming(): boolean
+  supportsStreaming(): boolean;
 }

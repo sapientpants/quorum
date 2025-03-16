@@ -29,10 +29,11 @@ The following tests still have failures that need to be addressed:
 ### 3. i18n Tests
 
 **File**: `src/lib/__tests__/i18n.test.ts`
-**Errors**: 
+**Errors**:
+
 - Expected i18n.use to be called with 'mock-react-i18next'
 - Expected i18n.init to be called with configuration
-**Fix**: The test is mocking i18n.use and i18n.init, but they are not being called as expected. Update the test to match the actual implementation or fix the mocks.
+  **Fix**: The test is mocking i18n.use and i18n.init, but they are not being called as expected. Update the test to match the actual implementation or fix the mocks.
 
 ### 4. Settings Tests
 
@@ -68,9 +69,10 @@ The following tests still have failures that need to be addressed:
 
 **File**: `src/components/wizard/__tests__/ParticipantConfigStep.test.tsx`
 **Errors**:
+
 - Unable to find element with text "No participants added yet"
 - Found multiple elements with text "Test AI"
-**Fix**: 
+  **Fix**:
 - The test expects to find an element with text "No participants added yet", but it doesn't exist. Update the test to match the actual implementation or fix the component.
 - The test is using getByText to find an element with text "Test AI", but there are multiple elements with that text. Use getAllByText or queryAllByText instead.
 
@@ -106,6 +108,7 @@ However, most of these files don't need tests:
 3. Main entry point (`main.tsx`) - This file is typically just bootstrapping the application and doesn't contain testable logic.
 
 The following files have been tested:
+
 - `src/components/Chat.tsx` - Tested in `src/components/__tests__/Chat.test.tsx`
 - `src/hooks/useChat.ts` - Tested in `src/hooks/__tests__/useChat.test.tsx`
 - `src/hooks/useChatState.ts` - Tested in `src/hooks/__tests__/useChatState.test.tsx`

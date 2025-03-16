@@ -36,12 +36,14 @@ Quorum is a web application that allows you to chat with multiple Large Language
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/quorum.git
    cd quorum
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    # or
@@ -49,6 +51,7 @@ Quorum is a web application that allows you to chat with multiple Large Language
    ```
 
 3. Start the development server:
+
    ```bash
    npm run dev
    # or
