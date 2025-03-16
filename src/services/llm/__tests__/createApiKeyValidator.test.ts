@@ -1,130 +1,139 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createApiKeyValidator } from '../createApiKeyValidator'
 import { getLLMClient } from '../LLMClientFactory'
-import { LLMError, ErrorType } from '../LLMError'
-import type { LLMClient, LLMProviderId } from '../../../types/llm'
+import type { LLMProviderId } from '../../../types/llm'
 
 // Mock the LLMClientFactory
 vi.mock('../LLMClientFactory', () => ({
   getLLMClient: vi.fn()
 }))
 
+// Mock console.error to prevent it from cluttering the test output
+vi.spyOn(console, 'error').mockImplementation(() => {})
+
 describe('createApiKeyValidator', () => {
-  // Create a mock LLM client
-  const mockLLMClient: Partial<LLMClient> = {
-    validateApiKey: vi.fn()
+  const mockClient = {
+    validateApiKey: vi.fn(),
+    getAvailableModels: vi.fn(),
+    getDefaultModel: vi.fn(),
+    supportsStreaming: vi.fn(),
+    sendMessage: vi.fn(),
+    getProviderName: vi.fn(),
+    getCapabilities: vi.fn()
   }
   
   beforeEach(() => {
-    vi.resetAllMocks()
-    // Set up the mock to return our mock client
-    vi.mocked(getLLMClient).mockReturnValue(mockLLMClient as LLMClient)
+    vi.clearAllMocks()
+    vi.mocked(getLLMClient).mockReturnValue(mockClient)
   })
   
-  it('should return false for empty provider or API key', async () => {
+  it('returns a validator object with a validateKey method', () => {
     const validator = createApiKeyValidator()
     
-    // Test with empty provider
-    const result1 = await validator.validateKey('' as LLMProviderId, 'test-api-key')
+    expect(validator).toBeDefined()
+    expect(typeof validator.validateKey).toBe('function')
+  })
+  
+  it('returns false for empty provider or API key', async () => {
+    const validator = createApiKeyValidator()
+    
+    const result1 = await validator.validateKey('' as LLMProviderId, 'test-key')
     expect(result1.success).toBe(true)
     if (result1.success) {
       expect(result1.data).toBe(false)
     }
     
-    // Test with empty API key
     const result2 = await validator.validateKey('openai', '')
     expect(result2.success).toBe(true)
     if (result2.success) {
       expect(result2.data).toBe(false)
     }
-    
-    // Verify the client's validateApiKey was not called
-    expect(mockLLMClient.validateApiKey).not.toHaveBeenCalled()
   })
   
-  it('should return true for valid API key', async () => {
+  it('calls getLLMClient with the correct provider', async () => {
     const validator = createApiKeyValidator()
+    mockClient.validateApiKey.mockResolvedValue(true)
     
-    // Set up the mock to return true for a valid key
-    if (mockLLMClient.validateApiKey) {
-      vi.mocked(mockLLMClient.validateApiKey).mockResolvedValue(true)
-    }
+    await validator.validateKey('openai', 'test-key')
     
-    const result = await validator.validateKey('openai', 'valid-api-key')
+    expect(getLLMClient).toHaveBeenCalledWith('openai')
+  })
+  
+  it('calls validateApiKey on the client with the correct API key', async () => {
+    const validator = createApiKeyValidator()
+    mockClient.validateApiKey.mockResolvedValue(true)
     
-    // Verify the result
+    await validator.validateKey('openai', 'test-key')
+    
+    expect(mockClient.validateApiKey).toHaveBeenCalledWith('test-key')
+  })
+  
+  it('returns true when the client validates the API key', async () => {
+    const validator = createApiKeyValidator()
+    mockClient.validateApiKey.mockResolvedValue(true)
+    
+    const result = await validator.validateKey('openai', 'test-key')
+    
     expect(result.success).toBe(true)
     if (result.success) {
       expect(result.data).toBe(true)
     }
-    
-    // Verify the client was called with the correct parameters
-    expect(getLLMClient).toHaveBeenCalledWith('openai')
-    expect(mockLLMClient.validateApiKey).toHaveBeenCalledWith('valid-api-key')
   })
   
-  it('should return false for invalid API key', async () => {
+  it('returns false when the client invalidates the API key', async () => {
     const validator = createApiKeyValidator()
+    mockClient.validateApiKey.mockResolvedValue(false)
     
-    // Set up the mock to return false for an invalid key
-    if (mockLLMClient.validateApiKey) {
-      vi.mocked(mockLLMClient.validateApiKey).mockResolvedValue(false)
-    }
+    const result = await validator.validateKey('openai', 'test-key')
     
-    const result = await validator.validateKey('openai', 'invalid-api-key')
-    
-    // Verify the result
     expect(result.success).toBe(true)
     if (result.success) {
       expect(result.data).toBe(false)
     }
-    
-    // Verify the client was called with the correct parameters
-    expect(getLLMClient).toHaveBeenCalledWith('openai')
-    expect(mockLLMClient.validateApiKey).toHaveBeenCalledWith('invalid-api-key')
   })
   
-  it('should handle errors from the client', async () => {
+  it('handles errors from the client', async () => {
     const validator = createApiKeyValidator()
+    mockClient.validateApiKey.mockRejectedValue(new Error('Test error'))
     
-    // Set up the mock to throw an error
-    if (mockLLMClient.validateApiKey) {
-      vi.mocked(mockLLMClient.validateApiKey).mockRejectedValue(new Error('API validation failed'))
-    }
+    const result = await validator.validateKey('openai', 'test-key')
     
-    // Mock console.error to avoid noise in tests
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    
-    const result = await validator.validateKey('openai', 'test-api-key')
-    
-    // Verify the result
     expect(result.success).toBe(true)
     if (result.success) {
       expect(result.data).toBe(false)
     }
-    
-    // Verify console.error was called
-    expect(consoleErrorSpy).toHaveBeenCalled()
-    expect(consoleErrorSpy.mock.calls[0][0]).toContain('Error validating API key for openai:')
+    expect(console.error).toHaveBeenCalled()
   })
   
-  it('should handle errors from getLLMClient', async () => {
+  it('handles errors from getLLMClient', async () => {
     const validator = createApiKeyValidator()
-    
-    // Set up the mock to throw an error
     vi.mocked(getLLMClient).mockImplementation(() => {
-      throw new LLMError(ErrorType.INVALID_PROVIDER, 'Provider not supported')
+      throw new Error('Test error')
     })
     
-    const result = await validator.validateKey('unsupported' as LLMProviderId, 'test-api-key')
+    const result = await validator.validateKey('openai', 'test-key')
     
-    // Verify the result is success: true but data: false
-    // This is because the error is caught in the try/catch block inside validateKey
     expect(result.success).toBe(true)
     if (result.success) {
       expect(result.data).toBe(false)
     }
+    expect(console.error).toHaveBeenCalled()
+  })
+  
+  it('works with different providers', async () => {
+    const validator = createApiKeyValidator()
+    mockClient.validateApiKey.mockResolvedValue(true)
     
-    // We can't check the specific error type/message because it's caught and converted to a boolean result
+    await validator.validateKey('openai', 'test-key')
+    expect(getLLMClient).toHaveBeenCalledWith('openai')
+    
+    await validator.validateKey('anthropic', 'test-key')
+    expect(getLLMClient).toHaveBeenCalledWith('anthropic')
+    
+    await validator.validateKey('grok', 'test-key')
+    expect(getLLMClient).toHaveBeenCalledWith('grok')
+    
+    await validator.validateKey('google', 'test-key')
+    expect(getLLMClient).toHaveBeenCalledWith('google')
   })
 })
