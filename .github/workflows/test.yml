@@ -29,9 +29,15 @@ jobs:
       - name: Build project
         run: npm run build
         
-      - name: Run tests
-        run: npm test
+      - name: Run tests with coverage
+        run: npm test -- --coverage
       
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          
       # Optional: Cache build output for other jobs
       - name: Cache build output
         uses: actions/cache@v4
@@ -39,4 +45,4 @@ jobs:
           path: dist
           key: ${{ runner.os }}-build-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-build- 
+            ${{ runner.os }}-build-
