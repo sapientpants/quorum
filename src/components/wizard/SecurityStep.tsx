@@ -147,5 +147,3 @@ export function SecurityStep({ onNext, onBack }: SecurityStepProps) {
     </div>
   )
 }
-
-export default SecurityStep

@@ -11,6 +11,3 @@ export function ChatScrollAnchor() {
 
   return <div ref={anchorRef} />
 }
-
-// Add default export
-export default ChatScrollAnchor 

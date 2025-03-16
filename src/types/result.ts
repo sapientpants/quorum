@@ -17,14 +17,14 @@ export function success<T>(data: T): Result<T> {
 /**
  * Create a failure result
  */
-export function failure<E = LLMError>(error: E): Result<never, E> {
+function failure<E = LLMError>(error: E): Result<never, E> {
   return { success: false, error }
 }
 
 /**
  * Default error transformer
  */
-export function defaultErrorTransformer(error: unknown): LLMError {
+function defaultErrorTransformer(error: unknown): LLMError {
   if (error instanceof LLMError) {
     return error
   }

@@ -52,5 +52,3 @@ export function WizardProgress({ currentStep, totalSteps }: WizardProgressProps)
     </div>
   )
 }
-
-export default WizardProgress

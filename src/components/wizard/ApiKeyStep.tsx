@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../ui/button'
-import { ApiKeyManager } from '../ApiKeyManager'
+import ApiKeyManager from '../ApiKeyManager'
 import { usePreferencesStore } from '../../store/preferencesStore'
 import { Icon } from '@iconify/react'
 
@@ -114,5 +114,3 @@ export function ApiKeyStep({ onNext, onBack }: ApiKeyStepProps) {
     </div>
   )
 }
-
-export default ApiKeyStep

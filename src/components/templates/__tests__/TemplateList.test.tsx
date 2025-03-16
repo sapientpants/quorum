@@ -45,7 +45,7 @@ vi.mock('../TemplateCard', () => ({
 // Mock the DeleteConfirmationModal component
 vi.mock('../../ui/DeleteConfirmationModal', () => ({
   __esModule: true,
-  default: ({ onConfirm, onCancel }: { 
+  DeleteConfirmationModal: ({ onConfirm, onCancel }: { 
     onConfirm: () => void; 
     onCancel: () => void 
   }) => (
@@ -193,4 +193,4 @@ describe('TemplateList', () => {
     expect(screen.getByText('No Templates Yet')).toBeInTheDocument()
     expect(screen.getByText('Create your first template to save your favorite round table configurations.')).toBeInTheDocument()
   })
-}) 
+})

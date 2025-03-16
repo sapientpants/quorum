@@ -49,5 +49,3 @@ export function FeatureCard({
     </div>
   )
 }
-
-export default FeatureCard

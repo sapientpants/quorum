@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { ThemeSelector } from './ThemeSelector'
+import { ThemeSelector } from '../ThemeSelector'
 import { vi } from 'vitest'
 
 // Mock the useTheme exports
-vi.mock('../hooks/useTheme', () => ({
+vi.mock('../../hooks/useTheme', () => ({
   isThemeDark: (theme: string) => theme === 'dark' || theme === 'dracula',
   themeCategories: {
     light: ['light', 'cupcake', 'bumblebee'],
@@ -46,7 +46,7 @@ const toggleThemeMock = vi.fn()
 let mockIsDark = false
 let mockEffectiveTheme = 'light'
 
-vi.mock('../hooks/useThemeContext', () => ({
+vi.mock('../../hooks/useThemeContext', () => ({
   useThemeContext: () => ({
     effectiveTheme: mockEffectiveTheme,
     isDark: mockIsDark,
@@ -56,7 +56,7 @@ vi.mock('../hooks/useThemeContext', () => ({
 }))
 
 // Mock the ThemeContext
-vi.mock('../contexts/ThemeContext', () => ({
+vi.mock('../../contexts/ThemeContext', () => ({
   ThemeContext: {
     Provider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
   },
@@ -101,4 +101,4 @@ describe('ThemeSelector', () => {
     const button = screen.getByRole('button', { name: /toggle theme/i })
     expect(button).toBeInTheDocument()
   })
-}) 
+})

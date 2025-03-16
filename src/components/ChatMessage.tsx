@@ -110,6 +110,3 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
     </div>
   )
 }
-
-// Add default export
-export default ChatMessage 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { App } from './App'
+import { App } from '../App'
 
 // Mock window.matchMedia
 beforeAll(() => {
@@ -27,19 +27,19 @@ vi.mock('react-router-dom', () => ({
 }))
 
 // Mock the routes
-vi.mock('./routes', () => ({
+vi.mock('../routes', () => ({
   AppRoutes: () => <div data-testid="app-routes">App Routes</div>
 }))
 
 // Mock the ThemeProvider
-vi.mock('./contexts/ThemeContext', () => ({
+vi.mock('../contexts/ThemeContext', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="theme-provider">{children}</div>
   )
 }))
 
 // Mock the ErrorProvider
-vi.mock('./contexts/ErrorContext', () => ({
+vi.mock('../contexts/ErrorContext', () => ({
   ErrorProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="error-provider">{children}</div>
   )

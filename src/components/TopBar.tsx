@@ -51,5 +51,3 @@ export function TopBar() {
     </Navbar>
   )
 }
-
-export default TopBar

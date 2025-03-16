@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, act } from '@testing-library/react'
-import { Welcome } from './Welcome'
+import { Welcome } from '../Welcome'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useNavigate } from 'react-router-dom'
 import type { NavigateFunction } from 'react-router-dom'
@@ -12,16 +12,16 @@ vi.mock('react-router-dom', () => ({
 }))
 
 // Mock components
-vi.mock('../components/TopBar', () => ({
+vi.mock('../../components/TopBar', () => ({
   TopBar: () => <div data-testid="top-bar">Top Bar</div>
 }))
 
 // Mock the ConsentModal and ApiKeySetup components
-vi.mock('../components/onboarding/ConsentModal', () => ({
+vi.mock('../../components/onboarding/ConsentModal', () => ({
   ConsentModal: () => <div>Mocked ConsentModal</div>
 }))
 
-vi.mock('../components/ApiKeySetup', () => ({
+vi.mock('../../components/ApiKeySetup', () => ({
   ApiKeySetup: () => <div>Mocked ApiKeySetup</div>
 }))
 

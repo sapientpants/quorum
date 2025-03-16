@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { ApiKeySetup } from './ApiKeySetup'
+import { ApiKeySetup } from '../ApiKeySetup'
 import { describe, it, expect, vi } from 'vitest'
-import type { ApiKey } from '../types/api'
+import type { ApiKey } from '../../types/api'
 
 describe('ApiKeySetup', () => {
   it('renders correctly', () => {
@@ -133,4 +133,4 @@ describe('ApiKeySetup', () => {
       expect(screen.queryByText((content) => content.includes('Invalid'))).toBeNull()
     })
   })
-}) 
+})

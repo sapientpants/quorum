@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useTemplatesStore } from '../../store/templatesStore'
 import TemplateCard from './TemplateCard'
 import TemplateForm from './TemplateForm'
-import DeleteConfirmationModal from '../ui/DeleteConfirmationModal'
+import { DeleteConfirmationModal } from '../ui/DeleteConfirmationModal'
 
 interface TemplateListProps {
   onUseTemplate: (templateId: string) => void

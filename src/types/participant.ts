@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import type { LLMProviderId } from './llm'
 
 type ParticipantType = 'human' | 'llm'
@@ -26,34 +25,6 @@ export interface LLMParticipant extends BaseParticipant {
 }
 
 export type Participant = HumanParticipant | LLMParticipant
-
-// Zod schemas for validation
-export const baseParticipantSchema = z.object({
-  id: z.string(),
-  name: z.string().min(1),
-  type: z.enum(['human', 'llm'])
-})
-
-export const humanParticipantSchema = baseParticipantSchema.extend({
-  type: z.literal('human')
-})
-
-export const llmParticipantSchema = baseParticipantSchema.extend({
-  type: z.literal('llm'),
-  provider: z.enum(['openai', 'anthropic', 'grok', 'google']),
-  model: z.string(),
-  roleDescription: z.string().optional(),
-  systemPrompt: z.string(),
-  settings: z.object({
-    temperature: z.number().min(0).max(2),
-    maxTokens: z.number().positive()
-  })
-})
-
-export const participantSchema = z.discriminatedUnion('type', [
-  humanParticipantSchema,
-  llmParticipantSchema
-])
 
 // Helper function to create a new participant
 export function createParticipant(data: Partial<Participant> & Pick<Participant, 'id' | 'name' | 'type'>): Participant {

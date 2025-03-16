@@ -40,5 +40,3 @@ export function ThemeSelectorWithErrorBoundary() {
     </ErrorBoundary>
   )
 }
-
-export default ThemeSelectorWithErrorBoundary 
