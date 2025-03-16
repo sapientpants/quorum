@@ -16,7 +16,7 @@ export interface LLMProvider {
 export type OpenAIModel = 'gpt-4.5' | 'o3-mini' | 'gpt-4o' | 'gpt-4o-mini' | string
 export type AnthropicModel = 'claude-3.7-sonnet' | 'claude-3.5-sonnet' | 'claude-3.5-haiku' | string
 export type GrokModel = 'grok-2' | 'grok-3' | string
-export type GoogleModel = 'gemini-2.0-pro' | 'gemini-2.0-flash' | string
+type GoogleModel = 'gemini-2.0-pro' | 'gemini-2.0-flash' | string
 
 // Combined model type
 export type LLMModel = OpenAIModel | AnthropicModel | GrokModel | GoogleModel

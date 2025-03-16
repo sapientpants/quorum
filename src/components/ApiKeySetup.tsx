@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@iconify/react'
 
-export interface ApiKeySetupProps {
+interface ApiKeySetupProps {
   onComplete: () => void
   initialKeys?: ApiKey[]
   storageType?: ApiKeyStorageOptions['storage']
@@ -250,5 +250,3 @@ export function ApiKeySetup({ onComplete, initialKeys = [], storageType = 'sessi
     </div>
   )
 }
-
-export default ApiKeySetup

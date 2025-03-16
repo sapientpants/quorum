@@ -29,7 +29,7 @@ export type Theme =
   | 'night' 
   | 'coffee' 
   | 'winter'
-export type AccentColor = 'purple' | 'blue' | 'green' | 'red'
+type AccentColor = 'purple' | 'blue' | 'green' | 'red'
 export type KeyStoragePreference = 'local' | 'session' | 'none'
 
 export interface UserPreferences {

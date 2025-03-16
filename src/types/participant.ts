@@ -1,15 +1,15 @@
 import { z } from 'zod'
 import type { LLMProviderId } from './llm'
 
-export type ParticipantType = 'human' | 'llm'
+type ParticipantType = 'human' | 'llm'
 
-export interface BaseParticipant {
+interface BaseParticipant {
   id: string
   name: string
   type: ParticipantType
 }
 
-export interface HumanParticipant extends BaseParticipant {
+interface HumanParticipant extends BaseParticipant {
   type: 'human'
 }
 

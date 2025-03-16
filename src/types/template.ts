@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import type { Participant } from './participant'
 
 /**
  * Template interface for storing round table configurations
@@ -12,13 +11,6 @@ export interface Template {
   defaultConversationStarter?: string // Optional initial message to start the conversation
   createdAt: number
   updatedAt: number
-}
-
-/**
- * Template with expanded participant data
- */
-export interface TemplateWithParticipants extends Omit<Template, 'participantIds'> {
-  participants: Participant[]
 }
 
 /**

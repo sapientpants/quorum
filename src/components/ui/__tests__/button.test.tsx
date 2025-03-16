@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { Button } from '../button'
 
 // Mock the cn utility function
-vi.mock('@/lib/utils', () => ({
+vi.mock('../../../lib/utils', () => ({
   cn: (...inputs: (string | undefined | null | false | Record<string, boolean>)[]) => 
     inputs.filter(Boolean).join(' ')
 }))

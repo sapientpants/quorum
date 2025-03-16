@@ -11,8 +11,3 @@ export interface Message {
   status?: 'sending' | 'sent' | 'error'
   error?: Error
 }
-
-export interface ChatProps {
-  initialMessages?: Message[]
-  id?: string
-}

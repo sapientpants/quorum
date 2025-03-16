@@ -7,11 +7,6 @@ export interface ApiKey {
   isVisible?: boolean
 }
 
-export interface ApiKeyManagerProps {
-  onApiKeyChange: (provider: string, apiKey: string) => void
-  initialApiKeys?: ApiKey[]
-}
-
 export interface ApiKeyStorageOptions {
   storage: 'local' | 'session' | 'none'
 }

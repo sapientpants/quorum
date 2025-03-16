@@ -66,6 +66,3 @@ export function ApiKeyInput({ onApiKeyChange, initialApiKey = '' }: ApiKeyInputP
     </div>
   )
 }
-
-// Add default export
-export default ApiKeyInput 
