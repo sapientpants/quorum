@@ -111,7 +111,7 @@ export function NetworkStatusIndicator({
   const status = getStatusContent();
 
   return (
-    <div
+    <button
       className={cn(
         "fixed z-50 flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium shadow-lg transition-all duration-300",
         positionClasses[position],
@@ -136,6 +136,6 @@ export function NetworkStatusIndicator({
           <AlertTriangle className="h-3 w-3 inline ml-1 text-warning-foreground" />
         </span>
       )}
-    </div>
+    </button>
   );
 }

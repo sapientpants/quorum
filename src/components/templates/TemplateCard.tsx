@@ -44,7 +44,7 @@ function TemplateCard({
         <div className="flex justify-between items-start">
           <h2 className="card-title text-xl font-bold">{template.name}</h2>
           <div className="dropdown dropdown-end">
-            <div
+            <button
               tabIndex={0}
               role="button"
               className="btn btn-ghost btn-sm btn-circle"
@@ -65,42 +65,44 @@ function TemplateCard({
                 <circle cx="12" cy="5" r="1" />
                 <circle cx="12" cy="19" r="1" />
               </svg>
-            </div>
+            </button>
             {isMenuOpen && (
-              <ul
+              <button
                 tabIndex={0}
                 className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <li>
-                  <button onClick={() => onUse(template.id)}>
-                    {t("Use Template")}
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => onEdit(template.id)}>
-                    {t("Edit")}
-                  </button>
-                </li>
-                {onShare && (
+                <ul>
                   <li>
-                    <button
-                      onClick={() => onShare(template.id)}
-                      className="w-full text-left"
-                    >
-                      {t("Share")}
+                    <button onClick={() => onUse(template.id)}>
+                      {t("Use Template")}
                     </button>
                   </li>
-                )}
-                <li>
-                  <button
-                    onClick={() => onDelete(template.id)}
-                    className="w-full text-left text-error"
-                  >
-                    {t("Delete")}
-                  </button>
-                </li>
-              </ul>
+                  <li>
+                    <button onClick={() => onEdit(template.id)}>
+                      {t("Edit")}
+                    </button>
+                  </li>
+                  {onShare && (
+                    <li>
+                      <button
+                        onClick={() => onShare(template.id)}
+                        className="w-full text-left"
+                      >
+                        {t("Share")}
+                      </button>
+                    </li>
+                  )}
+                  <li>
+                    <button
+                      onClick={() => onDelete(template.id)}
+                      className="w-full text-left text-error"
+                    >
+                      {t("Delete")}
+                    </button>
+                  </li>
+                </ul>
+              </button>
             )}
           </div>
         </div>
