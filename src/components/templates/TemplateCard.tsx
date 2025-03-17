@@ -80,16 +80,21 @@ function TemplateCard({
                 </li>
                 {onShare && (
                   <li>
-                    <a onClick={() => onShare(template.id)}>{t("Share")}</a>
+                    <button
+                      onClick={() => onShare(template.id)}
+                      className="w-full text-left"
+                    >
+                      {t("Share")}
+                    </button>
                   </li>
                 )}
                 <li>
-                  <a
+                  <button
                     onClick={() => onDelete(template.id)}
-                    className="text-error"
+                    className="w-full text-left text-error"
                   >
                     {t("Delete")}
-                  </a>
+                  </button>
                 </li>
               </ul>
             )}
