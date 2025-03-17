@@ -51,7 +51,7 @@ describe("NetworkStatusIndicator", () => {
       <ErrorContext.Provider
         value={{ ...defaultContextValue, ...contextValue }}
       >
-        <NetworkStatusIndicator />
+        <NetworkStatusIndicator data-testid="network-status" />
       </ErrorContext.Provider>,
     );
   };
@@ -77,7 +77,7 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Force the component to be visible initially
-    const statusElement = screen.getByRole("status");
+    const statusElement = screen.getByText("Slow Connection").closest("button");
     expect(statusElement).toBeInTheDocument();
 
     // After timeout, should be hidden
@@ -100,7 +100,7 @@ describe("NetworkStatusIndicator", () => {
     expect(screen.getByTestId("wifi-off-icon")).toBeInTheDocument();
 
     // Should have destructive class
-    const statusElement = screen.getByRole("status");
+    const statusElement = screen.getByText("Offline").closest("button");
     expect(statusElement).toHaveClass("bg-destructive");
   });
 
@@ -114,7 +114,7 @@ describe("NetworkStatusIndicator", () => {
     expect(screen.getByTestId("signal-low-icon")).toBeInTheDocument();
 
     // Should have warning class
-    const statusElement = screen.getByRole("status");
+    const statusElement = screen.getByText("Slow Connection").closest("button");
     expect(statusElement).toHaveClass("bg-warning");
   });
 
@@ -128,7 +128,7 @@ describe("NetworkStatusIndicator", () => {
     expect(screen.getByTestId("signal-low-icon")).toBeInTheDocument();
 
     // Should have warning class with lower opacity
-    const statusElement = screen.getByRole("status");
+    const statusElement = screen.getByText("Slow Connection").closest("button");
     expect(statusElement).toHaveClass("bg-warning/70");
 
     // After timeout, should be hidden
@@ -155,8 +155,9 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Click the status indicator
-    const statusElement = screen.getByRole("status");
-    fireEvent.click(statusElement);
+    const statusElement = screen.getByText("Slow Connection").closest("button");
+    expect(statusElement).not.toBeNull();
+    fireEvent.click(statusElement!);
 
     // Should show loading icon
     expect(screen.getByTestId("loader-icon")).toBeInTheDocument();
@@ -183,7 +184,7 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Default position should be bottom-right
-    const statusElement = screen.getByRole("status");
+    const statusElement = screen.getByText("Slow Connection").closest("button");
     expect(statusElement).toHaveClass("bottom-4");
     expect(statusElement).toHaveClass("right-4");
   });
@@ -202,7 +203,7 @@ describe("NetworkStatusIndicator", () => {
     );
 
     // Should have top-left position classes
-    const statusElement = screen.getByRole("status");
+    const statusElement = screen.getByText("Slow Connection").closest("button");
     expect(statusElement).toHaveClass("top-4");
     expect(statusElement).toHaveClass("left-4");
   });

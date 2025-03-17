@@ -122,7 +122,6 @@ export function NetworkStatusIndicator({
             !visible && networkStatus !== ConnectionQuality.OFFLINE,
         },
       )}
-      role="status"
       onClick={testConnection}
     >
       {testingConnection ? (

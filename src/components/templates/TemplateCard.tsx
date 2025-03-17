@@ -46,7 +46,6 @@ function TemplateCard({
           <div className="dropdown dropdown-end">
             <button
               tabIndex={0}
-              role="button"
               className="btn btn-ghost btn-sm btn-circle"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
