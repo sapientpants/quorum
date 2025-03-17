@@ -47,13 +47,11 @@ export function ApiKeyConsentModal({
                 checked={selectedStorage === "local"}
                 onChange={() => setSelectedStorage("local")}
               />
-              <span>
-                <span className="font-medium text-foreground">
-                  {t("welcome.consent.points.localStorage.title")}
-                </span>
-                <span className="text-sm text-foreground/70">
-                  {t("welcome.consent.points.localStorage.description")}
-                </span>
+              <span className="font-medium text-foreground">
+                {t("welcome.consent.points.localStorage.title")}
+              </span>
+              <span className="text-sm text-foreground/70">
+                {t("welcome.consent.points.localStorage.description")}
               </span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer hover:bg-foreground/5 p-2 rounded-lg transition-colors">
@@ -64,13 +62,11 @@ export function ApiKeyConsentModal({
                 checked={selectedStorage === "session"}
                 onChange={() => setSelectedStorage("session")}
               />
-              <span>
-                <span className="font-medium text-foreground">
-                  {t("welcome.consent.points.sessionStorage.title")}
-                </span>
-                <span className="text-sm text-foreground/70">
-                  {t("welcome.consent.points.sessionStorage.description")}
-                </span>
+              <span className="font-medium text-foreground">
+                {t("welcome.consent.points.sessionStorage.title")}
+              </span>
+              <span className="text-sm text-foreground/70">
+                {t("welcome.consent.points.sessionStorage.description")}
               </span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer hover:bg-foreground/5 p-2 rounded-lg transition-colors">
@@ -81,13 +77,11 @@ export function ApiKeyConsentModal({
                 checked={selectedStorage === "none"}
                 onChange={() => setSelectedStorage("none")}
               />
-              <span>
-                <span className="font-medium text-foreground">
-                  {t("welcome.consent.points.noStorage.title")}
-                </span>
-                <span className="text-sm text-foreground/70">
-                  {t("welcome.consent.points.noStorage.description")}
-                </span>
+              <span className="font-medium text-foreground">
+                {t("welcome.consent.points.noStorage.title")}
+              </span>
+              <span className="text-sm text-foreground/70">
+                {t("welcome.consent.points.noStorage.description")}
               </span>
             </label>
           </div>
