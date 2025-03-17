@@ -82,7 +82,7 @@ describe("SecurityStep", () => {
     // Local storage should be selected by default based on mock preferences
     const localStorageOption = screen
       .getByText("Local Storage")
-      .closest('div[class*="rounded-lg border-2"]');
+      .closest('button[class*="rounded-lg border-2"]');
     expect(localStorageOption).toHaveClass("border-primary");
     expect(localStorageOption).toHaveClass("bg-primary/5");
   });
@@ -93,13 +93,13 @@ describe("SecurityStep", () => {
     // Initially local storage should be selected
     let localStorageOption = screen
       .getByText("Local Storage")
-      .closest('div[class*="rounded-lg border-2"]');
+      .closest('button[class*="rounded-lg border-2"]');
     expect(localStorageOption).toHaveClass("border-primary");
 
     // Click on session storage option
     const sessionStorageOption = screen
       .getByText("Session Storage")
-      .closest('div[class*="rounded-lg border-2"]');
+      .closest('button[class*="rounded-lg border-2"]');
     fireEvent.click(sessionStorageOption!);
 
     // Now session storage should be selected
@@ -109,7 +109,7 @@ describe("SecurityStep", () => {
     // And local storage should not be selected
     localStorageOption = screen
       .getByText("Local Storage")
-      .closest('div[class*="rounded-lg border-2"]');
+      .closest('button[class*="rounded-lg border-2"]');
     expect(localStorageOption).not.toHaveClass("border-primary");
     expect(localStorageOption).not.toHaveClass("bg-primary/5");
   });
@@ -120,7 +120,7 @@ describe("SecurityStep", () => {
     // Click on session storage option
     const sessionStorageOption = screen
       .getByText("Session Storage")
-      .closest('div[class*="rounded-lg border-2"]');
+      .closest('button[class*="rounded-lg border-2"]');
     fireEvent.click(sessionStorageOption!);
 
     // Check that preferences were updated
@@ -131,7 +131,7 @@ describe("SecurityStep", () => {
     // Click on no storage option
     const noStorageOption = screen
       .getByText("No Storage")
-      .closest('div[class*="rounded-lg border-2"]');
+      .closest('button[class*="rounded-lg border-2"]');
     fireEvent.click(noStorageOption!);
 
     // Check that preferences were updated again

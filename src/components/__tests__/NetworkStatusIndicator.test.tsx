@@ -77,8 +77,8 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Force the component to be visible initially
-    const statusElement = screen.getByText("Slow Connection").closest("button");
-    expect(statusElement).toBeInTheDocument();
+    const statusButton = screen.getByText("Slow Connection");
+    expect(statusButton).toBeInTheDocument();
 
     // After timeout, should be hidden
     act(() => {
@@ -96,12 +96,12 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Check that the offline status is rendered
-    expect(screen.getByText("Offline")).toBeInTheDocument();
+    const offlineButton = screen.getByText("Offline");
+    expect(offlineButton).toBeInTheDocument();
     expect(screen.getByTestId("wifi-off-icon")).toBeInTheDocument();
 
     // Should have destructive class
-    const statusElement = screen.getByText("Offline").closest("button");
-    expect(statusElement).toHaveClass("bg-destructive");
+    expect(offlineButton.closest("button")).toHaveClass("bg-destructive");
   });
 
   it("renders slow connection status when network quality is poor", () => {
@@ -110,12 +110,12 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Check that the slow connection status is rendered
-    expect(screen.getByText("Slow Connection")).toBeInTheDocument();
+    const slowConnectionButton = screen.getByText("Slow Connection");
+    expect(slowConnectionButton).toBeInTheDocument();
     expect(screen.getByTestId("signal-low-icon")).toBeInTheDocument();
 
     // Should have warning class
-    const statusElement = screen.getByText("Slow Connection").closest("button");
-    expect(statusElement).toHaveClass("bg-warning");
+    expect(slowConnectionButton.closest("button")).toHaveClass("bg-warning");
   });
 
   it("renders fair connection status temporarily when network quality is fair", () => {
@@ -124,12 +124,12 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Check that the fair connection status is rendered
-    expect(screen.getByText("Slow Connection")).toBeInTheDocument();
+    const slowConnectionButton = screen.getByText("Slow Connection");
+    expect(slowConnectionButton).toBeInTheDocument();
     expect(screen.getByTestId("signal-low-icon")).toBeInTheDocument();
 
     // Should have warning class with lower opacity
-    const statusElement = screen.getByText("Slow Connection").closest("button");
-    expect(statusElement).toHaveClass("bg-warning/70");
+    expect(slowConnectionButton.closest("button")).toHaveClass("bg-warning/70");
 
     // After timeout, should be hidden
     act(() => {
@@ -155,9 +155,8 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Click the status indicator
-    const statusElement = screen.getByText("Slow Connection").closest("button");
-    expect(statusElement).not.toBeNull();
-    fireEvent.click(statusElement!);
+    const statusButton = screen.getByText("Slow Connection");
+    fireEvent.click(statusButton);
 
     // Should show loading icon
     expect(screen.getByTestId("loader-icon")).toBeInTheDocument();
@@ -184,9 +183,9 @@ describe("NetworkStatusIndicator", () => {
     });
 
     // Default position should be bottom-right
-    const statusElement = screen.getByText("Slow Connection").closest("button");
-    expect(statusElement).toHaveClass("bottom-4");
-    expect(statusElement).toHaveClass("right-4");
+    const slowConnectionButton = screen.getByText("Slow Connection");
+    expect(slowConnectionButton.closest("button")).toHaveClass("bottom-4");
+    expect(slowConnectionButton.closest("button")).toHaveClass("right-4");
   });
 
   it("applies the correct position class for top-left", () => {
@@ -203,8 +202,8 @@ describe("NetworkStatusIndicator", () => {
     );
 
     // Should have top-left position classes
-    const statusElement = screen.getByText("Slow Connection").closest("button");
-    expect(statusElement).toHaveClass("top-4");
-    expect(statusElement).toHaveClass("left-4");
+    const slowConnectionButton = screen.getByText("Slow Connection");
+    expect(slowConnectionButton.closest("button")).toHaveClass("top-4");
+    expect(slowConnectionButton.closest("button")).toHaveClass("left-4");
   });
 });

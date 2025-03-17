@@ -40,7 +40,7 @@ export function SecurityStep({ onNext, onBack }: SecurityStepProps) {
 
       <div className="space-y-4">
         {/* Local Storage Option */}
-        <div
+        <button
           className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
             selectedStorage === "local"
               ? "border-primary bg-primary/5"
@@ -69,10 +69,10 @@ export function SecurityStep({ onNext, onBack }: SecurityStepProps) {
               </p>
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Session Storage Option */}
-        <div
+        <button
           className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
             selectedStorage === "session"
               ? "border-primary bg-primary/5"
@@ -101,10 +101,10 @@ export function SecurityStep({ onNext, onBack }: SecurityStepProps) {
               </p>
             </div>
           </div>
-        </div>
+        </button>
 
         {/* No Storage Option */}
-        <div
+        <button
           className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
             selectedStorage === "none"
               ? "border-primary bg-primary/5"
@@ -133,7 +133,7 @@ export function SecurityStep({ onNext, onBack }: SecurityStepProps) {
               </p>
             </div>
           </div>
-        </div>
+        </button>
       </div>
 
       <div className="bg-muted/30 rounded-lg p-4 mt-6 border border-border">
