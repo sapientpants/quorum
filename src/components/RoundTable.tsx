@@ -135,9 +135,10 @@ export function RoundTable({
       );
 
       if (thinkingParticipants.length) {
-        const randomIndex = Math.floor(
-          Math.random() * thinkingParticipants.length,
-        );
+        const crypto = window.crypto || window.msCrypto;
+        const array = new Uint32Array(1);
+        crypto.getRandomValues(array);
+        const randomIndex = array[0] % thinkingParticipants.length;
         setThinkingId(thinkingParticipants[randomIndex].id);
       }
     } else {
