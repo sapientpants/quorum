@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 import type { Message } from "../types/chat";
 import type { LLMProviderId, LLMSettings } from "../types/llm";
+import { StreamingResponse } from "../types/streaming";
 import { OpenAIStreamClient } from "../services/llm/openaiStreamClient";
 import { LLMError, ErrorType } from "../services/llm/LLMError";
 
@@ -11,6 +12,79 @@ export function useStreamingLLM() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<LLMError | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  /**
+   * Validate streaming requirements
+   */
+  const validateStreamingRequirements = useCallback(
+    (
+      provider: LLMProviderId,
+      apiKey: string,
+      callbacks?: {
+        onToken?: (token: string) => void;
+        onComplete?: (fullText: string) => void;
+        onError?: (error: LLMError) => void;
+      },
+    ) => {
+      if (!provider) {
+        const error = new LLMError(
+          ErrorType.INVALID_PROVIDER,
+          "Provider is required",
+        );
+        setError(error);
+        callbacks?.onError?.(error);
+        return false;
+      }
+
+      if (!apiKey) {
+        const error = new LLMError(
+          ErrorType.MISSING_API_KEY,
+          `API key for ${provider} is required`,
+        );
+        setError(error);
+        callbacks?.onError?.(error);
+        return false;
+      }
+
+      return true;
+    },
+    [],
+  );
+
+  /**
+   * Process streaming response
+   */
+  const processStreamResponse = useCallback(
+    async (
+      stream: AsyncIterable<StreamingResponse>,
+      callbacks?: {
+        onToken?: (token: string) => void;
+        onComplete?: (fullText: string) => void;
+      },
+    ) => {
+      let fullText = "";
+
+      for await (const chunk of stream) {
+        if (chunk.error) {
+          throw chunk.error;
+        }
+
+        if (chunk.token) {
+          fullText += chunk.token;
+          callbacks?.onToken?.(chunk.token);
+        }
+
+        if (chunk.done) {
+          break;
+        }
+      }
+
+      // Call the onComplete callback
+      callbacks?.onComplete?.(fullText);
+      return fullText;
+    },
+    [],
+  );
 
   /**
    * Stream a message to an LLM and get tokens as they arrive
@@ -28,23 +102,8 @@ export function useStreamingLLM() {
         onError?: (error: LLMError) => void;
       },
     ) => {
-      if (!provider) {
-        const error = new LLMError(
-          ErrorType.INVALID_PROVIDER,
-          "Provider is required",
-        );
-        setError(error);
-        callbacks?.onError?.(error);
-        return null;
-      }
-
-      if (!apiKey) {
-        const error = new LLMError(
-          ErrorType.MISSING_API_KEY,
-          `API key for ${provider} is required`,
-        );
-        setError(error);
-        callbacks?.onError?.(error);
+      // Validate requirements
+      if (!validateStreamingRequirements(provider, apiKey, callbacks)) {
         return null;
       }
 
@@ -64,7 +123,6 @@ export function useStreamingLLM() {
         }
 
         const client = new OpenAIStreamClient({ apiKey });
-        let fullText = "";
 
         // Stream the response
         const stream = client.streamMessage(
@@ -75,25 +133,7 @@ export function useStreamingLLM() {
           abortControllerRef.current.signal,
         );
 
-        for await (const chunk of stream) {
-          if (chunk.error) {
-            throw chunk.error;
-          }
-
-          if (chunk.token) {
-            fullText += chunk.token;
-            callbacks?.onToken?.(chunk.token);
-          }
-
-          if (chunk.done) {
-            break;
-          }
-        }
-
-        // Call the onComplete callback
-        callbacks?.onComplete?.(fullText);
-
-        return fullText;
+        return await processStreamResponse(stream, callbacks);
       } catch (err) {
         console.error(`Error streaming from ${provider}:`, err);
 
@@ -113,7 +153,7 @@ export function useStreamingLLM() {
         abortControllerRef.current = null;
       }
     },
-    [],
+    [validateStreamingRequirements, processStreamResponse],
   );
 
   /**

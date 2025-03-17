@@ -181,37 +181,75 @@ export class AnthropicClient implements LLMClient {
     apiKey: string,
     streamingOptions: StreamingOptions,
   ): Promise<string> {
-    let response: Response;
-    try {
-      response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": apiKey,
-          "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({ ...requestBody, stream: true }),
-      });
-    } catch (error) {
-      throw this.handleError(error);
-    }
+    // Helper function to make the API request
+    const makeStreamRequest = async (): Promise<Response> => {
+      try {
+        const response = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({ ...requestBody, stream: true }),
+        });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw this.handleError(
-        new Error(
-          `${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`,
-        ),
-      );
-    }
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw this.handleError(
+            new Error(
+              `${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`,
+            ),
+          );
+        }
+
+        if (!response.body) {
+          throw new AnthropicError("No response body from Anthropic");
+        }
+
+        return response;
+      } catch (error) {
+        throw this.handleError(error);
+      }
+    };
+
+    // Helper function to process a streaming line
+    const processStreamLine = (
+      line: string,
+      fullText: string,
+    ): { fullText: string; shouldContinue: boolean } => {
+      if (!line.startsWith("data:") || line.includes("[DONE]")) {
+        return { fullText, shouldContinue: true };
+      }
+
+      try {
+        const data = JSON.parse(line.slice(5));
+        const content = data.delta?.text || "";
+
+        if (content) {
+          const newFullText = fullText + content;
+          if (streamingOptions.onToken) {
+            streamingOptions.onToken(content);
+          }
+          return { fullText: newFullText, shouldContinue: true };
+        }
+      } catch (e) {
+        console.warn("Error parsing streaming response line:", e);
+      }
+
+      return { fullText, shouldContinue: true };
+    };
+
+    // Main streaming logic
+    let fullText = "";
+    const response = await makeStreamRequest();
 
     if (!response.body) {
-      throw new AnthropicError("No response body from Anthropic");
+      throw new AnthropicError("Response body is null");
     }
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    let fullText = "";
 
     try {
       while (true) {
@@ -222,21 +260,9 @@ export class AnthropicClient implements LLMClient {
         const lines = chunk.split("\n").filter((line) => line.trim() !== "");
 
         for (const line of lines) {
-          if (!line.startsWith("data:") || line.includes("[DONE]")) continue;
-
-          try {
-            const data = JSON.parse(line.slice(5));
-            const content = data.delta?.text || "";
-
-            if (content) {
-              fullText += content;
-              if (streamingOptions.onToken) {
-                streamingOptions.onToken(content);
-              }
-            }
-          } catch (e) {
-            console.warn("Error parsing streaming response line:", e);
-          }
+          const result = processStreamLine(line, fullText);
+          fullText = result.fullText;
+          if (!result.shouldContinue) break;
         }
       }
     } catch (error) {

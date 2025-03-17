@@ -5,6 +5,7 @@ import { useSettings } from "../hooks/useSettings";
 import { useStreamingLLM } from "../hooks/useStreamingLLM";
 import { LLMError } from "../services/llm/LLMError";
 import { ChatContext, ChatContextValue } from "./ChatContextValue";
+import { Message } from "../types/chat";
 
 /**
  * Chat context provider component
@@ -45,139 +46,193 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // Get all supported providers
   const supportedProviders = getSupportedProvidersList();
 
-  // Handle sending a message
-  const sendMessage = useCallback(
-    async (text: string) => {
-      if (!text.trim()) return;
+  // Helper function to validate message requirements
+  const validateMessageRequirements = useCallback(() => {
+    if (!activeProvider) {
+      setError("Please select a provider to continue");
+      return false;
+    }
 
-      // Clear any previous errors
-      clearError();
+    if (activeProvider && !apiKeys[activeProvider.id]) {
+      setError(`Please enter your ${activeProvider} API key to continue`);
+      return false;
+    }
 
-      // Check if a provider is selected
+    if (!activeModel) {
+      setError("Please select a model to continue");
+      return false;
+    }
+
+    return true;
+  }, [activeProvider, activeModel, apiKeys, setError]);
+
+  // Helper function to handle streaming response
+  const handleStreamingResponse = useCallback(
+    async (userMessage: Message, aiMessageId: string) => {
       if (!activeProvider) {
-        setError("Please select a provider to continue");
+        setError("No provider selected");
         return;
       }
 
-      // Check if API key is provided for the active provider
-      if (activeProvider && !apiKeys[activeProvider.id]) {
-        setError(`Please enter your ${activeProvider} API key to continue`);
+      const modelToUse = activeModel || activeProvider.models[0];
+
+      await streamMessage(
+        [...messages, userMessage],
+        activeProvider.id,
+        apiKeys[activeProvider.id],
+        modelToUse,
+        settings,
+        {
+          onToken: (token: string) => {
+            updateAIMessage(aiMessageId, {
+              text:
+                messages.find((m) => m.id === aiMessageId)?.text + token ||
+                token,
+            });
+          },
+          onComplete: () => {
+            updateAIMessage(aiMessageId, {
+              status: "sent",
+            });
+            setIsLoading(false);
+          },
+          onError: (err: LLMError) => {
+            updateAIMessage(aiMessageId, {
+              text: `Error: ${err.message}`,
+              status: "error",
+              error: err,
+            });
+            setError(err.message);
+            setIsLoading(false);
+          },
+        },
+      );
+    },
+    [
+      messages,
+      activeProvider,
+      activeModel,
+      apiKeys,
+      settings,
+      streamMessage,
+      updateAIMessage,
+      setIsLoading,
+      setError,
+    ],
+  );
+
+  // Helper function to handle standard response
+  const handleStandardResponse = useCallback(
+    async (userMessage: Message, aiMessageId: string) => {
+      if (!activeProvider) {
+        setError("No provider selected");
         return;
       }
 
-      // Check if a model is selected
-      if (!activeModel) {
-        setError("Please select a model to continue");
-        return;
-      }
-
-      // Add user message
-      const userMessage = addUserMessage(text);
-      if (!userMessage) return;
-
-      // Add a placeholder for the AI response
-      const aiMessageId = addAIMessage(activeProvider, activeModel);
-      setIsLoading(true);
+      const modelToUse = activeModel || activeProvider.models[0];
 
       try {
-        // Check if streaming is supported and enabled
-        const canStream = useStreaming && isStreamingSupported();
-
-        if (canStream) {
-          // Use streaming API with async iterables
-          await streamMessage(
-            [...messages, userMessage],
-            activeProvider!.id,
-            apiKeys[activeProvider!.id],
-            activeModel,
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: [...messages, userMessage],
+            provider: activeProvider.id,
+            apiKey: apiKeys[activeProvider.id],
+            model: modelToUse,
             settings,
-            {
-              onToken: (token: string) => {
-                updateAIMessage(aiMessageId, {
-                  text:
-                    messages.find((m) => m.id === aiMessageId)?.text + token ||
-                    token,
-                });
-              },
-              onComplete: () => {
-                updateAIMessage(aiMessageId, {
-                  status: "sent",
-                });
-                setIsLoading(false);
-              },
-              onError: (err: LLMError) => {
-                updateAIMessage(aiMessageId, {
-                  text: `Error: ${err.message}`,
-                  status: "error",
-                  error: err,
-                });
-                setError(err.message);
-                setIsLoading(false);
-              },
-            },
-          );
-        } else {
-          // Use standard API
-          const response = await fetch("/api/chat", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              messages: [...messages, userMessage],
-              provider: activeProvider.id,
-              apiKey: apiKeys[activeProvider.id],
-              model: activeModel,
-              settings,
-            }),
-          });
+          }),
+        });
 
-          if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-          }
-
-          const data = await response.json();
-
-          // Update the AI response
-          updateAIMessage(aiMessageId, {
-            text: data.text,
-            status: "sent",
-          });
-          setIsLoading(false);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
-      } catch (err) {
-        console.error(`Error calling ${activeProvider?.id}:`, err);
+
+        const data = await response.json();
+
+        // Update the AI response
+        updateAIMessage(aiMessageId, {
+          text: data.text,
+          status: "sent",
+        });
+        setIsLoading(false);
+      } catch (error) {
+        console.error(`Error calling ${activeProvider?.id}:`, error);
 
         // Update the AI message with error
         updateAIMessage(aiMessageId, {
-          text: `Error: ${err instanceof Error ? err.message : "Unknown error"}`,
+          text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
           status: "error",
-          error: err instanceof Error ? err : new Error("Unknown error"),
+          error: error instanceof Error ? error : new Error("Unknown error"),
         });
 
         setError(
-          err instanceof Error
-            ? err.message
+          error instanceof Error
+            ? error.message
             : `An error occurred while calling the ${activeProvider?.id} API`,
         );
         setIsLoading(false);
       }
     },
     [
+      messages,
       activeProvider,
       activeModel,
       apiKeys,
-      messages,
       settings,
-      useStreaming,
-      isStreamingSupported,
-      addUserMessage,
-      addAIMessage,
       updateAIMessage,
       setIsLoading,
       setError,
-      clearError,
-      streamMessage,
+    ],
+  );
+
+  // Send a message to the AI
+  const sendMessage = useCallback(
+    async (text: string) => {
+      // Clear any previous errors
+      setError(null);
+
+      // Validate requirements
+      if (!validateMessageRequirements()) {
+        return;
+      }
+
+      // Create user message using the addUserMessage function
+      const userMessage = addUserMessage(text);
+      if (!userMessage) return;
+
+      // Create AI message placeholder
+      if (!activeProvider) {
+        setError("No provider selected");
+        return;
+      }
+
+      const modelToUse = activeModel || activeProvider.models[0];
+      const aiMessageId = addAIMessage(activeProvider, modelToUse);
+
+      // Set loading state
+      setIsLoading(true);
+
+      // Use streaming if available, otherwise use standard API
+      if (isStreamingSupported()) {
+        await handleStreamingResponse(userMessage, aiMessageId);
+      } else {
+        await handleStandardResponse(userMessage, aiMessageId);
+      }
+    },
+    [
+      validateMessageRequirements,
+      addUserMessage,
+      activeProvider,
+      activeModel,
+      addAIMessage,
+      setIsLoading,
+      isStreamingSupported,
+      handleStreamingResponse,
+      handleStandardResponse,
+      setError,
     ],
   );
 

@@ -246,3 +246,84 @@ export async function getStreamingRecommendations(): Promise<StreamingRecommenda
     return { shouldUseStreaming: true, chunkSize: 5 };
   }
 }
+
+/**
+ * Fetch with timeout
+ * @param url URL to fetch
+ * @param options Fetch options
+ * @param timeoutMs Timeout in milliseconds
+ * @returns Promise with fetch response
+ */
+export async function fetchWithTimeout(
+  url: string,
+  options: RequestInit = {},
+  timeoutMs = 30000,
+): Promise<Response> {
+  // Create abort controller for timeout
+  const { controller, timeoutId } = setupTimeoutController(timeoutMs);
+
+  try {
+    // Add abort signal to options if not already present
+    const fetchOptions = addAbortSignalToOptions(options, controller.signal);
+
+    // Execute fetch with the configured options
+    return await executeFetchWithErrorHandling(url, fetchOptions);
+  } finally {
+    // Always clean up timeout
+    clearTimeout(timeoutId);
+  }
+}
+
+/**
+ * Setup abort controller with timeout
+ */
+function setupTimeoutController(timeoutMs: number): {
+  controller: AbortController;
+  timeoutId: NodeJS.Timeout;
+} {
+  const controller = new AbortController();
+
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+
+  return { controller, timeoutId };
+}
+
+/**
+ * Add abort signal to fetch options if not already present
+ */
+function addAbortSignalToOptions(
+  options: RequestInit,
+  signal: AbortSignal,
+): RequestInit {
+  // If options already has a signal, use it, otherwise add our signal
+  if (options.signal) {
+    return options;
+  }
+
+  return {
+    ...options,
+    signal,
+  };
+}
+
+/**
+ * Execute fetch with error handling
+ */
+async function executeFetchWithErrorHandling(
+  url: string,
+  options: RequestInit,
+): Promise<Response> {
+  try {
+    return await fetch(url, options);
+  } catch (error) {
+    // Handle abort errors
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error(`Request timed out: ${url}`);
+    }
+
+    // Re-throw other errors
+    throw error;
+  }
+}
