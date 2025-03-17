@@ -185,7 +185,14 @@ describe("TemplateForm", () => {
   });
 
   it("toggles participant selection when clicked", () => {
-    // This test will be skipped until we can properly mock the participant selection UI
-    // which requires more complex setup with checkboxes
+    render(<TemplateForm onCancel={mockOnCancel} />);
+
+    // Check that the participant selection element exists
+    const participantElement = screen.getByText(
+      "templateForm.selectParticipants",
+    );
+    expect(participantElement).toBeInTheDocument();
+
+    // This test will be expanded when we implement proper participant selection UI mockup
   });
 });

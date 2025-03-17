@@ -84,7 +84,9 @@ export function ParticipantForm({
 
   const providerID = watch("provider") as LLMProviderId;
   const selectedProvider = LLM_PROVIDERS.find((p) => p.id === providerID);
-  const models = selectedProvider ? [...selectedProvider.models].sort() : [];
+  const models = selectedProvider
+    ? [...selectedProvider.models].sort((a, b) => a.localeCompare(b))
+    : [];
 
   function onFormSubmit(data: FormData) {
     onSubmit({
