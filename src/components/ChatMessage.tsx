@@ -18,20 +18,19 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
   });
 
   // Determine message style based on sender
-  const messageClasses = isUser
-    ? "chat-bubble chat-bubble-primary"
-    : isSystem
-      ? "chat-bubble bg-base-300"
-      : isError
-        ? "chat-bubble bg-error bg-opacity-20 text-error"
-        : "chat-bubble";
+  const getMessageClasses = () => {
+    if (isUser) return "chat-bubble chat-bubble-primary";
+    if (isSystem) return "chat-bubble bg-base-300";
+    if (isError) return "chat-bubble bg-error bg-opacity-20 text-error";
+    return "chat-bubble";
+  };
 
   // Determine chat alignment
-  const chatClasses = isUser
-    ? "chat chat-end"
-    : isSystem
-      ? "chat chat-start opacity-70"
-      : "chat chat-start";
+  const getChatClasses = () => {
+    if (isUser) return "chat chat-end";
+    if (isSystem) return "chat chat-start opacity-70";
+    return "chat chat-start";
+  };
 
   // Get provider icon
   function getProviderIcon(provider?: string) {
@@ -60,6 +59,9 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
         return null;
     }
   }
+
+  const messageClasses = getMessageClasses();
+  const chatClasses = getChatClasses();
 
   return (
     <div className={chatClasses}>
