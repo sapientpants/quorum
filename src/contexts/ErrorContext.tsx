@@ -1,9 +1,12 @@
-import { useState, useEffect, ReactNode } from 'react';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
-import { LLMError } from '../services/llm/errors';
-import { getConnectionQuality, ConnectionQuality } from '../utils/network';
-import { ErrorContext, ErrorContextType } from './contexts/ErrorContextDefinition';
+import { useState, useEffect, ReactNode } from "react";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { LLMError } from "../services/llm/errors";
+import { getConnectionQuality, ConnectionQuality } from "../utils/network";
+import {
+  ErrorContext,
+  ErrorContextType,
+} from "./contexts/ErrorContextDefinition";
 
 interface ErrorProviderProps {
   children: ReactNode;
@@ -13,7 +16,7 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
   const [apiError, setApiError] = useState<LLMError | Error | null>(null);
   const [showApiErrorModal, setShowApiErrorModal] = useState(false);
   const [networkStatus, setNetworkStatus] = useState<ConnectionQuality>(
-    navigator.onLine ? ConnectionQuality.UNKNOWN : ConnectionQuality.OFFLINE
+    navigator.onLine ? ConnectionQuality.UNKNOWN : ConnectionQuality.OFFLINE,
   );
   const [isLowBandwidth, setIsLowBandwidth] = useState(false);
   const [currentProvider, setCurrentProvider] = useState<string | null>(null);
@@ -28,9 +31,9 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
   // Monitor online status
   useEffect(() => {
     const handleOnline = () => {
-      setNetworkStatus(prevStatus => {
+      setNetworkStatus((prevStatus) => {
         if (prevStatus === ConnectionQuality.OFFLINE) {
-          toast.success(t('network.backOnline'));
+          toast.success(t("network.backOnline"));
           return ConnectionQuality.UNKNOWN;
         }
         return prevStatus;
@@ -39,7 +42,7 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
 
     const handleOffline = () => {
       setNetworkStatus(ConnectionQuality.OFFLINE);
-      toast.error(t('network.offline'));
+      toast.error(t("network.offline"));
     };
 
     // Check connection quality periodically
@@ -47,29 +50,31 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
       if (navigator.onLine) {
         const quality = await getConnectionQuality();
         setNetworkStatus(quality);
-        
+
         // Set low bandwidth flag for POOR and FAIR connection quality
-        const isLow = quality === ConnectionQuality.POOR || quality === ConnectionQuality.FAIR;
-        
+        const isLow =
+          quality === ConnectionQuality.POOR ||
+          quality === ConnectionQuality.FAIR;
+
         if (isLow !== isLowBandwidth) {
           setIsLowBandwidth(isLow);
           if (isLow) {
-            toast.warning(t('network.lowBandwidth'));
+            toast.warning(t("network.lowBandwidth"));
           }
         }
       }
     };
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
     // Initial check and interval setup
     checkConnectionQuality();
     const interval = setInterval(checkConnectionQuality, 30000); // Check every 30 seconds
-    
+
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
       clearInterval(interval);
     };
   }, [t, isLowBandwidth]);
@@ -92,8 +97,10 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
     isLowBandwidth,
     currentProvider,
     setCurrentProvider,
-    clearError
+    clearError,
   };
 
-  return <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>;
-} 
+  return (
+    <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>
+  );
+}

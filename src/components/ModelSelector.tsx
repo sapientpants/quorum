@@ -1,28 +1,31 @@
-import type { LLMModel } from '../types/llm'
+import type { LLMModel } from "../types/llm";
+import { useTranslation } from "react-i18next";
 
 interface ModelSelectorProps {
-  models: string[]
-  activeModel: LLMModel | null
-  onSelect: (model: string) => void
+  models: string[];
+  activeModel: LLMModel | null;
+  onSelect: (model: string) => void;
 }
 
 function ModelSelector({ models, activeModel, onSelect }: ModelSelectorProps) {
+  const { t } = useTranslation();
+
   if (models.length === 0) {
-    return null
+    return null;
   }
 
   return (
     <div>
       <label className="label">
-        <span className="label-text">Select Model</span>
+        <span className="label-text">{t("modelSelector.selectModel")}</span>
       </label>
       <select
         className="select select-bordered w-full"
-        value={activeModel || ''}
+        value={activeModel || ""}
         onChange={(e) => onSelect(e.target.value)}
       >
         <option value="" disabled>
-          Select a model
+          {t("modelSelector.selectAModel")}
         </option>
         {models.map((model) => (
           <option key={model} value={model}>
@@ -31,7 +34,7 @@ function ModelSelector({ models, activeModel, onSelect }: ModelSelectorProps) {
         ))}
       </select>
     </div>
-  )
+  );
 }
 
-export default ModelSelector
+export default ModelSelector;

@@ -28,9 +28,18 @@
         "processing": "Die gesamte Verarbeitung findet in deinem Browser statt - deine Gespräche verlassen niemals dein Gerät",
         "access": "Wir haben keinen Zugriff auf deine API-Schlüssel oder Daten",
         "options": "Du kannst wählen, wie deine Schlüssel gespeichert werden:",
-        "localStorage": "Lokaler Speicher (bleibt zwischen Sitzungen erhalten)",
-        "sessionStorage": "Sitzungsspeicher (wird gelöscht, wenn der Browser geschlossen wird)",
-        "noStorage": "Kein Speicher (muss jedes Mal neu eingegeben werden)"
+        "localStorage": {
+          "title": "Lokaler Speicher",
+          "description": "Bleibt zwischen Sitzungen erhalten"
+        },
+        "sessionStorage": {
+          "title": "Sitzungsspeicher",
+          "description": "Wird beim Schließen des Browsers gelöscht"
+        },
+        "noStorage": {
+          "title": "Kein Speicher",
+          "description": "Schlüssel werden nach Verwendung vergessen"
+        }
       },
       "agreement": "Ich verstehe und stimme diesen Bedingungen zu",
       "cancel": "Abbrechen",
@@ -271,5 +280,103 @@
       "addFirst": "Füge deinen ersten Teilnehmer hinzu",
       "complete": "Rundtisch starten →"
     }
+  },
+  "modelSelector": {
+    "selectModel": "Modell wählen",
+    "selectAModel": "Wähle ein Modell"
+  },
+  "participantForm": {
+    "name": "Name",
+    "namePlaceholder": "Geben Sie einen Namen für diesen Teilnehmer ein",
+    "provider": "Anbieter",
+    "model": "Modell",
+    "roleDescription": "Rollenbeschreibung",
+    "roleDescriptionPlaceholder": "Beschreiben Sie die Rolle oder Perspektive dieses Teilnehmers (optional)",
+    "systemPrompt": "System-Prompt",
+    "systemPromptDescription": "Anweisungen, wie sich dieser Teilnehmer verhalten soll. Seien Sie spezifisch bezüglich seiner Rolle, Expertise und Kommunikationsstil.",
+    "systemPromptPlaceholder": "Sie sind ein Experte für...",
+    "advancedSettings": "Erweiterte Einstellungen",
+    "temperature": "Temperatur",
+    "temperatureOptions": {
+      "precise": "Präzise",
+      "balanced": "Ausgewogen",
+      "creative": "Kreativ"
+    },
+    "maxTokens": "Max. Tokens",
+    "maxTokensOptions": {
+      "short": "Kurz",
+      "medium": "Mittel",
+      "long": "Lang"
+    },
+    "buttons": {
+      "update": "Teilnehmer aktualisieren",
+      "create": "Teilnehmer erstellen"
+    }
+  },
+  "validation": {
+    "nameRequired": "Name ist erforderlich",
+    "modelRequired": "Modell ist erforderlich",
+    "systemPromptRequired": "System Prompt ist erforderlich"
+  },
+  "common": {
+    "buttons": {
+      "cancel": "Abbrechen",
+      "saving": "Speichern...",
+      "save": "Speichern",
+      "update": "Aktualisieren",
+      "create": "Erstellen",
+      "delete": "Löschen",
+      "submit": "Absenden",
+      "close": "Schließen"
+    },
+    "loading": "Wird geladen..."
+  },
+  "templateForm": {
+    "name": "Vorlagenname",
+    "namePlaceholder": "Vorlagenname eingeben",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Vorlagenbeschreibung eingeben (optional)",
+    "selectParticipants": "Teilnehmer auswählen",
+    "noParticipantsWarning": "Keine Teilnehmer verfügbar. Erstellen Sie zuerst Teilnehmer.",
+    "defaultConversationStarter": "Standard-Gesprächsstarter (Optional)",
+    "conversationStarterPlaceholder": "Geben Sie eine Nachricht ein, mit der das Gespräch begonnen werden soll",
+    "conversationStarterDescription": "Diese Nachricht wird automatisch gesendet, wenn diese Vorlage verwendet wird",
+    "validation": {
+      "participantRequired": "Mindestens ein Teilnehmer ist erforderlich"
+    },
+    "buttons": {
+      "update": "Vorlage aktualisieren",
+      "create": "Vorlage erstellen"
+    }
+  },
+  "participantConfig": {
+    "title": "Teilnehmerkonfiguration",
+    "addNew": "Neuen Teilnehmer hinzufügen",
+    "edit": "Teilnehmer bearbeiten",
+    "advancedSettings": "Erweiterte Einstellungen",
+    "views": {
+      "list": "Liste",
+      "roundTable": "Runder Tisch"
+    },
+    "configuration": {
+      "title": "Konfiguration",
+      "selectPrompt": "Wählen Sie einen Teilnehmer aus dem runden Tisch aus, um Details anzuzeigen",
+      "role": "Rolle",
+      "systemPrompt": "System-Prompt",
+      "edit": "Bearbeiten",
+      "activeParticipant": {
+        "title": "Aktiver Teilnehmer",
+        "description": "Dieser Teilnehmer ist derzeit ausgewählt und wird in der Ansicht des runden Tisches hervorgehoben.",
+        "clearSelection": "Auswahl aufheben"
+      }
+    }
+  },
+  "providerSelector": {
+    "label": "Anbieter auswählen",
+    "noApiKey": "Kein API-Schlüssel"
+  },
+  "errorBoundary": {
+    "title": "Etwas ist schiefgelaufen",
+    "unknownError": "Ein unbekannter Fehler ist aufgetreten"
   }
 }

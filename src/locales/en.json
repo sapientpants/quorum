@@ -28,9 +28,18 @@
         "processing": "All processing happens in your browser - your conversations never leave your device",
         "access": "We don't have access to your API keys or data",
         "options": "You can choose how your keys are stored:",
-        "localStorage": "Local Storage (persists between sessions)",
-        "sessionStorage": "Session Storage (cleared when browser closes)",
-        "noStorage": "No Storage (must re-enter each time)"
+        "localStorage": {
+          "title": "Local Storage",
+          "description": "Persists between sessions"
+        },
+        "sessionStorage": {
+          "title": "Session Storage",
+          "description": "Cleared when browser closes"
+        },
+        "noStorage": {
+          "title": "No Storage",
+          "description": "Keys are forgotten after use"
+        }
       },
       "agreement": "I understand and agree to these terms",
       "cancel": "Cancel",
@@ -271,5 +280,103 @@
       "addFirst": "Add Your First Participant",
       "complete": "Start Roundtable →"
     }
+  },
+  "modelSelector": {
+    "selectModel": "Select Model",
+    "selectAModel": "Select a model"
+  },
+  "participantForm": {
+    "name": "Name",
+    "namePlaceholder": "Enter a name for this participant",
+    "provider": "Provider",
+    "model": "Model",
+    "roleDescription": "Role Description",
+    "roleDescriptionPlaceholder": "Describe this participant's role or perspective (optional)",
+    "systemPrompt": "System Prompt",
+    "systemPromptDescription": "Instructions for how this participant should behave. Be specific about their role, expertise, and communication style.",
+    "systemPromptPlaceholder": "You are an expert in...",
+    "advancedSettings": "Advanced Settings",
+    "temperature": "Temperature",
+    "temperatureOptions": {
+      "precise": "Precise",
+      "balanced": "Balanced",
+      "creative": "Creative"
+    },
+    "maxTokens": "Max Tokens",
+    "maxTokensOptions": {
+      "short": "Short",
+      "medium": "Medium",
+      "long": "Long"
+    },
+    "buttons": {
+      "update": "Update Participant",
+      "create": "Create Participant"
+    }
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "modelRequired": "Model is required",
+    "systemPromptRequired": "System prompt is required"
+  },
+  "common": {
+    "buttons": {
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "save": "Save",
+      "update": "Update",
+      "create": "Create",
+      "delete": "Delete",
+      "submit": "Submit",
+      "close": "Close"
+    },
+    "loading": "Loading..."
+  },
+  "templateForm": {
+    "name": "Template Name",
+    "namePlaceholder": "Enter template name",
+    "description": "Description",
+    "descriptionPlaceholder": "Enter template description (optional)",
+    "selectParticipants": "Select Participants",
+    "noParticipantsWarning": "No participants available. Create participants first.",
+    "defaultConversationStarter": "Default Conversation Starter (Optional)",
+    "conversationStarterPlaceholder": "Enter a message to start the conversation with",
+    "conversationStarterDescription": "This message will be automatically sent when using this template",
+    "validation": {
+      "participantRequired": "At least one participant is required"
+    },
+    "buttons": {
+      "update": "Update Template",
+      "create": "Create Template"
+    }
+  },
+  "participantConfig": {
+    "title": "Participant Configuration",
+    "addNew": "Add New Participant",
+    "edit": "Edit Participant",
+    "advancedSettings": "Advanced Settings",
+    "views": {
+      "list": "List",
+      "roundTable": "Round Table"
+    },
+    "configuration": {
+      "title": "Configuration",
+      "selectPrompt": "Select a participant from the round table to view details",
+      "role": "Role",
+      "systemPrompt": "System Prompt",
+      "edit": "Edit",
+      "activeParticipant": {
+        "title": "Active Participant",
+        "description": "This participant is currently selected and will be highlighted in the round table view.",
+        "clearSelection": "Clear Selection"
+      }
+    }
+  },
+  "providerSelector": {
+    "label": "Select Provider",
+    "noApiKey": "No API Key"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "unknownError": "An unknown error occurred"
   }
 }

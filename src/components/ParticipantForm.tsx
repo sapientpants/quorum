@@ -1,93 +1,110 @@
-import { useState, useEffect } from 'react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Icon } from '@iconify/react'
-import type { Participant } from '../types/participant'
-import type { LLMProviderId } from '../types/llm'
-import { LLM_PROVIDERS } from '../types/llm'
-
-const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  provider: z.enum(['openai', 'anthropic', 'grok', 'google'] as const),
-  model: z.string().min(1, 'Model is required'),
-  roleDescription: z.string().optional(),
-  systemPrompt: z.string().min(1, 'System prompt is required'),
-  settings: z.object({
-    temperature: z.number().min(0).max(2),
-    maxTokens: z.number().positive()
-  })
-})
-
-type FormData = z.infer<typeof formSchema>
+import { useState, useEffect } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Icon } from "@iconify/react";
+import type { Participant } from "../types/participant";
+import type { LLMProviderId } from "../types/llm";
+import { LLM_PROVIDERS } from "../types/llm";
+import { useTranslation } from "react-i18next";
 
 interface ParticipantFormProps {
-  initialData?: Partial<Participant>
-  onSubmit: (data: Omit<Participant, 'id'>) => void
-  onCancel: () => void
+  initialData?: Partial<Participant>;
+  onSubmit: (data: Omit<Participant, "id">) => void;
+  onCancel: () => void;
 }
 
-const defaultValues: FormData = {
-  name: '',
-  provider: 'openai',
-  model: 'gpt-4o',
-  roleDescription: '',
-  systemPrompt: '',
+// Default values remain the same since they're not displayed text
+const defaultValues = {
+  name: "",
+  provider: "openai" as LLMProviderId,
+  model: "",
+  roleDescription: "",
+  systemPrompt: "",
   settings: {
     temperature: 0.7,
-    maxTokens: 1000
-  }
-}
+    maxTokens: 2048,
+  },
+};
 
-export function ParticipantForm({ initialData, onSubmit, onCancel }: ParticipantFormProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false)
-  const [isMobileView, setIsMobileView] = useState(false)
-  const sortedProviders = [...LLM_PROVIDERS].sort((a, b) => a.displayName.localeCompare(b.displayName))
+export function ParticipantForm({
+  initialData,
+  onSubmit,
+  onCancel,
+}: ParticipantFormProps) {
+  const { t } = useTranslation();
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const sortedProviders = [...LLM_PROVIDERS].sort((a, b) =>
+    a.displayName.localeCompare(b.displayName),
+  );
+
+  // Create form schema with translated validation messages
+  const formSchema = z.object({
+    name: z.string().min(1, t("validation.nameRequired")),
+    provider: z.enum(["openai", "anthropic", "grok", "google"] as const),
+    model: z.string().min(1, t("validation.modelRequired")),
+    roleDescription: z.string().optional(),
+    systemPrompt: z.string().min(1, t("validation.systemPromptRequired")),
+    settings: z.object({
+      temperature: z.number().min(0).max(2),
+      maxTokens: z.number().positive(),
+    }),
+  });
+
+  type FormData = z.infer<typeof formSchema>;
 
   // Detect mobile view
   useEffect(() => {
     const checkMobileView = () => {
-      setIsMobileView(window.innerWidth < 768)
-    }
-    
-    checkMobileView()
-    window.addEventListener('resize', checkMobileView)
-    
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    checkMobileView();
+    window.addEventListener("resize", checkMobileView);
+
     return () => {
-      window.removeEventListener('resize', checkMobileView)
-    }
-  }, [])
+      window.removeEventListener("resize", checkMobileView);
+    };
+  }, []);
 
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...defaultValues,
-      ...initialData
-    }
-  })
+      ...initialData,
+    },
+  });
 
-  const providerID = watch('provider') as LLMProviderId
-  const selectedProvider = LLM_PROVIDERS.find(p => p.id === providerID)
-  const models = selectedProvider ? [...selectedProvider.models].sort() : []
+  const providerID = watch("provider") as LLMProviderId;
+  const selectedProvider = LLM_PROVIDERS.find((p) => p.id === providerID);
+  const models = selectedProvider
+    ? [...selectedProvider.models].sort((a, b) => a.localeCompare(b))
+    : [];
 
   function onFormSubmit(data: FormData) {
     onSubmit({
       ...data,
-      type: 'llm'
-    })
+      type: "llm",
+    });
   }
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 bg-base-100 p-3 sm:p-5 rounded-lg shadow-sm max-w-4xl mx-auto">
+    <form
+      onSubmit={handleSubmit(onFormSubmit)}
+      className="space-y-6 bg-base-100 p-3 sm:p-5 rounded-lg shadow-sm max-w-4xl mx-auto"
+    >
       <div className="flex justify-between items-center">
-        <h2 className="text-lg sm:text-xl font-semibold">Participant Configuration</h2>
-        
+        <h2 className="text-lg sm:text-xl font-semibold">
+          Participant Configuration
+        </h2>
+
         {/* Mobile-optimized form navigation */}
         {isMobileView && (
           <div className="flex gap-2">
@@ -95,24 +112,24 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
               type="button"
               onClick={onCancel}
               className="btn btn-sm btn-ghost"
-              aria-label="Cancel"
+              aria-label={t("common.actions.cancel")}
             >
               <Icon icon="solar:close-circle-bold" className="w-5 h-5" />
             </button>
           </div>
         )}
       </div>
-      
+
       {/* Basic Information */}
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">
-            Name
+            {t("participantForm.name")}
             <input
               type="text"
               className="input input-bordered w-full p-3 text-base mt-1"
-              placeholder="e.g., Medical Expert"
-              {...register('name')}
+              placeholder={t("participantForm.namePlaceholder")}
+              {...register("name")}
             />
           </label>
           {errors.name && (
@@ -123,12 +140,12 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">
-              Provider
+              {t("participantForm.provider")}
               <select
                 className="select select-bordered w-full p-3 text-base h-auto min-h-12 mt-1"
-                {...register('provider')}
+                {...register("provider")}
               >
-                {sortedProviders.map(provider => (
+                {sortedProviders.map((provider) => (
                   <option key={provider.id} value={provider.id}>
                     {provider.displayName}
                   </option>
@@ -136,18 +153,20 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
               </select>
             </label>
             {errors.provider && (
-              <p className="text-error text-sm mt-1">{errors.provider.message}</p>
+              <p className="text-error text-sm mt-1">
+                {errors.provider.message}
+              </p>
             )}
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">
-              Model
+              {t("participantForm.model")}
               <select
                 className="select select-bordered w-full p-3 text-base h-auto min-h-12 mt-1"
-                {...register('model')}
+                {...register("model")}
               >
-                {models.map(model => (
+                {models.map((model) => (
                   <option key={model} value={model}>
                     {model}
                   </option>
@@ -164,35 +183,39 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
       {/* Role Description */}
       <div>
         <label className="block text-sm font-medium mb-1">
-          Role Description
+          {t("participantForm.roleDescription")}
           <textarea
             className="textarea textarea-bordered w-full h-28 mt-1"
-            placeholder="Describe the role of this participant"
-            {...register('roleDescription')}
+            placeholder={t("participantForm.roleDescriptionPlaceholder")}
+            {...register("roleDescription")}
           />
         </label>
         {errors.roleDescription && (
-          <p className="text-error text-sm mt-1">{errors.roleDescription.message}</p>
+          <p className="text-error text-sm mt-1">
+            {errors.roleDescription.message}
+          </p>
         )}
       </div>
 
       {/* System Prompt */}
       <div>
         <label className="block text-sm font-medium">
-          System Prompt
+          {t("participantForm.systemPrompt")}
           <div className="mt-1">
             <div className="mb-2 text-sm opacity-70">
-              Instructions that define how the AI responds (not visible to users)
+              {t("participantForm.systemPromptDescription")}
             </div>
             <textarea
               className="textarea textarea-bordered w-full h-40"
-              placeholder="Enter system prompt..."
-              {...register('systemPrompt')}
+              placeholder={t("participantForm.systemPromptPlaceholder")}
+              {...register("systemPrompt")}
             />
           </div>
         </label>
         {errors.systemPrompt && (
-          <p className="text-error text-sm mt-1">{errors.systemPrompt.message}</p>
+          <p className="text-error text-sm mt-1">
+            {errors.systemPrompt.message}
+          </p>
         )}
       </div>
 
@@ -203,11 +226,15 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
           className="btn btn-ghost btn-sm gap-2 h-auto py-2 px-3"
           onClick={() => setShowAdvanced(!showAdvanced)}
         >
-          <Icon 
-            icon={showAdvanced ? "solar:alt-arrow-up-linear" : "solar:alt-arrow-down-linear"} 
-            className="w-4 h-4" 
+          <Icon
+            icon={
+              showAdvanced
+                ? "solar:alt-arrow-up-linear"
+                : "solar:alt-arrow-down-linear"
+            }
+            className="w-4 h-4"
           />
-          Advanced Settings
+          {t("participantForm.advancedSettings")}
         </button>
 
         {showAdvanced && (
@@ -215,45 +242,54 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Temperature ({watch('settings.temperature').toFixed(1)})
+                  {t("participantForm.temperature")} (
+                  {watch("settings.temperature").toFixed(1)})
                   <input
                     type="range"
                     min="0"
                     max="2"
                     step="0.1"
                     className="range range-primary mt-1"
-                    value={watch('settings.temperature')}
+                    value={watch("settings.temperature")}
                     onChange={(e) => {
-                      setValue('settings.temperature', parseFloat(e.target.value))
+                      setValue(
+                        "settings.temperature",
+                        parseFloat(e.target.value),
+                      );
                     }}
                   />
                 </label>
                 <div className="flex justify-between text-xs opacity-70">
-                  <span>Precise</span>
-                  <span>Balanced</span>
-                  <span>Creative</span>
+                  <span>{t("participantForm.temperatureOptions.precise")}</span>
+                  <span>
+                    {t("participantForm.temperatureOptions.balanced")}
+                  </span>
+                  <span>
+                    {t("participantForm.temperatureOptions.creative")}
+                  </span>
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Max Tokens ({watch('settings.maxTokens')})
+                  {t("participantForm.maxTokens")} (
+                  {watch("settings.maxTokens")})
                   <input
                     type="range"
                     min="500"
                     max="16000"
                     step="500"
                     className="range range-primary mt-1"
-                    value={watch('settings.maxTokens')}
+                    value={watch("settings.maxTokens")}
                     onChange={(e) => {
-                      setValue('settings.maxTokens', parseInt(e.target.value))
+                      setValue("settings.maxTokens", parseInt(e.target.value));
                     }}
                   />
                 </label>
                 <div className="flex justify-between text-xs opacity-70">
-                  <span>Short</span>
-                  <span>Medium</span>
-                  <span>Long</span>
+                  <span>{t("participantForm.maxTokensOptions.short")}</span>
+                  <span>{t("participantForm.maxTokensOptions.medium")}</span>
+                  <span>{t("participantForm.maxTokensOptions.long")}</span>
                 </div>
               </div>
             </div>
@@ -269,7 +305,7 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
             onClick={onCancel}
             className="btn btn-ghost order-2 sm:order-1 h-auto py-3"
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </button>
         )}
         <button
@@ -280,13 +316,15 @@ export function ParticipantForm({ initialData, onSubmit, onCancel }: Participant
           {isSubmitting ? (
             <>
               <span className="loading loading-spinner loading-sm"></span>
-              Saving...
+              {t("common.buttons.saving")}
             </>
+          ) : initialData?.name ? (
+            t("participantForm.buttons.update")
           ) : (
-            initialData?.name ? 'Update Participant' : 'Create Participant'
+            t("participantForm.buttons.create")
           )}
         </button>
       </div>
     </form>
-  )
+  );
 }

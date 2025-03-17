@@ -1,13 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react";
 
 export function ChatScrollAnchor() {
-  const anchorRef = useRef<HTMLDivElement>(null)
+  const anchorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (anchorRef.current && typeof anchorRef.current.scrollIntoView === 'function') {
-      anchorRef.current.scrollIntoView({ behavior: 'smooth' })
+    if (
+      anchorRef.current &&
+      typeof anchorRef.current.scrollIntoView === "function"
+    ) {
+      anchorRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  })
+  });
 
-  return <div ref={anchorRef} />
+  return <div ref={anchorRef} />;
 }

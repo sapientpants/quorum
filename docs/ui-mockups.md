@@ -743,4 +743,4 @@ This feature has been simplified to a toggle button that switches between light 
 └───────────────────────┘
 ```
 
-These mockups provide a visual representation of the key screens needed to implement the user flows described in the `user-flows.md` document. The actual implementation should follow these designs while adhering to the design system and component library specified in the project requirements. 
+These mockups provide a visual representation of the key screens needed to implement the user flows described in the `user-flows.md` document. The actual implementation should follow these designs while adhering to the design system and component library specified in the project requirements.

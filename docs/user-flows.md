@@ -5,6 +5,7 @@ This document outlines the key user flows that implement the features described 
 ## 1. First-Time User Onboarding
 
 ### 1.1 Welcome & Introduction
+
 1. User visits the application for the first time
 2. System displays welcome screen with:
    - App description ("Chat with multiple LLMs in a round-table conversation")
@@ -13,6 +14,7 @@ This document outlines the key user flows that implement the features described 
    - "Get Started" button
 
 ### 1.2 Consent & Privacy Notice
+
 1. User clicks "Get Started"
 2. System displays consent modal with:
    - Information about API key storage (localStorage)
@@ -22,6 +24,7 @@ This document outlines the key user flows that implement the features described 
 4. User clicks "Continue"
 
 ### 1.3 Initial Setup
+
 1. System prompts user to enter display name (optional)
 2. System presents API key setup screen with:
    - Input fields for each supported LLM (OpenAI, Anthropic, Grok, Google, etc.)
@@ -34,6 +37,7 @@ This document outlines the key user flows that implement the features described 
 6. System redirects to the Participants page to set up AI participants
 
 ### 1.4 Returning User Experience
+
 1. Returning user visits the application
 2. System checks for existing API keys based on storage preference:
    - If keys are stored, system bypasses API key setup
@@ -49,6 +53,7 @@ This document outlines the key user flows that implement the features described 
 ## 2. API Key Management
 
 ### 2.1 Adding/Updating API Keys
+
 1. User navigates to Settings > API Keys
 2. System displays current API key status for each provider:
    - Masked keys if already stored
@@ -60,6 +65,7 @@ This document outlines the key user flows that implement the features described 
 7. System confirms successful update
 
 ### 2.2 Testing API Keys
+
 1. From API Keys screen, user clicks "Test Key" next to a provider
 2. System makes a minimal API call to verify the key works
 3. System displays success or error message
@@ -68,11 +74,13 @@ This document outlines the key user flows that implement the features described 
 ## 3. Theme Customization
 
 ### 3.1 Changing Theme
+
 1. User clicks on theme toggle button in the top navigation bar
 2. System immediately toggles between light and dark themes
 3. System stores theme preference in localStorage for future visits
 
 ### 3.2 Accessibility Theme Options
+
 1. User with accessibility needs navigates to Settings > Appearance
 2. System provides specialized accessibility options:
    - High contrast mode
@@ -86,6 +94,7 @@ This document outlines the key user flows that implement the features described 
 ## 4. Participant Configuration
 
 ### 4.1 Creating a New Participant
+
 1. User navigates to Settings > Participants or clicks "Add Participant" in the round table
 2. System displays participant form with:
    - Name input
@@ -101,6 +110,7 @@ This document outlines the key user flows that implement the features described 
 7. System confirms successful creation
 
 ### 4.2 Editing a Participant
+
 1. User clicks "Edit" on an existing participant
 2. System displays participant form pre-filled with current values
 3. User makes changes
@@ -110,6 +120,7 @@ This document outlines the key user flows that implement the features described 
 7. System confirms successful update
 
 ### 4.3 Deleting a Participant
+
 1. User clicks "Delete" on an existing participant
 2. System displays confirmation dialog
 3. User confirms deletion
@@ -117,6 +128,7 @@ This document outlines the key user flows that implement the features described 
 5. System confirms successful deletion
 
 ### 4.4 Reordering Participants
+
 1. User drags a participant in the round table or participant list
 2. System shows visual feedback during drag
 3. User drops the participant in a new position
@@ -124,6 +136,7 @@ This document outlines the key user flows that implement the features described 
 5. System confirms successful reordering
 
 ### 4.5 Configuring the Facilitator
+
 1. User accesses the Participant List
 2. System displays the mandatory Facilitator role at the top
 3. User selects an LLM provider and model from the dropdown
@@ -138,6 +151,7 @@ This document outlines the key user flows that implement the features described 
 8. If user attempts to start a conversation without a facilitator, system prompts to configure one first
 
 ### 4.6 Customizing User's Own Role
+
 1. User accesses their own participant card in the Participant List
 2. System displays editable fields for:
    - Display name
@@ -152,6 +166,7 @@ This document outlines the key user flows that implement the features described 
 ## 5. Round Table Conversation
 
 ### 5.1 Starting a Conversation
+
 1. User navigates to the Chat page
 2. System displays the round table with configured participants
 3. User enters a message in the input field
@@ -160,6 +175,7 @@ This document outlines the key user flows that implement the features described 
 6. System automatically triggers the next participant in the round table
 
 ### 5.2 AI Participant Turn Management
+
 1. When it's an AI participant's turn, system:
    - Highlights the active participant in the round table
    - Shows "Thinking..." indicator
@@ -181,6 +197,7 @@ This document outlines the key user flows that implement the features described 
 6. System provides visual indicators of turn sequence and waiting participants
 
 ### 5.3 Handling Errors
+
 1. If an API call fails during an AI participant's turn:
    - System displays error message
    - System provides retry option
@@ -189,6 +206,7 @@ This document outlines the key user flows that implement the features described 
 3. System continues the conversation flow
 
 ### 5.4 Mobile Round Table Interaction
+
 1. On mobile devices, user accesses the round table via the "Round Table" tab
 2. System adapts the visualization to mobile screen size
 3. User can:
@@ -203,6 +221,7 @@ This document outlines the key user flows that implement the features described 
 ## 6. Templates Management
 
 ### 6.1 Using a Template
+
 1. User navigates to Templates page
 2. System displays list of available templates
 3. User selects a template
@@ -212,6 +231,7 @@ This document outlines the key user flows that implement the features described 
 7. System redirects to Participants page with configured participants
 
 ### 6.2 Creating a Template
+
 1. After configuring participants, user clicks "Save as Template"
 2. System displays template form with:
    - Name input
@@ -224,6 +244,7 @@ This document outlines the key user flows that implement the features described 
 7. System confirms successful creation
 
 ### 6.3 Sharing a Template
+
 1. User selects a template
 2. User clicks "Export"
 3. System generates a JSON file
@@ -231,6 +252,7 @@ This document outlines the key user flows that implement the features described 
 5. User can share the file with others
 
 ### 6.4 Importing a Template
+
 1. User clicks "Import Template"
 2. System displays file upload dialog
 3. User selects a template JSON file
@@ -239,6 +261,7 @@ This document outlines the key user flows that implement the features described 
 6. System confirms successful import
 
 ### 6.5 Collaborative Template Management
+
 1. User selects a template and clicks "Share"
 2. System generates a unique sharing URL
 3. User sends the URL to collaborators
@@ -254,6 +277,7 @@ This document outlines the key user flows that implement the features described 
 ## 7. Conversation Management
 
 ### 7.1 Exporting a Conversation
+
 1. During or after a conversation, user clicks "Export"
 2. System displays export options (JSON, Text, Markdown)
 3. User selects format
@@ -261,6 +285,7 @@ This document outlines the key user flows that implement the features described 
 5. User downloads the file
 
 ### 7.2 Clearing a Conversation
+
 1. User clicks "Clear Conversation"
 2. System displays confirmation dialog
 3. User confirms
@@ -268,6 +293,7 @@ This document outlines the key user flows that implement the features described 
 5. System resets the round table
 
 ### 7.3 Conversation Analysis
+
 1. User clicks "Analyze Conversation"
 2. System offers analysis options:
    - Basic summary (key points, topics covered)
@@ -285,14 +311,15 @@ This document outlines the key user flows that implement the features described 
 8. User can apply learned insights to participant configurations
 
 ### 7.4 Performance Under Network Constraints
+
 1. System continuously monitors network conditions
 2. If connection quality degrades:
    - System displays network status indicator
    - System prioritizes essential operations
    - System implements graceful degradation:
-     * Reducing streaming updates
-     * Simplifying UI elements
-     * Caching inputs for later synchronization
+     - Reducing streaming updates
+     - Simplifying UI elements
+     - Caching inputs for later synchronization
 3. If connection is lost:
    - System saves current state locally
    - System shows offline mode notification
@@ -306,6 +333,7 @@ This document outlines the key user flows that implement the features described 
 ## 8. Language Selection and Management
 
 ### 8.1 Automatic Language Detection
+
 1. User visits the application for the first time
 2. System checks for language preference in the following order:
    - Looks for a 'preferredLanguage' cookie
@@ -314,6 +342,7 @@ This document outlines the key user flows that implement the features described 
 3. System applies the detected language to the UI
 
 ### 8.2 Manual Language Selection
+
 1. User navigates to Settings > Preferences
 2. System displays language dropdown with available options:
    - English
@@ -330,6 +359,7 @@ This document outlines the key user flows that implement the features described 
 5. System stores the language preference in a cookie for future visits
 
 ### 8.3 RTL Language Handling
+
 1. User selects a right-to-left language (e.g., Arabic)
 2. System:
    - Changes text direction to RTL
@@ -341,12 +371,14 @@ This document outlines the key user flows that implement the features described 
 ## 9. Settings & Customization
 
 ### 9.1 Changing Theme
+
 1. User navigates to Settings > Appearance
 2. User toggles between light/dark mode
 3. System applies changes immediately
 4. System stores the theme preference for future visits
 
 ### 9.2 Adjusting LLM Parameters
+
 1. User navigates to Settings > LLM Defaults
 2. User configures default parameters for each provider:
    - Temperature
@@ -358,12 +390,14 @@ This document outlines the key user flows that implement the features described 
 4. System applies these defaults to new round table configurations
 
 ### 9.3 Managing Saved Templates
+
 1. User navigates to Settings > Saved Templates
 2. System displays list of saved round table configurations
 3. User can rename, delete, or set a template as default
 4. Changes are saved automatically
 
 ### 9.4 Accessibility Settings
+
 1. User navigates to Settings > Accessibility
 2. System displays options for:
    - Screen reader optimization
@@ -381,6 +415,7 @@ This document outlines the key user flows that implement the features described 
 ## 10. Error Handling Flows
 
 ### 10.1 API Key Error
+
 1. System attempts to call LLM API with stored key
 2. API returns authentication error
 3. System displays error message in chat
@@ -390,6 +425,7 @@ This document outlines the key user flows that implement the features described 
 7. User can retry the failed message
 
 ### 10.2 Rate Limit Exceeded
+
 1. System attempts to call LLM API
 2. API returns rate limit error
 3. System displays appropriate error message
@@ -397,6 +433,7 @@ This document outlines the key user flows that implement the features described 
 5. User can manually retry after waiting period
 
 ### 10.3 Network Error
+
 1. System attempts to call LLM API
 2. Network request fails
 3. System displays connection error message
@@ -407,6 +444,7 @@ This document outlines the key user flows that implement the features described 
 ## 11. Round Table Visualization
 
 ### 11.1 Customizing the Round Table Layout
+
 1. User accesses the Round Table view
 2. User clicks "Customize Layout"
 3. System provides visualization options:
@@ -421,6 +459,7 @@ This document outlines the key user flows that implement the features described 
 8. System applies the layout to current and future conversations
 
 ### 11.2 Conversation Flow Visualization
+
 1. During an active conversation, the Round Table displays:
    - Directional indicators showing message flow
    - Participant activity levels via visual cues
@@ -438,6 +477,7 @@ This document outlines the key user flows that implement the features described 
 ## 12. Feedback & Support
 
 ### 12.1 Reporting Issues
+
 1. User encounters problem
 2. User clicks "Report Issue" in footer or settings
 3. System displays feedback form
@@ -446,6 +486,7 @@ This document outlines the key user flows that implement the features described 
 6. System provides troubleshooting suggestions if applicable
 
 ### 12.2 Accessing Help
+
 1. User clicks "Help" or "?" icon
 2. System displays help center with:
    - Getting started guide
@@ -458,6 +499,7 @@ This document outlines the key user flows that implement the features described 
 ## 13. Keyboard and Voice Accessibility
 
 ### 13.1 Keyboard Navigation
+
 1. User accesses the application using keyboard only
 2. System provides comprehensive keyboard shortcuts:
    - Tab navigation between interactive elements
@@ -470,6 +512,7 @@ This document outlines the key user flows that implement the features described 
 6. System ensures all functionality is accessible via keyboard
 
 ### 13.2 Voice Control
+
 1. User enables voice control in Accessibility settings
 2. System activates voice command listener
 3. User can:
@@ -479,4 +522,4 @@ This document outlines the key user flows that implement the features described 
    - Access all core functionality via voice
 4. System provides voice feedback for command recognition
 5. System offers voice command guide for reference
-6. User can combine voice and traditional inputs seamlessly 
+6. User can combine voice and traditional inputs seamlessly

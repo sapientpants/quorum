@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react'
-import type { LLMSettings } from '../types/llm'
+import { useState, useCallback } from "react";
+import type { LLMSettings } from "../types/llm";
 
 export function useSettings(initialSettings?: Partial<LLMSettings>) {
   const [settings, setSettings] = useState<LLMSettings>({
@@ -7,46 +7,46 @@ export function useSettings(initialSettings?: Partial<LLMSettings>) {
     maxTokens: initialSettings?.maxTokens ?? 1000,
     topP: initialSettings?.topP,
     frequencyPenalty: initialSettings?.frequencyPenalty,
-    presencePenalty: initialSettings?.presencePenalty
-  })
-  
-  const [useStreaming, setUseStreaming] = useState<boolean>(true)
-  
+    presencePenalty: initialSettings?.presencePenalty,
+  });
+
+  const [useStreaming, setUseStreaming] = useState<boolean>(true);
+
   const updateTemperature = useCallback((value: number) => {
     setSettings((prev) => ({
       ...prev,
-      temperature: value
-    }))
-  }, [])
-  
+      temperature: value,
+    }));
+  }, []);
+
   const updateMaxTokens = useCallback((value: number) => {
     setSettings((prev) => ({
       ...prev,
-      maxTokens: value
-    }))
-  }, [])
-  
+      maxTokens: value,
+    }));
+  }, []);
+
   const updateTopP = useCallback((value: number) => {
     setSettings((prev) => ({
       ...prev,
-      topP: value
-    }))
-  }, [])
-  
+      topP: value,
+    }));
+  }, []);
+
   const updateFrequencyPenalty = useCallback((value: number) => {
     setSettings((prev) => ({
       ...prev,
-      frequencyPenalty: value
-    }))
-  }, [])
-  
+      frequencyPenalty: value,
+    }));
+  }, []);
+
   const updatePresencePenalty = useCallback((value: number) => {
     setSettings((prev) => ({
       ...prev,
-      presencePenalty: value
-    }))
-  }, [])
-  
+      presencePenalty: value,
+    }));
+  }, []);
+
   return {
     settings,
     setSettings,
@@ -56,6 +56,6 @@ export function useSettings(initialSettings?: Partial<LLMSettings>) {
     updateMaxTokens,
     updateTopP,
     updateFrequencyPenalty,
-    updatePresencePenalty
-  }
+    updatePresencePenalty,
+  };
 }
