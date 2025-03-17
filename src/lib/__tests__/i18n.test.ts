@@ -160,13 +160,6 @@ describe("i18n configuration", () => {
     expect(result).toBe("interpolated");
   });
 
-  it.skip("has debug mode enabled only in development", () => {
-    // This test is skipped as it depends on dynamic module imports
-    // which are difficult to type correctly in this context
-    // In a real scenario, we would check:
-    // expect(i18n.options.debug).toBe(process.env.NODE_ENV === "development");
-  });
-
   // Test that the i18n instance supports interpolation
   it("supports interpolation", () => {
     // First call the t function to ensure the mock is called
