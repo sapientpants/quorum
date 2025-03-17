@@ -170,10 +170,7 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
                   )}
                 </div>
                 <div className="ml-auto">
-                  <label
-                    className="cursor-pointer"
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <label className="cursor-pointer">
                     <input
                       type="checkbox"
                       className="checkbox checkbox-primary"

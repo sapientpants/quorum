@@ -46,16 +46,6 @@ describe("DeleteConfirmationModal", () => {
     expect(mockProps.onCancel).toHaveBeenCalledTimes(1);
   });
 
-  it("calls onCancel when backdrop is clicked", () => {
-    render(<DeleteConfirmationModal {...mockProps} />);
-
-    // Find the backdrop element and click it
-    const backdrop = screen.getByTestId("modal-backdrop");
-    fireEvent.click(backdrop);
-
-    expect(mockProps.onCancel).toHaveBeenCalledTimes(1);
-  });
-
   it("applies the correct CSS classes to buttons", () => {
     render(<DeleteConfirmationModal {...mockProps} />);
 

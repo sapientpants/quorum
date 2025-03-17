@@ -73,10 +73,14 @@ function TemplateCard({
                 onClick={() => setIsMenuOpen(false)}
               >
                 <li>
-                  <a onClick={() => onUse(template.id)}>{t("Use Template")}</a>
+                  <button onClick={() => onUse(template.id)}>
+                    {t("Use Template")}
+                  </button>
                 </li>
                 <li>
-                  <a onClick={() => onEdit(template.id)}>{t("Edit")}</a>
+                  <button onClick={() => onEdit(template.id)}>
+                    {t("Edit")}
+                  </button>
                 </li>
                 {onShare && (
                   <li>
