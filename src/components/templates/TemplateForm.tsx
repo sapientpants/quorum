@@ -142,7 +142,7 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-2">
           {validParticipants.map((participant) => (
-            <div
+            <button
               key={participant.id}
               className={`border rounded-lg p-3 cursor-pointer transition-all ${
                 isParticipantSelected(participant.id)
@@ -170,17 +170,17 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
                   )}
                 </div>
                 <div className="ml-auto">
-                  <label className="cursor-pointer">
+                  <div className="cursor-pointer">
                     <input
                       type="checkbox"
                       className="checkbox checkbox-primary"
                       checked={isParticipantSelected(participant.id)}
                       onChange={() => toggleParticipant(participant.id)}
                     />
-                  </label>
+                  </div>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
 
