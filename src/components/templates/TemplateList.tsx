@@ -105,7 +105,6 @@ function TemplateList({ onUseTemplate }: TemplateListProps) {
             </h3>
             <TemplateForm onCancel={closeCreateModal} />
           </div>
-          <div className="modal-backdrop" onClick={closeCreateModal}></div>
         </div>
       )}
 
@@ -119,7 +118,6 @@ function TemplateList({ onUseTemplate }: TemplateListProps) {
               onCancel={closeEditModal}
             />
           </div>
-          <div className="modal-backdrop" onClick={closeEditModal}></div>
         </div>
       )}
 

@@ -47,14 +47,14 @@ export function ApiKeyConsentModal({
                 checked={selectedStorage === "local"}
                 onChange={() => setSelectedStorage("local")}
               />
-              <div>
-                <div className="font-medium text-foreground">
+              <span>
+                <span className="font-medium text-foreground">
                   {t("welcome.consent.points.localStorage.title")}
-                </div>
-                <div className="text-sm text-foreground/70">
+                </span>
+                <span className="text-sm text-foreground/70">
                   {t("welcome.consent.points.localStorage.description")}
-                </div>
-              </div>
+                </span>
+              </span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer hover:bg-foreground/5 p-2 rounded-lg transition-colors">
               <input
@@ -64,14 +64,14 @@ export function ApiKeyConsentModal({
                 checked={selectedStorage === "session"}
                 onChange={() => setSelectedStorage("session")}
               />
-              <div>
-                <div className="font-medium text-foreground">
+              <span>
+                <span className="font-medium text-foreground">
                   {t("welcome.consent.points.sessionStorage.title")}
-                </div>
-                <div className="text-sm text-foreground/70">
+                </span>
+                <span className="text-sm text-foreground/70">
                   {t("welcome.consent.points.sessionStorage.description")}
-                </div>
-              </div>
+                </span>
+              </span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer hover:bg-foreground/5 p-2 rounded-lg transition-colors">
               <input
@@ -81,14 +81,14 @@ export function ApiKeyConsentModal({
                 checked={selectedStorage === "none"}
                 onChange={() => setSelectedStorage("none")}
               />
-              <div>
-                <div className="font-medium text-foreground">
+              <span>
+                <span className="font-medium text-foreground">
                   {t("welcome.consent.points.noStorage.title")}
-                </div>
-                <div className="text-sm text-foreground/70">
+                </span>
+                <span className="text-sm text-foreground/70">
                   {t("welcome.consent.points.noStorage.description")}
-                </div>
-              </div>
+                </span>
+              </span>
             </label>
           </div>
         </div>
