@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm, ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,19 +18,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+/**
+ * Props for the ApiKeySetup component
+ */
 interface ApiKeySetupProps {
-  onComplete: () => void;
+  /** Callback function to execute when setup is complete */
+  onComplete: () => void | Promise<void>;
+  /** Initial API keys to populate the form with */
   initialKeys?: ApiKey[];
+  /** Storage type for the API keys */
   storageType?: ApiKeyStorageOptions["storage"];
 }
 
-// Provider configuration for reuse
+/**
+ * Configuration for each provider
+ */
 interface ProviderConfig {
+  /** Provider identifier */
   id: LLMProviderId;
+  /** Display label for the provider */
   label: string;
+  /** URL to get an API key for this provider */
   getKeyUrl: string;
+  /** Text for the "get key" link */
   getKeyText: string;
+  /** Placeholder text for the input field */
   placeholder: string;
+  /** Regular expression to validate the API key format */
   validatePattern?: RegExp;
 }
 
@@ -53,13 +67,19 @@ const formSchema = z
     },
   );
 
+// Define the form schema type
+type FormSchema = z.infer<typeof formSchema>;
+
+/**
+ * Component for setting up API keys for different LLM providers
+ */
 export function ApiKeySetup({
   onComplete,
   initialKeys = [],
   storageType = "session",
-}: ApiKeySetupProps) {
+}: ApiKeySetupProps): React.ReactElement {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Define provider configurations
   const providers: ProviderConfig[] = [
@@ -96,7 +116,7 @@ export function ApiKeySetup({
   ];
 
   // Initialize form with React Hook Form and Zod validation
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       openai: "",
@@ -110,19 +130,34 @@ export function ApiKeySetup({
   useEffect(() => {
     if (initialKeys.length === 0) return;
 
-    const keyMap = initialKeys.reduce(
-      (acc, key) => {
-        acc[key.provider as keyof z.infer<typeof formSchema>] = key.key;
-        return acc;
-      },
-      {} as Record<keyof z.infer<typeof formSchema>, string>,
-    );
+    const defaultValues: FormSchema = {
+      openai: "",
+      anthropic: "",
+      grok: "",
+      google: "",
+    };
 
-    form.reset(keyMap);
+    // Update defaultValues with any matching keys from initialKeys
+    initialKeys.forEach((apiKey) => {
+      const providerKey = apiKey.provider as keyof FormSchema;
+      if (providerKey && providerKey in defaultValues) {
+        defaultValues[providerKey] = apiKey.key;
+      }
+    });
+
+    form.reset(defaultValues);
   }, [initialKeys, form]);
 
-  // Custom validation for API keys
-  function validateProviderKey(provider: LLMProviderId, value: string) {
+  /**
+   * Validates an API key for a specific provider
+   * @param provider - The LLM provider ID
+   * @param value - The API key to validate
+   * @returns true if valid, or an error message if invalid
+   */
+  function validateProviderKey(
+    provider: LLMProviderId,
+    value: string,
+  ): true | string {
     if (!value) return true;
 
     const providerConfig = providers.find((p) => p.id === provider);
@@ -135,13 +170,17 @@ export function ApiKeySetup({
 
     const validation = validateApiKey(provider, value);
     if (!validation.isValid) {
-      return validation.message || t("apiKeys.errors.invalidKey");
+      return validation.message ?? t("apiKeys.errors.invalidKey");
     }
 
     return true;
   }
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  /**
+   * Form submission handler
+   * @param data - The form data
+   */
+  async function onSubmit(data: FormSchema): Promise<void> {
     // Validate each provided key
     const validationErrors: Record<string, string> = {};
 
@@ -160,7 +199,7 @@ export function ApiKeySetup({
     // If there are validation errors, set them and return
     if (Object.keys(validationErrors).length > 0) {
       Object.entries(validationErrors).forEach(([field, message]) => {
-        form.setError(field as keyof z.infer<typeof formSchema>, {
+        form.setError(field as keyof FormSchema, {
           type: "manual",
           message,
         });
@@ -186,6 +225,46 @@ export function ApiKeySetup({
     }
   }
 
+  /**
+   * Handle input change and clear errors
+   * @param field - The form field
+   * @param e - The change event
+   */
+  const handleInputChange = (
+    field: ControllerRenderProps<FormSchema, keyof FormSchema>,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    field.onChange(e);
+    // Clear errors when user starts typing
+    if (form.formState.errors[field.name]) {
+      form.clearErrors(field.name);
+    }
+  };
+
+  /**
+   * Handle input blur for validation
+   * @param field - The form field
+   * @param e - The blur event
+   * @param validatePattern - Optional regex pattern for validation
+   */
+  const handleInputBlur = (
+    field: ControllerRenderProps<FormSchema, keyof FormSchema>,
+    e: React.FocusEvent<HTMLInputElement>,
+    validatePattern?: RegExp,
+  ): void => {
+    field.onBlur();
+    if (
+      e.target.value &&
+      validatePattern &&
+      !validatePattern.test(e.target.value)
+    ) {
+      form.setError(field.name, {
+        type: "manual",
+        message: t("apiKeys.errors.invalidKey"),
+      });
+    }
+  };
+
   return (
     <div className="relative bg-card p-8 rounded-xl">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10 rounded-xl -z-10"></div>
@@ -203,14 +282,11 @@ export function ApiKeySetup({
             <FormField
               key={provider.id}
               control={form.control}
-              name={provider.id as keyof z.infer<typeof formSchema>}
+              name={provider.id as keyof FormSchema}
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<
-                  z.infer<typeof formSchema>,
-                  keyof z.infer<typeof formSchema>
-                >;
+                field: ControllerRenderProps<FormSchema, keyof FormSchema>;
               }) => (
                 <FormItem className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -236,26 +312,10 @@ export function ApiKeySetup({
                       type="password"
                       placeholder={provider.placeholder}
                       {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        // Clear errors when user starts typing
-                        if (form.formState.errors[field.name]) {
-                          form.clearErrors(field.name);
-                        }
-                      }}
-                      onBlur={(e) => {
-                        field.onBlur();
-                        if (
-                          e.target.value &&
-                          provider.validatePattern &&
-                          !provider.validatePattern.test(e.target.value)
-                        ) {
-                          form.setError(field.name, {
-                            type: "manual",
-                            message: t("apiKeys.errors.invalidKey"),
-                          });
-                        }
-                      }}
+                      onChange={(e) => handleInputChange(field, e)}
+                      onBlur={(e) =>
+                        handleInputBlur(field, e, provider.validatePattern)
+                      }
                     />
                   </FormControl>
                   <FormMessage data-testid={`${provider.id}-error`} />

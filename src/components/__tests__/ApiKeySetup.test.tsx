@@ -126,7 +126,7 @@ describe("ApiKeySetup", () => {
   });
 
   it("shows loading state during submission", async () => {
-    const onComplete = () => new Promise(() => {});
+    const onComplete = () => new Promise<void>(() => {});
     render(
       <ApiKeySetup
         onComplete={onComplete}
