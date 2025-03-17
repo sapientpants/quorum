@@ -20,20 +20,6 @@ interface OpenAIRequest {
   stream?: boolean;
 }
 
-interface OpenAIStreamChunk {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: {
-    index: number;
-    delta: {
-      content?: string;
-    };
-    finish_reason: string | null;
-  }[];
-}
-
 /**
  * OpenAI client with efficient streaming implementation
  */
@@ -176,6 +162,7 @@ export class OpenAIStreamClient extends BaseClient {
     settings?: LLMSettings,
     abortSignal?: AbortSignal,
   ): AsyncIterable<StreamingResponse> {
+    // Validate API key
     if (!apiKey) {
       yield {
         done: true,
@@ -187,6 +174,76 @@ export class OpenAIStreamClient extends BaseClient {
       return;
     }
 
+    // Check if streaming is supported
+    if (!this.isStreamingSupported()) {
+      yield* this.fallbackToRegularSendMessage(
+        messages,
+        apiKey,
+        model,
+        settings,
+      );
+      return;
+    }
+
+    try {
+      // Prepare request
+      const request = this.prepareStreamRequest(
+        messages,
+        apiKey,
+        model,
+        settings,
+        abortSignal,
+      );
+      const response = await this.makeStreamRequest(request);
+
+      // Process the stream
+      yield* this.processStream(response);
+    } catch (error) {
+      yield {
+        done: true,
+        error: this.handleStreamError(error),
+      };
+    }
+  }
+
+  /**
+   * Check if streaming is supported in the current environment
+   */
+  private isStreamingSupported(): boolean {
+    return (
+      typeof ReadableStream !== "undefined" &&
+      typeof TextDecoder !== "undefined"
+    );
+  }
+
+  /**
+   * Fallback to regular sendMessage when streaming is not supported
+   */
+  private async *fallbackToRegularSendMessage(
+    messages: Message[],
+    apiKey: string,
+    model: string,
+    settings?: LLMSettings,
+  ): AsyncIterable<StreamingResponse> {
+    const response = await this.sendMessage(messages, apiKey, model, settings);
+    yield { done: false, token: response };
+    yield { done: true };
+  }
+
+  /**
+   * Prepare the request for streaming
+   */
+  private prepareStreamRequest(
+    messages: Message[],
+    apiKey: string,
+    model: string,
+    settings?: LLMSettings,
+    abortSignal?: AbortSignal,
+  ): {
+    url: string;
+    options: RequestInit;
+    body: OpenAIRequest;
+  } {
     const openAIMessages = this.convertToOpenAIMessages(messages);
 
     const requestBody: OpenAIRequest = {
@@ -200,118 +257,121 @@ export class OpenAIStreamClient extends BaseClient {
       stream: true, // Always stream
     };
 
-    try {
-      // Check if streaming is supported in the browser
-      const isStreamingSupported =
-        typeof ReadableStream !== "undefined" &&
-        typeof TextDecoder !== "undefined";
-
-      if (!isStreamingSupported) {
-        // Fall back to regular sendMessage if streaming is not supported
-        const response = await this.sendMessage(
-          messages,
-          apiKey,
-          model,
-          settings,
-        );
-        yield { done: false, token: response };
-        yield { done: true };
-        return;
-      }
-
-      // Make the streaming request
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify(requestBody),
-          signal: abortSignal,
+    return {
+      url: "https://api.openai.com/v1/chat/completions",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
         },
+        body: JSON.stringify(requestBody),
+        signal: abortSignal,
+      },
+      body: requestBody,
+    };
+  }
+
+  /**
+   * Make the streaming request
+   */
+  private async makeStreamRequest(request: {
+    url: string;
+    options: RequestInit;
+  }): Promise<Response> {
+    const response = await fetch(request.url, request.options);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new LLMError(
+        ErrorType.API_ERROR,
+        `OpenAI API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`,
       );
+    }
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new LLMError(
-          ErrorType.API_ERROR,
-          `OpenAI API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`,
-        );
-      }
+    if (!response.body) {
+      throw new LLMError(ErrorType.API_ERROR, "Response body is null");
+    }
 
-      if (!response.body) {
-        throw new LLMError(ErrorType.API_ERROR, "Response body is null");
-      }
+    return response;
+  }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder("utf-8");
+  /**
+   * Process the streaming response
+   */
+  private async *processStream(
+    response: Response,
+  ): AsyncIterable<StreamingResponse> {
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder("utf-8");
 
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-
-          if (done) {
-            yield { done: true };
-            return;
-          }
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk
-            .split("\n")
-            .filter(
-              (line) => line.trim() !== "" && line.trim() !== "data: [DONE]",
-            );
-
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              try {
-                const jsonStr = line.slice(6); // Remove 'data: ' prefix
-                const json: OpenAIStreamChunk = JSON.parse(jsonStr);
-
-                if (
-                  json.choices &&
-                  json.choices.length > 0 &&
-                  json.choices[0].delta.content
-                ) {
-                  const token = json.choices[0].delta.content;
-                  yield { done: false, token };
-                }
-              } catch (e) {
-                console.warn("Error parsing JSON from stream:", e);
-              }
-            }
-          }
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          yield { done: true };
+          break;
         }
-      } catch (error) {
-        const typedError = error as Error;
-        if (typedError.name === "AbortError") {
-          yield {
-            done: true,
-            error: new LLMError(ErrorType.TIMEOUT, "Request was aborted"),
-          };
-        } else {
-          yield {
-            done: true,
-            error:
-              error instanceof Error
-                ? new LLMError(ErrorType.API_ERROR, error.message)
-                : new LLMError(ErrorType.UNKNOWN, String(error)),
-          };
-        }
-      } finally {
-        reader.releaseLock();
+
+        const chunk = decoder.decode(value);
+        yield* this.processChunk(chunk);
       }
     } catch (error) {
       yield {
         done: true,
-        error:
-          error instanceof Error
-            ? new LLMError(ErrorType.API_ERROR, error.message)
-            : new LLMError(ErrorType.UNKNOWN, String(error)),
+        error: this.handleStreamError(error),
       };
+    } finally {
+      reader.releaseLock();
     }
+  }
+
+  /**
+   * Process a chunk of the streaming response
+   */
+  private *processChunk(chunk: string): Iterable<StreamingResponse> {
+    const lines = chunk
+      .split("\n")
+      .filter((line) => line.trim() !== "" && line.trim() !== "data: [DONE]");
+
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        try {
+          const jsonStr = line.slice(6); // Remove 'data: ' prefix
+          const json = JSON.parse(jsonStr);
+
+          if (
+            json.choices &&
+            json.choices.length > 0 &&
+            json.choices[0].delta &&
+            json.choices[0].delta.content
+          ) {
+            yield {
+              done: false,
+              token: json.choices[0].delta.content,
+            };
+          }
+        } catch (e) {
+          console.warn("Error parsing JSON from stream:", e);
+        }
+      }
+    }
+  }
+
+  /**
+   * Handle errors from streaming
+   */
+  private handleStreamError(error: unknown): LLMError {
+    console.error("Error in OpenAI stream:", error);
+
+    if (error instanceof LLMError) {
+      return error;
+    }
+
+    return new LLMError(
+      ErrorType.API_ERROR,
+      error instanceof Error ? error.message : "Unknown streaming error",
+    );
   }
 
   async chat(

@@ -263,8 +263,8 @@ export function ApiErrorModal() {
         <div className="py-2">
           <h4 className="mb-2 font-medium">{t("errors.suggestionsTitle")}</h4>
           <ul className="space-y-1 pl-5 list-disc text-sm">
-            {getSuggestions().map((suggestion, index) => (
-              <li key={index}>{suggestion}</li>
+            {getSuggestions().map((suggestion) => (
+              <li key={`suggestion-${suggestion}`}>{suggestion}</li>
             ))}
           </ul>
         </div>
