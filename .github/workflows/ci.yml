@@ -1,4 +1,4 @@
-name: Test
+name: CI
 
 on:
   push:
@@ -9,6 +9,35 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    name: Run ESLint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      # Optional: Add a step to report ESLint results as annotations
+      - name: Annotate ESLint results
+        if: always()
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-check
+          eslint_flags: "."
+
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -33,6 +62,13 @@ jobs:
 
       - name: Run tests with coverage
         run: npm test -- --coverage
+
+      - name: Report test coverage to DeepSource
+        uses: deepsourcelabs/test-coverage-action@master
+        with:
+          key: javascript
+          coverage-file: coverage/lcov.info
+          dsn: ${{ secrets.DEEPSOURCE_DSN }}
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
