@@ -23,8 +23,8 @@ interface Shortcut {
 }
 
 interface KeyboardShortcutsOverlayProps {
-  isOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  readonly isOpen?: boolean;
+  readonly onOpenChange?: (open: boolean) => void;
 }
 
 // Helper component to render a keyboard key

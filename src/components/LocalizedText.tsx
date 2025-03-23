@@ -3,19 +3,19 @@ import { useTranslation } from "react-i18next";
 
 interface LocalizedTextProps {
   /** The key in the translation files */
-  textKey: string;
+  readonly textKey: string;
 
   /** Optional params to pass to translation function */
-  params?: Record<string, string | number>;
+  readonly params?: Record<string, string | number>;
 
   /** Optional tag to render the text in (default is span) */
-  as?: ElementType;
+  readonly as?: ElementType;
 
   /** Optional className for styling */
-  className?: string;
+  readonly className?: string;
 
   /** Optional children rendered after the localized text */
-  children?: ReactNode;
+  readonly children?: ReactNode;
 }
 
 /**
@@ -55,17 +55,17 @@ export function LocalizedText({
 
 interface LocalizedListProps {
   /** List of keys or indices to map to translation keys */
-  items: (string | number)[];
+  readonly items: (string | number)[];
   /** Prefix for translation keys, will be combined with each item */
-  keyPrefix: string;
+  readonly keyPrefix: string;
   /** Optional tag for the list (default: ul) */
-  as?: ElementType;
+  readonly as?: ElementType;
   /** Optional tag for list items (default: li) */
-  itemAs?: ElementType;
+  readonly itemAs?: ElementType;
   /** Optional className for the list container */
-  className?: string;
+  readonly className?: string;
   /** Optional className for list items */
-  itemClassName?: string;
+  readonly itemClassName?: string;
 }
 
 /**

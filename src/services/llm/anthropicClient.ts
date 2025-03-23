@@ -315,7 +315,7 @@ export class AnthropicClient implements LLMClient {
 
     const data: AnthropicResponse = await response.json();
 
-    if (!data.content || data.content.length === 0) {
+    if (!data.content?.length) {
       throw new AnthropicError("No response from Anthropic");
     }
 

@@ -49,7 +49,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           <div className="p-2 text-sm text-red-500">
             <div className="font-medium">{t("errorBoundary.title")}</div>
             <div className="text-xs opacity-75">
-              {this.state.error?.message || t("errorBoundary.unknownError")}
+              {this.state.error?.message ?? t("errorBoundary.unknownError")}
             </div>
           </div>
         )

@@ -20,9 +20,9 @@ export abstract class BaseClient implements LLMClient {
   protected setError?: (error: LLMError, provider: string) => void;
 
   constructor(config: Record<string, unknown> = {}) {
-    this.apiKey = (config.apiKey as string) || "";
-    this.model = (config.model as LLMModel) || this.getDefaultModel();
-    this.baseUrl = (config.baseUrl as string) || this.getDefaultBaseUrl();
+    this.apiKey = (config.apiKey as string) ?? "";
+    this.model = (config.model as LLMModel) ?? this.getDefaultModel();
+    this.baseUrl = (config.baseUrl as string) ?? this.getDefaultBaseUrl();
     // Don't access abstract property in constructor
     // this.providerName = this.getProviderName();
   }
@@ -199,7 +199,7 @@ export abstract class BaseClient implements LLMClient {
           {
             statusCode: status,
             originalError: error,
-            requestId: errorBody.request_id || errorBody.requestId || null,
+            requestId: errorBody.request_id ?? errorBody.requestId ?? null,
           },
         );
       } else if (status === 429) {
@@ -209,7 +209,7 @@ export abstract class BaseClient implements LLMClient {
           {
             statusCode: status,
             originalError: error,
-            requestId: errorBody.request_id || errorBody.requestId || null,
+            requestId: errorBody.request_id ?? errorBody.requestId ?? null,
           },
         );
       } else if (
@@ -223,7 +223,7 @@ export abstract class BaseClient implements LLMClient {
           {
             statusCode: status,
             originalError: error,
-            requestId: errorBody.request_id || errorBody.requestId || null,
+            requestId: errorBody.request_id ?? errorBody.requestId ?? null,
           },
         );
       } else if (errorMessage && errorMessage.includes("timeout")) {
@@ -231,9 +231,9 @@ export abstract class BaseClient implements LLMClient {
           LLMErrorType.TIMEOUT,
           "Request timed out. Please try again.",
           {
-            statusCode: status || 408,
+            statusCode: status ?? 408,
             originalError: error,
-            requestId: errorBody.request_id || errorBody.requestId || null,
+            requestId: errorBody.request_id ?? errorBody.requestId ?? null,
           },
         );
       } else if (
@@ -246,15 +246,15 @@ export abstract class BaseClient implements LLMClient {
           LLMErrorType.NETWORK,
           "Network error. Please check your internet connection.",
           {
-            statusCode: status || 0,
+            statusCode: status ?? 0,
             originalError: error,
           },
         );
       } else {
         llmError = new LLMError(LLMErrorType.API_ERROR, errorMessage, {
-          statusCode: status || 500,
+          statusCode: status ?? 500,
           originalError: error,
-          requestId: errorBody.request_id || errorBody.requestId || null,
+          requestId: errorBody.request_id ?? errorBody.requestId ?? null,
         });
       }
     }

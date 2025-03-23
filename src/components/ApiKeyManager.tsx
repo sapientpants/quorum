@@ -216,14 +216,9 @@ function ApiKeyManager({
                 type={isVisible[provider.id] ? "text" : "password"}
                 value={apiKeys[provider.id]}
                 onChange={(e) =>
-                  handleApiKeyChange(
-                    provider.id as LLMProviderId,
-                    e.target.value,
-                  )
+                  handleApiKeyChange(provider.id, e.target.value)
                 }
-                placeholder={
-                  providerInfo[provider.id as LLMProviderId]?.placeholder
-                }
+                placeholder={providerInfo[provider.id]?.placeholder}
                 className="font-mono pr-10"
               />
               <Button
@@ -231,9 +226,7 @@ function ApiKeyManager({
                 variant="ghost"
                 size="sm"
                 className="absolute right-0 top-0 h-full px-3 py-2"
-                onClick={() =>
-                  toggleKeyVisibility(provider.id as LLMProviderId)
-                }
+                onClick={() => toggleKeyVisibility(provider.id)}
                 aria-label={
                   isVisible[provider.id]
                     ? t("settings.apiKeyManager.hideKey")
@@ -252,7 +245,7 @@ function ApiKeyManager({
             </div>
 
             <p className="text-sm text-muted-foreground">
-              {providerInfo[provider.id as LLMProviderId]?.description}
+              {providerInfo[provider.id]?.description}
             </p>
           </div>
         ))}

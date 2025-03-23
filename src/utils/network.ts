@@ -110,8 +110,8 @@ export async function getConnectionQuality(): Promise<ConnectionQuality> {
   try {
     // Try different methods to determine connection quality in order of preference
     const quality =
-      (await getConnectionQualityWithNetworkInfo()) ||
-      (await getConnectionQualityWithPing()) ||
+      (await getConnectionQualityWithNetworkInfo()) ??
+      (await getConnectionQualityWithPing()) ??
       ConnectionQuality.UNKNOWN;
     return quality;
   } catch (error) {

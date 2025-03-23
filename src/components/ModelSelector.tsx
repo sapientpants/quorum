@@ -25,7 +25,7 @@ function ModelSelector({
       </label>
       <select
         className="select select-bordered w-full"
-        value={selectedModel || ""}
+        value={selectedModel ?? ""}
         onChange={(e) => onSelect(e.target.value as LLMModel)}
       >
         <option value="" disabled>

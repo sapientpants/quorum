@@ -2,12 +2,12 @@ import type {
   LLMClient,
   ProviderCapabilities,
   LLMModel,
+  LLMProviderId,
 } from "../../types/llm";
 import { OpenAIClient } from "./openaiClient";
 import { AnthropicClient } from "./anthropicClient";
 import { GrokClient } from "./grokClient";
 import { GoogleClient } from "./googleClient";
-import type { LLMProviderId } from "../../types/llm";
 import { LLMError, ErrorType } from "./LLMError";
 import { validateApiKey } from "../../services/apiKeyService";
 

@@ -100,7 +100,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const modelToUse = activeModel || activeProvider.models[0];
+      const modelToUse = activeModel ?? activeProvider.models[0];
 
       await streamMessage(
         [...messages, userMessage],
@@ -165,7 +165,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const modelToUse = activeModel || activeProvider.models[0];
+      const modelToUse = activeModel ?? activeProvider.models[0];
 
       try {
         const data = await makeApiRequest(userMessage, modelToUse);
@@ -208,7 +208,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const modelToUse = activeModel || activeProvider.models[0];
+      const modelToUse = activeModel ?? activeProvider.models[0];
       const aiMessageId = addAIMessage(activeProvider, modelToUse);
 
       // Set loading state
