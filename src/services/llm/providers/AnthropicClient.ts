@@ -92,9 +92,9 @@ export class AnthropicClient extends BaseClient {
         // Anthropic only supports 'user' or 'assistant' roles
         const role = message.senderId === "user" ? "user" : "assistant";
         return {
-          role: role as "user" | "assistant",
+          role: role,
           content: message.text,
-        };
+        } as AnthropicMessage;
       });
 
     return {
