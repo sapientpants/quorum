@@ -1,6 +1,6 @@
 import type { LLMSettings } from "../types/llm";
 
-interface SettingsPanelProps{
+interface SettingsPanelProps {
   readonly settings: LLMSettings;
   readonly onSettingsChange: (settings: LLMSettings) => void;
   readonly useStreaming: boolean;

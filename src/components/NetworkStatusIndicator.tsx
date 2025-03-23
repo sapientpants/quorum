@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 /**
  * NetworkStatusIndicator props
  */
-interface NetworkStatusIndicatorProps{
+interface NetworkStatusIndicatorProps {
   readonly position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
   readonly showToasts?: boolean;
 }

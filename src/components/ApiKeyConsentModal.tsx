@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { ApiKeyStorageOptions } from "../types/api";
 import { Button } from "./ui/button";
 
-interface ApiKeyConsentModalProps{
+interface ApiKeyConsentModalProps {
   readonly onContinue: (storageType: ApiKeyStorageOptions["storage"]) => void;
   readonly onCancel: () => void;
 }

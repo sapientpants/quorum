@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react";
 import { usePreferencesStore } from "../../store/preferencesStore";
 import type { KeyStoragePreference } from "../../types/preferences";
 
-interface SecurityStepProps{
+interface SecurityStepProps {
   readonly onNext: () => void;
   readonly onBack?: () => void;
 }

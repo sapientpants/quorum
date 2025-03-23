@@ -1,6 +1,6 @@
 import { useState, KeyboardEvent } from "react";
 
-interface ChatInputProps{
+interface ChatInputProps {
   readonly onSendMessage: (text: string) => void;
   readonly isLoading?: boolean;
   readonly placeholder?: string;

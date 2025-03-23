@@ -45,10 +45,12 @@ function DropdownMenuItem({
   inset,
   variant = "default",
   ...props
-}: Readonly<React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
-  inset?: boolean;
-  variant?: "default" | "destructive";
-}>) {
+}: Readonly<
+  React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
+    inset?: boolean;
+    variant?: "default" | "destructive";
+  }
+>) {
   return (
     <DropdownMenuPrimitive.Item
       data-slot="dropdown-menu-item"

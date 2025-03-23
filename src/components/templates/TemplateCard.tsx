@@ -4,7 +4,7 @@ import type { Template } from "../../types/template";
 import type { Participant } from "../../types/participant";
 import { useParticipantsStore } from "../../store/participants";
 
-interface TemplateCardProps{
+interface TemplateCardProps {
   readonly template: Template;
   readonly onUse: (templateId: string) => void;
   readonly onEdit: (templateId: string) => void;

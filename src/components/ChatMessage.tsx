@@ -1,6 +1,6 @@
 import type { Message } from "../types/chat";
 
-interface ChatMessageProps{
+interface ChatMessageProps {
   readonly message: Message;
   readonly onRetry?: (messageId: string) => void;
 }

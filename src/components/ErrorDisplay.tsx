@@ -1,4 +1,4 @@
-interface ErrorDisplayProps{
+interface ErrorDisplayProps {
   readonly error: string | null;
   readonly onDismiss?: () => void;
 }

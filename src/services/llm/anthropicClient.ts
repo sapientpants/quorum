@@ -118,7 +118,7 @@ export class AnthropicClient implements LLMClient {
       throw new AnthropicAuthError();
     }
 
-    if (!this.supportedModels.includes(model)) {
+    if (!this.supportedModels.includes(model as AnthropicModel)) {
       throw new AnthropicModelError(
         `Model ${model} is not available. Available models: ${this.supportedModels.join(", ")}`,
       );

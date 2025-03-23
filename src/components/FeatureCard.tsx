@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Icon } from "@iconify/react";
 
-interface FeatureCardProps{
+interface FeatureCardProps {
   readonly title: string;
   readonly description: string;
   readonly icon?: string | ReactNode;

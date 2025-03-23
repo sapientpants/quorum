@@ -2,7 +2,7 @@ import { ChatMessage } from "./ChatMessage";
 import { ChatScrollAnchor } from "./ChatScrollAnchor";
 import type { Message } from "../types/chat";
 
-interface ChatListProps{
+interface ChatListProps {
   readonly messages: Message[];
   readonly isLoading?: boolean;
   readonly onRetry?: (messageId: string) => void;

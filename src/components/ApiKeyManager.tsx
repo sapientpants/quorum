@@ -158,7 +158,7 @@ function ApiKeyManager({
 
   // Clear all API keys
   function handleClearAllKeys() {
-      if (confirm(t("settings.apiKeyManager.clearConfirmation"))) {
+    if (confirm(t("settings.apiKeyManager.clearConfirmation"))) {
       clearApiKeys({ storage: storageType });
 
       // Reset state

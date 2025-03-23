@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-interface ConsentModalProps{
+interface ConsentModalProps {
   readonly onCancel: () => void;
   readonly onContinue: () => void;
 }

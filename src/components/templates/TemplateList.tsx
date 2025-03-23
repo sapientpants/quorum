@@ -5,7 +5,7 @@ import TemplateCard from "./TemplateCard";
 import TemplateForm from "./TemplateForm";
 import { DeleteConfirmationModal } from "../ui/DeleteConfirmationModal";
 
-interface TemplateListProps{
+interface TemplateListProps {
   readonly onUseTemplate: (templateId: string) => void;
 }
 

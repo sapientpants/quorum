@@ -4,10 +4,10 @@ import { Button } from "../ui/button";
 import { Icon } from "@iconify/react";
 import { ParticipantForm } from "../ParticipantForm";
 import { useParticipantsStore } from "../../store/participants";
-import type { Participant, LLMParticipant } from "../../types/participant";
+import type { Participant } from "../../types/participant";
 import { v4 as uuidv4 } from "uuid";
 
-interface ParticipantConfigStepProps{
+interface ParticipantConfigStepProps {
   readonly onNext: () => void;
   readonly onBack: () => void;
 }
@@ -66,9 +66,7 @@ export function ParticipantConfigStep({
             {participants.map((participant) => {
               // Only LLM participants have provider and model
               const isLLM = participant.type === "llm";
-              const llmParticipant = isLLM
-                ? participant
-                : null;
+              const llmParticipant = isLLM ? participant : null;
 
               return (
                 <div

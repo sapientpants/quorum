@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-interface WizardProgressProps{
+interface WizardProgressProps {
   readonly currentStep: number;
   readonly totalSteps: number;
 }

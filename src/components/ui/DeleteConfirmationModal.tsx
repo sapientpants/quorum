@@ -1,4 +1,4 @@
-interface DeleteConfirmationModalProps{
+interface DeleteConfirmationModalProps {
   readonly title: string;
   readonly message: string;
   readonly confirmLabel: string;

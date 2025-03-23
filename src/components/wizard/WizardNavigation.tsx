@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
 
-interface WizardNavigationProps{
+interface WizardNavigationProps {
   readonly currentStep: number;
   readonly totalSteps: number;
   readonly onNext: () => void;

@@ -5,7 +5,7 @@ import ApiKeyManager from "../ApiKeyManager";
 import { usePreferencesStore } from "../../store/preferencesStore";
 import { Icon } from "@iconify/react";
 
-interface ApiKeyStepProps{
+interface ApiKeyStepProps {
   readonly onNext: () => void;
   readonly onBack: () => void;
 }
