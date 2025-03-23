@@ -1,13 +1,13 @@
-import type { LLMModel } from "../types/llm";
+import { LLMModel } from "@/types/llm";
 import { useTranslation } from "react-i18next";
 
-interface ModelSelectorProps {
-  models: string[];
-  activeModel: LLMModel | null;
-  onSelect: (model: string) => void;
+export interface ModelSelectorProps {
+  models: LLMModel[];
+  onSelect: (model: LLMModel) => void;
+  selectedModel?: LLMModel;
 }
 
-function ModelSelector({ models, activeModel, onSelect }: ModelSelectorProps) {
+function ModelSelector({ models, selectedModel, onSelect }: ModelSelectorProps) {
   const { t } = useTranslation();
 
   if (models.length === 0) {
@@ -21,8 +21,8 @@ function ModelSelector({ models, activeModel, onSelect }: ModelSelectorProps) {
       </label>
       <select
         className="select select-bordered w-full"
-        value={activeModel || ""}
-        onChange={(e) => onSelect(e.target.value)}
+        value={selectedModel || ""}
+        onChange={(e) => onSelect(e.target.value as LLMModel)}
       >
         <option value="" disabled>
           {t("modelSelector.selectAModel")}

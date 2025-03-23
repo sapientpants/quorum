@@ -1,6 +1,6 @@
 import type { Message } from "../../types/chat";
 import type { LLMClient, StreamingOptions } from "./llmClient";
-import type { LLMSettings } from "../../types/llm";
+import type { LLMSettings, GoogleModel } from "../../types/llm";
 import { GOOGLE_MODELS } from "../../types/llm";
 
 // Provider-specific error types
@@ -19,12 +19,12 @@ export class GoogleClient implements LLMClient {
   async sendMessage(
     messages: Message[],
     apiKey: string,
-    model: string,
+    model: GoogleModel,
     settings?: LLMSettings,
     streamingOptions?: StreamingOptions,
   ): Promise<string> {
     if (!apiKey) throw new GoogleError("API key is required");
-    if (!GOOGLE_MODELS.includes(model)) {
+    if (!GOOGLE_MODELS.includes(model as any)) {
       throw new GoogleError(`Model ${model} is not supported`);
     }
 
@@ -45,11 +45,11 @@ export class GoogleClient implements LLMClient {
     }
   }
 
-  getAvailableModels(): string[] {
+  getAvailableModels(): GoogleModel[] {
     return GOOGLE_MODELS;
   }
 
-  getDefaultModel(): string {
+  getDefaultModel(): GoogleModel {
     return "gemini-2.0-pro";
   }
 

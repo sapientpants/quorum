@@ -45,7 +45,7 @@ function Chat() {
         {activeProvider && (
           <ModelSelector
             models={availableModels}
-            activeModel={activeModel}
+            selectedModel={activeModel ?? undefined}
             onSelect={setActiveModel}
           />
         )}

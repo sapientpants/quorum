@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import type { Message } from "../types/chat";
-import type { LLMProvider } from "../types/llm";
+import type { LLMProvider, LLMModel } from "../types/llm";
 import { nanoid } from "nanoid";
 
 export function useChatState(initialMessages: Message[] = []) {
@@ -36,7 +36,7 @@ export function useChatState(initialMessages: Message[] = []) {
   const addAIMessage = useCallback(
     (
       provider: LLMProvider,
-      model: string,
+      model: LLMModel,
       status: "sending" | "sent" | "error" = "sending",
     ) => {
       const aiMessageId = nanoid();

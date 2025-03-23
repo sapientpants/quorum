@@ -41,7 +41,7 @@ describe("ChatList", () => {
       text: "I am doing well, thank you for asking!",
       timestamp: Date.now() - 3000,
       provider: "openai",
-      model: "gpt-4",
+      model: "gpt-4o",
     },
     {
       id: "3",

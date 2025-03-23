@@ -23,7 +23,7 @@ describe("ChatMessage", () => {
     text: "I am doing well, thank you for asking!",
     timestamp: mockTimestamp,
     provider: "openai" as LLMProviderId,
-    model: "gpt-4",
+    model: "gpt-4o",
   };
 
   // Sample system message
@@ -41,7 +41,7 @@ describe("ChatMessage", () => {
     text: "This message failed to send",
     timestamp: mockTimestamp,
     provider: "openai" as LLMProviderId,
-    model: "gpt-4",
+    model: "gpt-4o",
     status: "error",
     error: new Error("Failed to send message"),
   };
@@ -98,7 +98,7 @@ describe("ChatMessage", () => {
 
     // Check that the provider and model are rendered
     expect(screen.getByText("openai")).toBeInTheDocument();
-    expect(screen.getByText("gpt-4")).toBeInTheDocument();
+    expect(screen.getByText("gpt-4o")).toBeInTheDocument();
   });
 
   it("renders a system message correctly", () => {

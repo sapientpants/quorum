@@ -112,7 +112,7 @@ describe("ChatContext", () => {
         timestamp: Date.now(),
         status: "sent",
         provider: "openai" as const,
-        model: "gpt-4",
+        model: "gpt-4o",
       },
     ];
 
@@ -121,7 +121,7 @@ describe("ChatContext", () => {
       displayName: "OpenAI",
       models: [],
     };
-    const mockModel: LLMModel = "gpt-4";
+    const mockModel: LLMModel = "gpt-4o";
 
     // Update the mock implementations
     mockUseChatState.mockReturnValue({
@@ -170,6 +170,6 @@ describe("ChatContext", () => {
     // Check that the context values are passed to the children
     expect(screen.getByTestId("message-count")).toHaveTextContent("2");
     expect(screen.getByTestId("active-provider")).toHaveTextContent("OpenAI");
-    expect(screen.getByTestId("active-model")).toHaveTextContent("gpt-4");
+    expect(screen.getByTestId("active-model")).toHaveTextContent("gpt-4o");
   });
 });

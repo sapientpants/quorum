@@ -1,5 +1,5 @@
 import type { Message } from "../../../types/chat";
-import type { LLMSettings } from "../../../types/llm";
+import type { LLMSettings, LLMModel } from "../../../types/llm";
 import type { LLMClient, StreamingOptions } from "../../../types/llm";
 import type { ProviderCapabilities } from "../../../types/llm";
 import type { StreamingResponse } from "../../../types/streaming";
@@ -8,12 +8,12 @@ import { LLMError, LLMErrorType } from "../errors";
 
 export abstract class BaseClient implements LLMClient {
   protected abstract readonly providerName: string;
-  protected abstract readonly defaultModelName: string;
-  protected abstract readonly availableModels: string[];
+  protected abstract readonly defaultModelName: LLMModel;
+  protected abstract readonly availableModels: LLMModel[];
   protected abstract readonly capabilities: ProviderCapabilities;
 
   protected apiKey: string;
-  protected model: string;
+  protected model: LLMModel;
   protected baseUrl: string;
 
   // Placeholder for error handler to be attached via context
@@ -21,7 +21,7 @@ export abstract class BaseClient implements LLMClient {
 
   constructor(config: Record<string, unknown> = {}) {
     this.apiKey = (config.apiKey as string) || "";
-    this.model = (config.model as string) || this.getDefaultModel();
+    this.model = (config.model as LLMModel) || this.getDefaultModel();
     this.baseUrl = (config.baseUrl as string) || this.getDefaultBaseUrl();
     // Don't access abstract property in constructor
     // this.providerName = this.getProviderName();
@@ -38,7 +38,7 @@ export abstract class BaseClient implements LLMClient {
   abstract sendMessage(
     messages: Message[],
     apiKey: string,
-    model: string,
+    model: LLMModel,
     settings?: LLMSettings,
     streamingOptions?: StreamingOptions,
     abortSignal?: AbortSignal,
@@ -56,7 +56,7 @@ export abstract class BaseClient implements LLMClient {
   async *streamMessage(
     messages: Message[],
     apiKey: string,
-    model: string,
+    model: LLMModel,
     settings?: LLMSettings,
     abortSignal?: AbortSignal,
   ): AsyncIterable<StreamingResponse> {
@@ -135,11 +135,11 @@ export abstract class BaseClient implements LLMClient {
     }
   }
 
-  getAvailableModels(): string[] {
+  getAvailableModels(): LLMModel[] {
     return this.availableModels;
   }
 
-  getDefaultModel(): string {
+  getDefaultModel(): LLMModel {
     return this.defaultModelName;
   }
 

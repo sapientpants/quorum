@@ -12,17 +12,17 @@ export function useProviderSelection() {
     null,
   );
   const [activeModel, setActiveModel] = useState<LLMModel | null>(null);
-  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [availableModels, setAvailableModels] = useState<LLMModel[]>([]);
   const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
 
   // Update available models when provider changes
   useEffect(() => {
     if (activeProvider) {
-      const models = getAvailableModels(activeProvider.id);
+      const models = getAvailableModels(activeProvider.id) as LLMModel[];
       setAvailableModels(models);
 
       // Set default model for the provider
-      const defaultModel = getDefaultModel(activeProvider.id);
+      const defaultModel = getDefaultModel(activeProvider.id) as LLMModel;
       setActiveModel(defaultModel);
     } else {
       setAvailableModels([]);

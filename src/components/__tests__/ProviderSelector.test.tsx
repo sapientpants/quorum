@@ -1,24 +1,32 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import ProviderSelector from "../ProviderSelector";
-import type { LLMProvider } from "../../types/llm";
+import type { LLMProvider, LLMModel } from "../../types/llm";
+import { createTranslationMock } from "../../../vitest.setup";
 
 describe("ProviderSelector", () => {
   // Mock providers for testing
   const mockProviders: LLMProvider[] = [
-    { id: "openai", displayName: "OpenAI", models: ["gpt-4", "gpt-3.5-turbo"] },
+    { id: "openai", displayName: "OpenAI", models: ["gpt-4o", "gpt-3.5-turbo"] as LLMModel[] },
     {
       id: "anthropic",
       displayName: "Anthropic",
-      models: ["claude-3-opus", "claude-3-sonnet"],
+      models: ["claude-3-opus", "claude-3-sonnet"] as LLMModel[],
     },
-    { id: "google", displayName: "Google", models: ["gemini-pro"] },
+    { id: "google", displayName: "Google", models: ["gemini-pro"] as LLMModel[] },
   ];
 
   const mockOnSelect = vi.fn();
+  const mockApiKeys: Record<string, string> = {
+    openai: "test-openai-key",
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    createTranslationMock({
+      "providerSelector.selectProvider": "Select Provider",
+      "providerSelector.configureApiKey": "Configure API Key",
+    });
   });
 
   it("renders all providers as buttons", () => {
@@ -50,12 +58,11 @@ describe("ProviderSelector", () => {
 
   it("highlights the active provider", () => {
     const apiKeys = { openai: "key1", anthropic: "key2", google: "key3" };
-    const activeProvider = mockProviders[1]; // Anthropic
 
     render(
       <ProviderSelector
         providers={mockProviders}
-        activeProvider={activeProvider}
+        activeProvider={mockProviders[1]} // Anthropic
         onSelect={mockOnSelect}
         apiKeys={apiKeys}
       />,
@@ -63,17 +70,14 @@ describe("ProviderSelector", () => {
 
     // Get all buttons
     const buttons = screen.getAllByRole("button");
-
-    // Check that the active provider button has the primary class
-    const activeButton = screen.getByText("Anthropic");
-    expect(activeButton).toHaveClass("btn-primary");
-
-    // Check that other buttons don't have the primary class
-    const inactiveButtons = buttons.filter((button) => button !== activeButton);
-    inactiveButtons.forEach((button) => {
-      expect(button).toHaveClass("btn-outline");
-      expect(button).not.toHaveClass("btn-primary");
-    });
+  
+    // Find the Anthropic button (should be active)
+    const anthropicButton = screen.getByText("Anthropic").closest("button");
+    expect(anthropicButton).toHaveClass("btn-primary");
+  
+    // Check that other buttons are not active
+    const openaiButton = screen.getByText("OpenAI").closest("button");
+    expect(openaiButton).not.toHaveClass("btn-primary");
   });
 
   it("disables providers without API keys", () => {

@@ -9,11 +9,12 @@ beforeEach(() => {
   createTranslationMock({
     "modelSelector.selectModel": "Select Model",
     "modelSelector.placeholder": "Select a model",
+    "modelSelector.selectAModel": "Select a model",
   });
 });
 
 describe("ModelSelector", () => {
-  const mockModels = ["gpt-4", "gpt-3.5-turbo", "claude-3-opus"];
+  const mockModels: LLMModel[] = ["gpt-4o", "gpt-3.5-turbo", "claude-3-opus"];
   const mockOnSelect = vi.fn();
 
   beforeEach(() => {
@@ -24,7 +25,7 @@ describe("ModelSelector", () => {
     render(
       <ModelSelector
         models={mockModels}
-        activeModel={null}
+        selectedModel={null as unknown as LLMModel}
         onSelect={mockOnSelect}
       />,
     );
@@ -46,12 +47,12 @@ describe("ModelSelector", () => {
   });
 
   it("selects the active model", () => {
-    const activeModel = "gpt-4" as LLMModel;
+    const activeModel: LLMModel = "gpt-4o";
 
     render(
       <ModelSelector
         models={mockModels}
-        activeModel={activeModel}
+        selectedModel={activeModel}
         onSelect={mockOnSelect}
       />,
     );
@@ -65,7 +66,7 @@ describe("ModelSelector", () => {
     render(
       <ModelSelector
         models={mockModels}
-        activeModel={null}
+        selectedModel={null as unknown as LLMModel}
         onSelect={mockOnSelect}
       />,
     );
@@ -81,7 +82,7 @@ describe("ModelSelector", () => {
 
   it("renders nothing when models array is empty", () => {
     const { container } = render(
-      <ModelSelector models={[]} activeModel={null} onSelect={mockOnSelect} />,
+      <ModelSelector models={[]} selectedModel={undefined} onSelect={mockOnSelect} />,
     );
 
     // Check that nothing is rendered

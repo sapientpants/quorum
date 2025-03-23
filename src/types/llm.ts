@@ -13,26 +13,37 @@ export interface LLMProvider {
 }
 
 // Model types by provider
-export type OpenAIModel =
-  | "gpt-4.5"
-  | "o3-mini"
+export type OpenAIModel = 
+  | `gpt-4${string}` 
+  | `gpt-3.5-turbo${string}` 
+  | "gpt-4" 
+  | "gpt-3.5-turbo" 
   | "gpt-4o"
   | "gpt-4o-mini"
-  | `gpt-4-${string}`
-  | `gpt-3.5-${string}`;
-export type AnthropicModel =
-  | "claude-3.7-sonnet"
+  | "gpt-4.5"
+  | "o3-mini";
+
+export type AnthropicModel = 
+  | `claude-${number}.${number}-${string}` 
+  | "claude-3-opus" 
+  | "claude-3-sonnet"
   | "claude-3.5-sonnet"
   | "claude-3.5-haiku"
-  | `claude-${number}.${number}-${string}`;
-export type GrokModel = "grok-2" | "grok-3" | `grok-${number}`;
-type GoogleModel =
+  | "claude-3.7-sonnet";
+
+export type GoogleModel = 
+  | `gemini-${number}.${number}-${string}` 
+  | "gemini-pro"
   | "gemini-2.0-pro"
-  | "gemini-2.0-flash"
-  | `gemini-${number}.${number}-${string}`;
+  | "gemini-2.0-flash";
+
+export type GrokModel = 
+  | `grok-${number}` 
+  | "grok-2" 
+  | "grok-3";
 
 // Combined model type
-export type LLMModel = OpenAIModel | AnthropicModel | GrokModel | GoogleModel;
+export type LLMModel = OpenAIModel | AnthropicModel | GoogleModel | GrokModel;
 
 // Provider-specific model constants
 const OPENAI_MODELS: OpenAIModel[] = [
@@ -114,7 +125,7 @@ export interface LLMClient {
   sendMessage(
     messages: Message[],
     apiKey: string,
-    model: string,
+    model: LLMModel,
     settings?: LLMSettings,
     streamingOptions?: StreamingOptions,
     abortSignal?: AbortSignal,
@@ -126,7 +137,7 @@ export interface LLMClient {
   streamMessage?(
     messages: Message[],
     apiKey: string,
-    model: string,
+    model: LLMModel,
     settings?: LLMSettings,
     abortSignal?: AbortSignal,
   ): AsyncIterable<StreamingResponse>;
@@ -134,12 +145,12 @@ export interface LLMClient {
   /**
    * Get the available models for this provider
    */
-  getAvailableModels(): string[];
+  getAvailableModels(): LLMModel[];
 
   /**
    * Get the default model for this provider
    */
-  getDefaultModel(): string;
+  getDefaultModel(): LLMModel;
 
   /**
    * Get the provider name

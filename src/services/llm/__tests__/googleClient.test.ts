@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { GoogleClient } from "../googleClient";
 import { GOOGLE_MODELS } from "../../../types/llm";
+import type { GoogleModel } from "../../../types/llm";
 import type { Message } from "../../../types/chat";
 import type { LLMSettings, StreamingOptions } from "../../../types/llm";
 
@@ -47,7 +48,7 @@ describe("GoogleClient", () => {
     ];
 
     await expect(
-      client.sendMessage(messages, "", "gemini-2.0-pro"),
+      client.sendMessage(messages, "", "gemini-2.0-pro" as GoogleModel),
     ).rejects.toThrow("API key is required");
   });
 
@@ -62,6 +63,7 @@ describe("GoogleClient", () => {
     ];
 
     await expect(
+      // @ts-expect-error Using an invalid model for testing
       client.sendMessage(messages, "test-key", "unsupported-model"),
     ).rejects.toThrow("Model unsupported-model is not supported");
   });
@@ -90,7 +92,7 @@ describe("GoogleClient", () => {
     await client.sendMessage(
       messages,
       "test-key",
-      "gemini-2.0-pro",
+      "gemini-2.0-pro" as GoogleModel,
       settings,
       streamingOptions,
     );
@@ -119,7 +121,7 @@ describe("GoogleClient", () => {
     const response = await client.sendMessage(
       messages,
       "test-key",
-      "gemini-2.0-pro",
+      "gemini-2.0-pro" as GoogleModel,
     );
 
     expect(response).toBe("Response from Google Gemini API");
@@ -141,7 +143,7 @@ describe("GoogleClient", () => {
     });
 
     await expect(
-      client.sendMessage(messages, "test-key", "gemini-2.0-pro"),
+      client.sendMessage(messages, "test-key", "gemini-2.0-pro" as GoogleModel),
     ).rejects.toThrow("Failed to send message to Google API");
   });
 });
