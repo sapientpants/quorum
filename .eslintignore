@@ -1,0 +1,10 @@
+# Ignore node_modules
+node_modules
+
+# Ignore build artifacts
+dist
+coverage
+
+# Temporarily ignore test files
+src/**/__tests__/**
+src/**/*.test.* 

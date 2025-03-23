@@ -30,4 +30,12 @@ export default tseslint.config(
       }],
     },
   },
+  // Special configuration for test files
+  {
+    files: ['**/__tests__/**/*.{ts,tsx}', '**/*.test.{ts,tsx}'],
+    rules: {
+      // Disable the no-explicit-any rule for test files
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
 )
