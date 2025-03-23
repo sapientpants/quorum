@@ -162,6 +162,21 @@ export class OpenAIClient implements LLMClient {
     // Set streaming to true for the request
     requestBody.stream = true;
 
+    const response = await this.makeStreamRequest(requestBody, apiKey);
+    if (!response.body) {
+      throw new Error("Response body is null");
+    }
+
+    return await this.processResponseStream(response.body, streamingOptions);
+  }
+
+  /**
+   * Make a streaming request to the OpenAI API
+   */
+  private async makeStreamRequest(
+    requestBody: OpenAIRequest,
+    apiKey: string,
+  ): Promise<Response> {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -178,11 +193,17 @@ export class OpenAIClient implements LLMClient {
       );
     }
 
-    if (!response.body) {
-      throw new Error("Response body is null");
-    }
+    return response;
+  }
 
-    const reader = response.body.getReader();
+  /**
+   * Process the streaming response from OpenAI
+   */
+  private async processResponseStream(
+    responseBody: ReadableStream<Uint8Array>,
+    streamingOptions: StreamingOptions,
+  ): Promise<string> {
+    const reader = responseBody.getReader();
     const decoder = new TextDecoder("utf-8");
     let result = "";
 
@@ -192,36 +213,8 @@ export class OpenAIClient implements LLMClient {
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk
-          .split("\n")
-          .filter(
-            (line) => line.trim() !== "" && line.trim() !== "data: [DONE]",
-          );
-
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            try {
-              const jsonStr = line.slice(6); // Remove 'data: ' prefix
-              const json: OpenAIStreamChunk = JSON.parse(jsonStr);
-
-              if (
-                json.choices &&
-                json.choices.length > 0 &&
-                json.choices[0].delta.content
-              ) {
-                const token = json.choices[0].delta.content;
-                result += token;
-
-                // Call the onToken callback if provided
-                if (streamingOptions.onToken) {
-                  streamingOptions.onToken(token);
-                }
-              }
-            } catch (e) {
-              console.warn("Error parsing JSON from stream:", e);
-            }
-          }
-        }
+        const lines = this.getValidLinesFromChunk(chunk);
+        result = this.processStreamLines(lines, result, streamingOptions);
       }
 
       // Call the onComplete callback if provided
@@ -236,6 +229,62 @@ export class OpenAIClient implements LLMClient {
     } finally {
       reader.releaseLock();
     }
+  }
+
+  /**
+   * Extract valid lines from a chunk of streamed data
+   */
+  private getValidLinesFromChunk(chunk: string): string[] {
+    return chunk
+      .split("\n")
+      .filter((line) => line.trim() !== "" && line.trim() !== "data: [DONE]");
+  }
+
+  /**
+   * Process individual lines from the stream
+   */
+  private processStreamLines(
+    lines: string[],
+    currentResult: string,
+    streamingOptions: StreamingOptions,
+  ): string {
+    let result = currentResult;
+
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        try {
+          const token = this.extractTokenFromLine(line);
+          if (token) {
+            result += token;
+            if (streamingOptions.onToken) {
+              streamingOptions.onToken(token);
+            }
+          }
+        } catch (e) {
+          console.warn("Error parsing JSON from stream:", e);
+        }
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Extract token from a line of stream data
+   */
+  private extractTokenFromLine(line: string): string | null {
+    const jsonStr = line.slice(6); // Remove 'data: ' prefix
+    const json: OpenAIStreamChunk = JSON.parse(jsonStr);
+
+    if (
+      json.choices &&
+      json.choices.length > 0 &&
+      json.choices[0].delta.content
+    ) {
+      return json.choices[0].delta.content;
+    }
+
+    return null;
   }
 
   getAvailableModels(): string[] {

@@ -98,77 +98,106 @@ export function isLowBandwidth(): boolean {
  * Returns a ConnectionQuality enum value
  */
 export async function getConnectionQuality(): Promise<ConnectionQuality> {
-  // If we're in a test environment and a test quality has been set, return it
+  // Check for test environment and offline status first
   if (_testConnectionQuality !== null) {
     return _testConnectionQuality;
   }
 
-  // If offline, return OFFLINE
   if (!navigator.onLine) {
     return ConnectionQuality.OFFLINE;
   }
 
   try {
-    // Use network information API if available
-    if ("connection" in navigator) {
-      const connection = (
-        navigator as Navigator & {
-          connection?: {
-            effectiveType?: string;
-            downlink?: number;
-            rtt?: number;
-          };
-        }
-      ).connection;
-
-      // Check effective type (4g, 3g, 2g, etc.)
-      if (connection?.effectiveType) {
-        return (
-          CONNECTION_TYPE_QUALITY[connection.effectiveType] ||
-          ConnectionQuality.UNKNOWN
-        );
-      }
-
-      // Check downlink speed (in Mbps)
-      if (connection?.downlink !== undefined) {
-        if (connection.downlink < 1) return ConnectionQuality.POOR;
-        if (connection.downlink < 2) return ConnectionQuality.FAIR;
-        if (connection.downlink < 10) return ConnectionQuality.GOOD;
-        return ConnectionQuality.EXCELLENT;
-      }
-    }
-
-    // If network info API is not available, try to measure latency with a ping
-    try {
-      const start = performance.now();
-      const response = await fetch("/api/ping", {
-        method: "GET",
-        cache: "no-store",
-        headers: { "Cache-Control": "no-cache" },
-      });
-      const end = performance.now();
-
-      // If the ping failed, return UNKNOWN
-      if (!response.ok) {
-        return ConnectionQuality.UNKNOWN;
-      }
-
-      // Calculate latency in ms
-      const latency = end - start;
-
-      // Determine quality based on latency
-      if (latency < 100) return ConnectionQuality.EXCELLENT;
-      if (latency < 200) return ConnectionQuality.GOOD;
-      if (latency < 500) return ConnectionQuality.FAIR;
-      return ConnectionQuality.POOR;
-    } catch (pingError) {
-      console.error("Error during ping test:", pingError);
-      return ConnectionQuality.UNKNOWN;
-    }
+    // Try different methods to determine connection quality in order of preference
+    const quality =
+      (await getConnectionQualityWithNetworkInfo()) ||
+      (await getConnectionQualityWithPing()) ||
+      ConnectionQuality.UNKNOWN;
+    return quality;
   } catch (error) {
     console.error("Error checking connection quality:", error);
     return ConnectionQuality.UNKNOWN;
   }
+}
+
+/**
+ * Get connection quality using the Network Information API
+ */
+async function getConnectionQualityWithNetworkInfo(): Promise<ConnectionQuality | null> {
+  if (!("connection" in navigator)) {
+    return null;
+  }
+
+  const connection = (
+    navigator as Navigator & {
+      connection?: {
+        effectiveType?: string;
+        downlink?: number;
+        rtt?: number;
+      };
+    }
+  ).connection;
+
+  // Check effective type (4g, 3g, 2g, etc.)
+  if (connection?.effectiveType) {
+    return (
+      CONNECTION_TYPE_QUALITY[connection.effectiveType] ||
+      ConnectionQuality.UNKNOWN
+    );
+  }
+
+  // Check downlink speed (in Mbps)
+  if (connection?.downlink !== undefined) {
+    return getQualityFromDownlink(connection.downlink);
+  }
+
+  return null;
+}
+
+/**
+ * Get quality level based on downlink speed
+ */
+function getQualityFromDownlink(downlink: number): ConnectionQuality {
+  if (downlink < 1) return ConnectionQuality.POOR;
+  if (downlink < 2) return ConnectionQuality.FAIR;
+  if (downlink < 10) return ConnectionQuality.GOOD;
+  return ConnectionQuality.EXCELLENT;
+}
+
+/**
+ * Get connection quality by measuring ping latency
+ */
+async function getConnectionQualityWithPing(): Promise<ConnectionQuality | null> {
+  try {
+    const start = performance.now();
+    const response = await fetch("/api/ping", {
+      method: "GET",
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" },
+    });
+    const end = performance.now();
+
+    if (!response.ok) {
+      return null;
+    }
+
+    // Calculate and evaluate latency
+    const latency = end - start;
+    return getQualityFromLatency(latency);
+  } catch (pingError) {
+    console.error("Error during ping test:", pingError);
+    return null;
+  }
+}
+
+/**
+ * Get quality level based on latency
+ */
+function getQualityFromLatency(latency: number): ConnectionQuality {
+  if (latency < 100) return ConnectionQuality.EXCELLENT;
+  if (latency < 200) return ConnectionQuality.GOOD;
+  if (latency < 500) return ConnectionQuality.FAIR;
+  return ConnectionQuality.POOR;
 }
 
 /**

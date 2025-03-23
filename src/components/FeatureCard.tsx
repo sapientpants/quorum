@@ -20,6 +20,28 @@ export function FeatureCard({
   badgeColor = "#9333ea",
   className = "",
 }: FeatureCardProps) {
+  // Helper function to render the appropriate icon
+  const renderIcon = () => {
+    if (!icon) {
+      return null;
+    }
+
+    if (typeof icon === "string") {
+      return (
+        <div className="feature-icon">
+          <Icon
+            icon={icon}
+            width="24"
+            height="24"
+            style={{ color: iconColor }}
+          />
+        </div>
+      );
+    }
+
+    return <div className="feature-icon">{icon}</div>;
+  };
+
   return (
     <div
       className={`feature-card card-glow relative bg-card rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-purple-600/10 border border-white/10 ${className}`}
@@ -35,18 +57,7 @@ export function FeatureCard({
           </div>
         )}
 
-        {icon && typeof icon === "string" ? (
-          <div className="feature-icon">
-            <Icon
-              icon={icon}
-              width="24"
-              height="24"
-              style={{ color: iconColor }}
-            />
-          </div>
-        ) : icon ? (
-          <div className="feature-icon">{icon}</div>
-        ) : null}
+        {renderIcon()}
 
         <h2 className="feature-title">{title}</h2>
         <p className="feature-description">{description}</p>
