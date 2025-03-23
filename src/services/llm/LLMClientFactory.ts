@@ -1,4 +1,4 @@
-import type { LLMClient, ProviderCapabilities } from "../../types/llm";
+import type { LLMClient, ProviderCapabilities, LLMModel } from "../../types/llm";
 import { OpenAIClient } from "./openaiClient";
 import { AnthropicClient } from "./anthropicClient";
 import { GrokClient } from "./grokClient";
@@ -8,7 +8,7 @@ import { LLMError, ErrorType } from "./LLMError";
 import { validateApiKey } from "../../services/apiKeyService";
 
 // Registry for LLM clients
-const clientRegistry = new Map<string, () => Partial<LLMClient>>();
+const clientRegistry = new Map<string, () => LLMClient>();
 const clientCache: Record<string, LLMClient> = {};
 
 /**
@@ -17,7 +17,7 @@ const clientCache: Record<string, LLMClient> = {};
  */
 function registerLLMClient(
   provider: string,
-  factory: () => Partial<LLMClient>,
+  factory: () => LLMClient,
 ): void {
   clientRegistry.set(provider.toLowerCase(), factory);
 
@@ -108,52 +108,12 @@ function createEnhancedClient(
 
         // Then try to validate with the provider's API
         try {
-          // Make a request to validate the API key
-          let response: Response;
-
-          switch (provider) {
-            case "openai":
-              response = await fetch("https://api.openai.com/v1/models", {
-                headers: { Authorization: `Bearer ${apiKey}` },
-              });
-              break;
-
-            case "anthropic":
-              response = await fetch("https://api.anthropic.com/v1/models", {
-                headers: { "x-api-key": apiKey },
-              });
-              break;
-
-            case "grok":
-              response = await fetch("https://api.grok.x/v1/models", {
-                headers: { Authorization: `Bearer ${apiKey}` },
-              });
-              break;
-
-            case "google":
-              response = await fetch(
-                "https://generativelanguage.googleapis.com/v1/models",
-                {
-                  headers: { "x-goog-api-key": apiKey },
-                },
-              );
-              break;
-
-            default:
-              // For unknown providers, assume the key is valid
-              response = new Response(null, { status: 200 });
-          }
-
-          if (!response.ok) {
-            console.error(
-              `API validation failed for ${provider}: ${response.status} ${response.statusText}`,
-            );
-            return false;
-          }
-
-          return true;
-        } catch (error) {
-          console.error(`Error validating ${provider} API key:`, error);
+          const response = await fetch("https://api.openai.com/v1/models", {
+            headers: { Authorization: `Bearer ${apiKey}` },
+          });
+          return response.ok;
+        } catch (_error) {
+          console.error(`Error validating ${provider} API key:`, _error);
           return false;
         }
       }),
@@ -178,7 +138,42 @@ function createEnhancedClient(
 }
 
 // Register built-in clients
-registerLLMClient("openai", () => new OpenAIClient());
+registerLLMClient("openai", () => {
+  const client = new OpenAIClient();
+  
+  // Create a client that implements the LLMClient interface
+  const enhancedClient: LLMClient = {
+    sendMessage: client.sendMessage.bind(client),
+    getAvailableModels: () => client.getAvailableModels() as LLMModel[],
+    getDefaultModel: () => client.getDefaultModel() as LLMModel,
+    getProviderName: client.getProviderName.bind(client),
+    supportsStreaming: client.supportsStreaming.bind(client),
+    
+    validateApiKey: async (apiKey: string) => {
+      if (!apiKey) return false;
+      try {
+        const response = await fetch("https://api.openai.com/v1/models", {
+          headers: { Authorization: `Bearer ${apiKey}` },
+        });
+        return response.ok;
+      } catch (_error) {
+        return false;
+      }
+    },
+    
+    getCapabilities: () => ({
+      supportsStreaming: true,
+      supportsSystemMessages: true,
+      maxContextLength: 16000,
+      supportsFunctionCalling: true,
+      supportsVision: true,
+      supportsTool: true,
+    }),
+  };
+  
+  return enhancedClient;
+});
+
 registerLLMClient("anthropic", () => new AnthropicClient());
 registerLLMClient("grok", () => new GrokClient());
 registerLLMClient("google", () => new GoogleClient());

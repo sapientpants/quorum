@@ -1,7 +1,13 @@
 import type { Message } from "../../types/chat";
-import type { LLMClient, StreamingOptions } from "./llmClient";
-import type { LLMSettings, GoogleModel } from "../../types/llm";
-import { GOOGLE_MODELS } from "../../types/llm";
+import type {
+  LLMClient,
+  LLMSettings,
+  StreamingOptions,
+  ProviderCapabilities,
+  GoogleModel,
+  LLMModel
+} from "../../types/llm";
+import type { StreamingResponse } from "../../types/streaming";
 
 // Provider-specific error types
 class GoogleError extends Error {
@@ -16,15 +22,22 @@ class GoogleError extends Error {
 }
 
 export class GoogleClient implements LLMClient {
+  private readonly supportedModels: GoogleModel[] = [
+    "gemini-2.0-pro",
+    "gemini-2.0-flash",
+  ];
+
+  private readonly defaultModel: GoogleModel = "gemini-2.0-pro";
+
   async sendMessage(
     messages: Message[],
     apiKey: string,
-    model: GoogleModel,
+    model: LLMModel = this.defaultModel as LLMModel,
     settings?: LLMSettings,
     streamingOptions?: StreamingOptions,
   ): Promise<string> {
     if (!apiKey) throw new GoogleError("API key is required");
-    if (!GOOGLE_MODELS.includes(model as any)) {
+    if (!this.supportedModels.includes(model as GoogleModel)) {
       throw new GoogleError(`Model ${model} is not supported`);
     }
 
@@ -45,12 +58,12 @@ export class GoogleClient implements LLMClient {
     }
   }
 
-  getAvailableModels(): GoogleModel[] {
-    return GOOGLE_MODELS;
+  getAvailableModels(): LLMModel[] {
+    return this.supportedModels as LLMModel[];
   }
 
-  getDefaultModel(): GoogleModel {
-    return "gemini-2.0-pro";
+  getDefaultModel(): LLMModel {
+    return this.defaultModel as LLMModel;
   }
 
   getProviderName(): string {
@@ -58,6 +71,32 @@ export class GoogleClient implements LLMClient {
   }
 
   supportsStreaming(): boolean {
-    return true;
+    return false;
+  }
+
+  getCapabilities(): ProviderCapabilities {
+    return {
+      supportsStreaming: false,
+      supportsSystemMessages: true,
+      maxContextLength: 32768,
+    };
+  }
+
+  async validateApiKey(apiKey: string): Promise<boolean> {
+    return !!apiKey; // Simple validation - just check if key exists
+  }
+
+  async *streamMessage(
+    _messages: Message[],
+    _apiKey: string,
+    _model: LLMModel,
+    _settings?: LLMSettings,
+    _abortSignal?: AbortSignal,
+  ): AsyncIterable<StreamingResponse> {
+    // Yield an error response with proper explanation
+    yield {
+      done: true,
+      error: new Error("Streaming not supported for Google"),
+    };
   }
 }

@@ -1,5 +1,5 @@
 import type { Message } from "../../types/chat";
-import type { LLMSettings, StreamingOptions } from "../../types/llm";
+import type { LLMSettings, StreamingOptions, OpenAIModel, LLMModel } from "../../types/llm";
 import type { StreamingResponse } from "../../types/streaming";
 import { BaseClient } from "./clients/BaseClient";
 import { LLMError, ErrorType } from "./LLMError";
@@ -25,8 +25,8 @@ interface OpenAIRequest {
  */
 export class OpenAIStreamClient extends BaseClient {
   protected readonly providerName = "openai";
-  protected readonly defaultModelName = "gpt-4o";
-  protected readonly availableModels = [
+  protected readonly defaultModelName = "gpt-4o" as OpenAIModel;
+  protected readonly availableModels: OpenAIModel[] = [
     "gpt-4o",
     "gpt-4-turbo",
     "gpt-3.5-turbo",
@@ -77,9 +77,9 @@ export class OpenAIStreamClient extends BaseClient {
   async sendMessage(
     messages: Message[],
     apiKey: string,
-    model: string = this.defaultModelName,
+    model: LLMModel = this.defaultModelName,
     settings?: LLMSettings,
-    _streamingOptions?: StreamingOptions, // Renamed with underscore to indicate it's not used
+    _streamingOptions?: StreamingOptions,
     abortSignal?: AbortSignal,
   ): Promise<string> {
     if (!apiKey) {
@@ -146,8 +146,8 @@ export class OpenAIStreamClient extends BaseClient {
       });
 
       return response.ok;
-    } catch (error) {
-      console.error("Error validating OpenAI API key:", error);
+    } catch (_error) {
+      console.error("Error validating OpenAI API key:", _error);
       return false;
     }
   }
@@ -158,7 +158,7 @@ export class OpenAIStreamClient extends BaseClient {
   async *streamMessage(
     messages: Message[],
     apiKey: string,
-    model: string = this.defaultModelName,
+    model: LLMModel = this.defaultModelName,
     settings?: LLMSettings,
     abortSignal?: AbortSignal,
   ): AsyncIterable<StreamingResponse> {
@@ -222,7 +222,7 @@ export class OpenAIStreamClient extends BaseClient {
   private async *fallbackToRegularSendMessage(
     messages: Message[],
     apiKey: string,
-    model: string,
+    model: LLMModel,
     settings?: LLMSettings,
   ): AsyncIterable<StreamingResponse> {
     const response = await this.sendMessage(messages, apiKey, model, settings);
@@ -236,7 +236,7 @@ export class OpenAIStreamClient extends BaseClient {
   private prepareStreamRequest(
     messages: Message[],
     apiKey: string,
-    model: string,
+    model: LLMModel,
     settings?: LLMSettings,
     abortSignal?: AbortSignal,
   ): {
@@ -247,7 +247,7 @@ export class OpenAIStreamClient extends BaseClient {
     const openAIMessages = this.convertToOpenAIMessages(messages);
 
     const requestBody: OpenAIRequest = {
-      model,
+      model: model as string,
       messages: openAIMessages,
       stream: true,
       temperature: settings?.temperature,
@@ -381,7 +381,7 @@ export class OpenAIStreamClient extends BaseClient {
     config?: Partial<import("./types").LLMConfig>,
   ): Promise<import("./types").LLMResponse> {
     const apiKey = (config?.apiKey as string) || this.apiKey;
-    const model = (config?.model as string) || this.defaultModelName;
+    const model = (config?.model as LLMModel) || this.defaultModelName;
     const settings = config as import("../../types/llm").LLMSettings;
     const abortSignal = undefined;
 
@@ -396,7 +396,7 @@ export class OpenAIStreamClient extends BaseClient {
 
     return {
       content,
-      model,
+      model: model as string,
       provider: this.providerName,
     };
   }
@@ -407,7 +407,7 @@ export class OpenAIStreamClient extends BaseClient {
     config?: Partial<import("./types").LLMConfig>,
   ): Promise<import("./types").LLMResponse> {
     const apiKey = (config?.apiKey as string) || this.apiKey;
-    const model = (config?.model as string) || this.defaultModelName;
+    const model = (config?.model as LLMModel) || this.defaultModelName;
     const settings = config as import("../../types/llm").LLMSettings;
     const abortSignal = undefined;
 

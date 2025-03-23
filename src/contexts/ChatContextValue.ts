@@ -16,7 +16,7 @@ export interface ChatContextValue {
   setActiveProvider: (provider: LLMProvider | null) => void;
   activeModel: LLMModel | null;
   setActiveModel: (model: LLMModel | null) => void;
-  availableModels: string[];
+  availableModels: LLMModel[];
   apiKeys: Record<string, string>;
   handleApiKeyChange: (provider: string, apiKey: string) => void;
   isProviderConfigured: (provider: LLMProvider) => boolean;

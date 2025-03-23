@@ -17,9 +17,6 @@ describe("ProviderSelector", () => {
   ];
 
   const mockOnSelect = vi.fn();
-  const mockApiKeys: Record<string, string> = {
-    openai: "test-openai-key",
-  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -45,20 +42,20 @@ describe("ProviderSelector", () => {
     expect(screen.getByText("Select Provider")).toBeInTheDocument();
 
     // Check that all provider buttons are rendered
+    const buttons = screen.getAllByRole("button");
     mockProviders.forEach((provider) => {
-      expect(screen.getByText(provider.displayName)).toBeInTheDocument();
+      const button = screen.getByText(provider.displayName);
+      expect(button).toBeInTheDocument();
     });
 
     // Check that no buttons are disabled
-    const buttons = screen.getAllByRole("button");
     buttons.forEach((button) => {
       expect(button).not.toBeDisabled();
     });
   });
 
   it("highlights the active provider", () => {
-    const apiKeys = { openai: "key1", anthropic: "key2", google: "key3" };
-
+    const apiKeys = { openai: "key1", anthropic: "key2" };
     render(
       <ProviderSelector
         providers={mockProviders}
@@ -68,9 +65,6 @@ describe("ProviderSelector", () => {
       />,
     );
 
-    // Get all buttons
-    const buttons = screen.getAllByRole("button");
-  
     // Find the Anthropic button (should be active)
     const anthropicButton = screen.getByText("Anthropic").closest("button");
     expect(anthropicButton).toHaveClass("btn-primary");
@@ -142,5 +136,66 @@ describe("ProviderSelector", () => {
 
     // Check that onSelect was not called
     expect(mockOnSelect).not.toHaveBeenCalled();
+  });
+
+  it("selects a provider when clicked and shows it as active", () => {
+    const apiKeys = { openai: "key1" };
+    render(
+      <ProviderSelector
+        providers={mockProviders}
+        activeProvider={null}
+        onSelect={mockOnSelect}
+        apiKeys={apiKeys}
+      />,
+    );
+
+    // Find the buttons and click the first one (OpenAI)
+    const openAIButton = screen.getByText(/OpenAI/i);
+    fireEvent.click(openAIButton);
+
+    // Check if mockOnSelect was called with the correct provider
+    expect(mockOnSelect).toHaveBeenCalledWith(mockProviders[0]);
+  });
+
+  it("marks providers with API keys as configured", () => {
+    const apiKeys = { openai: "key1" };
+    render(
+      <ProviderSelector
+        providers={mockProviders}
+        activeProvider={null}
+        onSelect={mockOnSelect}
+        apiKeys={apiKeys}
+      />,
+    );
+
+    // Check if the OpenAI button has the active-provider class
+    // (OpenAI has an API key configured)
+    const openAIButton = screen.getByText(/OpenAI/i).closest("button");
+    expect(openAIButton).toHaveClass("hover:bg-primary");
+
+    // Check if Anthropic button does not have the active-provider class
+    // (Anthropic does not have an API key configured)
+    const anthropicButton = screen.getByText(/Anthropic/i).closest("button");
+    expect(anthropicButton).not.toHaveClass("hover:bg-primary");
+  });
+
+  it("marks the active provider with a different style", () => {
+    const apiKeys = { openai: "key1", anthropic: "key2" };
+    render(
+      <ProviderSelector
+        providers={mockProviders}
+        activeProvider={mockProviders[1]} // Anthropic is active
+        onSelect={mockOnSelect}
+        apiKeys={apiKeys}
+      />,
+    );
+
+    // Anthropic should have the active class
+    const anthropicButton = screen.getByText(/Anthropic/i).closest("button");
+    expect(anthropicButton).toHaveClass("bg-primary");
+
+    // OpenAI should not have the active class
+    const openAIButton = screen.getByText(/OpenAI/i).closest("button");
+    expect(openAIButton).not.toHaveClass("bg-primary");
   });
 });

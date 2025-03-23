@@ -63,7 +63,7 @@ describe("GrokClient", () => {
     ];
 
     await expect(
-      client.sendMessage(messages, "test-key", "unsupported-model"),
+      client.sendMessage(messages, "test-key", "unsupported-model" as any),
     ).rejects.toThrow("Model unsupported-model is not available");
   });
 

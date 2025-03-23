@@ -1,6 +1,13 @@
 import type { Message } from "../../types/chat";
-import type { LLMClient, StreamingOptions } from "./llmClient";
-import type { LLMSettings, GrokModel } from "../../types/llm";
+import type {
+  LLMClient,
+  LLMSettings,
+  StreamingOptions,
+  ProviderCapabilities,
+  GrokModel,
+  LLMModel
+} from "../../types/llm";
+import type { StreamingResponse } from "../../types/streaming";
 
 // Provider-specific error types
 export class GrokError extends Error {
@@ -96,7 +103,7 @@ export class GrokClient implements LLMClient {
   async sendMessage(
     messages: Message[],
     apiKey: string,
-    model: string = this.defaultModel,
+    model: LLMModel = this.defaultModel as LLMModel,
     settings?: LLMSettings,
     streamingOptions?: StreamingOptions,
   ): Promise<string> {
@@ -304,12 +311,12 @@ export class GrokClient implements LLMClient {
     return data.choices[0].message.content;
   }
 
-  getAvailableModels(): string[] {
-    return this.supportedModels;
+  getAvailableModels(): LLMModel[] {
+    return this.supportedModels as LLMModel[];
   }
 
-  getDefaultModel(): string {
-    return this.defaultModel;
+  getDefaultModel(): LLMModel {
+    return this.defaultModel as LLMModel;
   }
 
   getProviderName(): string {
@@ -321,5 +328,44 @@ export class GrokClient implements LLMClient {
       typeof ReadableStream !== "undefined" &&
       typeof TextDecoder !== "undefined"
     );
+  }
+
+  getCapabilities(): ProviderCapabilities {
+    return {
+      supportsStreaming: true,
+      supportsSystemMessages: true,
+      maxContextLength: 16384,
+    };
+  }
+
+  async validateApiKey(apiKey: string): Promise<boolean> {
+    try {
+      // Simple validation check - try to get models list
+      await this.standardResponse(
+        {
+          model: this.defaultModel,
+          messages: [{ role: "user", content: "test" }],
+          max_tokens: 1,
+        },
+        apiKey
+      );
+      return true;
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  async *streamMessage?(
+    _messages: Message[],
+    _apiKey: string,
+    _model: LLMModel,
+    _settings?: LLMSettings,
+    _abortSignal?: AbortSignal,
+  ): AsyncIterable<StreamingResponse> {
+    // Yield an error response with proper explanation
+    yield {
+      done: true,
+      error: new Error("Direct streaming not implemented for Grok"),
+    };
   }
 }
