@@ -1,4 +1,4 @@
-import { LLMError, ErrorType } from "../services/llm/LLMError";
+import { LLMError, LLMErrorType } from "../services/llm/errors";
 
 /**
  * A Result type for handling success and failure cases
@@ -30,7 +30,7 @@ function defaultErrorTransformer(error: unknown): LLMError {
   }
 
   return new LLMError(
-    ErrorType.UNKNOWN,
+    LLMErrorType.UNKNOWN,
     error instanceof Error ? error.message : String(error),
   );
 }

@@ -3,7 +3,7 @@ import { useChatState } from "../hooks/useChatState";
 import { useProviderSelection } from "../hooks/useProviderSelection";
 import { useSettings } from "../hooks/useSettings";
 import { useStreamingLLM } from "../hooks/useStreamingLLM";
-import { LLMError } from "../services/llm/LLMError";
+import type { LLMError } from "../services/llm/errors";
 import { ChatContext, ChatContextValue } from "./ChatContextValue";
 import { Message } from "../types/chat";
 

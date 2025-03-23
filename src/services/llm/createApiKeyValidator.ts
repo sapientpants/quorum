@@ -1,7 +1,7 @@
 import type { LLMProviderId } from "../../types/llm";
-import { getLLMClient } from "./LLMClientFactory";
+import { LLMService } from "./LLMClientFactory";
 import { Result, success, tryCatch } from "../../types/result";
-import { LLMError, ErrorType } from "./LLMError";
+import { LLMError, LLMErrorType } from "./errors";
 
 /**
  * Create an API key validator service
@@ -26,7 +26,7 @@ export function createApiKeyValidator() {
       return tryCatch(
         async () => {
           try {
-            const client = getLLMClient(provider);
+            const client = LLMService.getClient(provider);
 
             // Use the client's validateApiKey method
             const isValid = await client.validateApiKey(apiKey);
@@ -38,7 +38,7 @@ export function createApiKeyValidator() {
         },
         (error) =>
           new LLMError(
-            ErrorType.INVALID_API_KEY,
+            LLMErrorType.AUTHENTICATION,
             `Error validating API key for ${provider}: ${error instanceof Error ? error.message : String(error)}`,
           ),
       );

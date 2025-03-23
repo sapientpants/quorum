@@ -2,24 +2,52 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useStreamingLLM } from "../useStreamingLLM";
-import { OpenAIStreamClient } from "../../services/llm/openaiStreamClient";
-import { LLMError, ErrorType } from "../../services/llm/LLMError";
+import { LLMService, LLMError, LLMErrorType } from "../../services/llm";
 import type { Message } from "../../types/chat";
+import type { LLMModel } from "../../types/llm";
 
-// Mock the OpenAIStreamClient
-vi.mock("../../services/llm/openaiStreamClient", () => ({
-  OpenAIStreamClient: vi.fn().mockImplementation(() => ({
+// Mock the LLMService
+vi.mock("../../services/llm", () => {
+  const mockClient = {
     streamMessage: vi.fn(),
-    providerName: "openai",
-    defaultModelName: "gpt-4",
-    availableModels: ["gpt-4", "gpt-3.5-turbo"],
-    capabilities: {
-      streaming: true,
-      systemPrompt: true,
-      functionCalling: true,
+    getProviderName: () => "openai",
+    getDefaultModel: () => "gpt-4" as LLMModel,
+    getAvailableModels: () => ["gpt-4", "gpt-3.5-turbo"] as LLMModel[],
+    supportsStreaming: () => true,
+    getCapabilities: () => ({
+      supportsStreaming: true,
+      supportsSystemMessages: true,
+      maxContextLength: 10000,
+    }),
+    sendMessage: vi.fn(),
+    validateApiKey: vi.fn().mockResolvedValue(true),
+  };
+
+  return {
+    LLMService: {
+      getClient: vi.fn().mockReturnValue(mockClient),
+      getAvailableModels: vi.fn(),
+      getDefaultModel: vi.fn(),
+      supportsStreaming: vi.fn().mockReturnValue(true),
     },
-  })),
-}));
+    LLMError: class LLMError extends Error {
+      constructor(
+        public type: any,
+        message: string,
+        public options: any = {},
+      ) {
+        super(message);
+        this.name = "LLMError";
+      }
+    },
+    LLMErrorType: {
+      AUTHENTICATION: "authentication",
+      INVALID_MODEL: "invalid_model",
+      API_ERROR: "api_error",
+      UNSUPPORTED_OPERATION: "unsupported_operation",
+    },
+  };
+});
 
 describe("useStreamingLLM", () => {
   const mockMessages: Message[] = [
@@ -67,7 +95,7 @@ describe("useStreamingLLM", () => {
     });
 
     expect(result.current.error).toBeInstanceOf(LLMError);
-    expect(result.current.error?.type).toBe(ErrorType.INVALID_PROVIDER);
+    expect(result.current.error?.type).toBe(LLMErrorType.INVALID_MODEL);
     expect(onErrorMock).toHaveBeenCalledWith(expect.any(LLMError));
   });
 
@@ -90,7 +118,7 @@ describe("useStreamingLLM", () => {
     });
 
     expect(result.current.error).toBeInstanceOf(LLMError);
-    expect(result.current.error?.type).toBe(ErrorType.MISSING_API_KEY);
+    expect(result.current.error?.type).toBe(LLMErrorType.AUTHENTICATION);
     expect(onErrorMock).toHaveBeenCalledWith(expect.any(LLMError));
   });
 
@@ -113,7 +141,7 @@ describe("useStreamingLLM", () => {
     });
 
     expect(result.current.error).toBeInstanceOf(LLMError);
-    expect(result.current.error?.type).toBe(ErrorType.INVALID_PROVIDER);
+    expect(result.current.error?.type).toBe(LLMErrorType.API_ERROR);
     expect(onErrorMock).toHaveBeenCalledWith(expect.any(LLMError));
   });
 
@@ -130,20 +158,22 @@ describe("useStreamingLLM", () => {
     });
 
     // Set up the mock implementation
-    vi.mocked(OpenAIStreamClient).mockImplementation(
-      () =>
-        ({
-          streamMessage: mockStreamMessage,
-          providerName: "openai",
-          defaultModelName: "gpt-4",
-          availableModels: ["gpt-4", "gpt-3.5-turbo"],
-          capabilities: {
-            streaming: true,
-            systemPrompt: true,
-            functionCalling: true,
-          },
-        }) as any,
-    );
+    const mockClient = {
+      streamMessage: mockStreamMessage,
+      getProviderName: () => "openai",
+      getDefaultModel: () => "gpt-4" as LLMModel,
+      getAvailableModels: () => ["gpt-4", "gpt-3.5-turbo"] as LLMModel[],
+      supportsStreaming: () => true,
+      getCapabilities: () => ({
+        supportsStreaming: true,
+        supportsSystemMessages: true,
+        maxContextLength: 10000,
+      }),
+      sendMessage: vi.fn(),
+      validateApiKey: vi.fn().mockResolvedValue(true),
+    };
+
+    vi.mocked(LLMService.getClient).mockReturnValue(mockClient);
 
     const { result } = renderHook(() => useStreamingLLM());
 
@@ -173,8 +203,8 @@ describe("useStreamingLLM", () => {
       expect(response).toBe("Hello world!");
     });
 
-    // Check that the client was created with the correct API key
-    expect(OpenAIStreamClient).toHaveBeenCalledWith({ apiKey: mockApiKey });
+    // Check that the client was retrieved for the correct provider
+    expect(LLMService.getClient).toHaveBeenCalledWith(mockProvider);
 
     // Check that streamMessage was called with the correct arguments
     expect(mockStreamMessage).toHaveBeenCalledWith(
@@ -207,20 +237,22 @@ describe("useStreamingLLM", () => {
     });
 
     // Set up the mock implementation
-    vi.mocked(OpenAIStreamClient).mockImplementation(
-      () =>
-        ({
-          streamMessage: mockStreamMessage,
-          providerName: "openai",
-          defaultModelName: "gpt-4",
-          availableModels: ["gpt-4", "gpt-3.5-turbo"],
-          capabilities: {
-            streaming: true,
-            systemPrompt: true,
-            functionCalling: true,
-          },
-        }) as any,
-    );
+    const mockClient = {
+      streamMessage: mockStreamMessage,
+      getProviderName: () => "openai",
+      getDefaultModel: () => "gpt-4" as LLMModel,
+      getAvailableModels: () => ["gpt-4", "gpt-3.5-turbo"] as LLMModel[],
+      supportsStreaming: () => true,
+      getCapabilities: () => ({
+        supportsStreaming: true,
+        supportsSystemMessages: true,
+        maxContextLength: 10000,
+      }),
+      sendMessage: vi.fn(),
+      validateApiKey: vi.fn().mockResolvedValue(true),
+    };
+
+    vi.mocked(LLMService.getClient).mockReturnValue(mockClient);
 
     const { result } = renderHook(() => useStreamingLLM());
 

@@ -2,8 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import type { Message } from "../types/chat";
 import type { LLMProviderId, LLMSettings, LLMModel } from "../types/llm";
 import { StreamingResponse } from "../types/streaming";
-import { OpenAIStreamClient } from "../services/llm/openaiStreamClient";
-import { LLMError, ErrorType } from "../services/llm/LLMError";
+import { LLMService, LLMError, LLMErrorType } from "../services/llm";
 
 // Helper function to create LLMError from any exception
 function createLLMErrorFromException(err: unknown): LLMError {
@@ -12,7 +11,7 @@ function createLLMErrorFromException(err: unknown): LLMError {
   }
 
   const errorMessage = err instanceof Error ? err.message : "Unknown error";
-  return new LLMError(ErrorType.API_ERROR, errorMessage);
+  return new LLMError(LLMErrorType.API_ERROR, errorMessage);
 }
 
 /**
@@ -38,7 +37,7 @@ export function useStreamingLLM() {
     ) => {
       if (!provider) {
         const error = new LLMError(
-          ErrorType.INVALID_PROVIDER,
+          LLMErrorType.INVALID_MODEL,
           "Provider is required",
         );
         setError(error);
@@ -48,7 +47,7 @@ export function useStreamingLLM() {
 
       if (!apiKey) {
         const error = new LLMError(
-          ErrorType.MISSING_API_KEY,
+          LLMErrorType.AUTHENTICATION,
           `API key for ${provider} is required`,
         );
         setError(error);
@@ -124,15 +123,24 @@ export function useStreamingLLM() {
       abortControllerRef.current = new AbortController();
 
       try {
-        // Currently only OpenAI is supported for streaming with async iterables
-        if (provider !== "openai") {
+        // Get the client for the requested provider
+        const client = LLMService.getClient(provider);
+
+        // Check if streaming is supported by the client
+        if (!client.supportsStreaming()) {
           throw new LLMError(
-            ErrorType.INVALID_PROVIDER,
-            `Provider ${provider} is not supported for streaming with async iterables yet`,
+            LLMErrorType.UNSUPPORTED_OPERATION,
+            `Provider ${provider} does not support streaming`,
           );
         }
 
-        const client = new OpenAIStreamClient({ apiKey });
+        // Check if streamMessage method exists
+        if (!client.streamMessage) {
+          throw new LLMError(
+            LLMErrorType.UNSUPPORTED_OPERATION,
+            `Provider ${provider} does not implement streamMessage`,
+          );
+        }
 
         // Stream the response
         const stream = client.streamMessage(

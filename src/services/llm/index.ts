@@ -1,40 +1,27 @@
-// Export new functional implementations
-export { createApiKeyValidator } from "./createApiKeyValidator";
+/**
+ * LLM Service Index
+ *
+ * This file exports all the necessary components for working with LLM providers
+ */
 
-// Import types
-import type { LLMProviderId } from "../../types/llm";
-import { getLLMClient } from "./LLMClientFactory";
+// Base components
+export { BaseClient } from "./base/BaseClient";
+export { LLMError, LLMErrorType } from "./errors";
 
-export const getAvailableModels = (provider: LLMProviderId): string[] => {
-  return getLLMClient(provider).getAvailableModels();
-};
+// Provider implementations
+export { AnthropicClient } from "./providers/AnthropicClient";
+export { OpenAIClient } from "./providers/OpenAIClient";
+export { GoogleClient } from "./providers/GoogleClient";
+export { GrokClient } from "./providers/GrokClient";
 
-export const getDefaultModel = (provider: LLMProviderId): string => {
-  return getLLMClient(provider).getDefaultModel();
-};
+// Factory and services
+export { LLMClientFactory, LLMService } from "./LLMClientFactory";
 
-export const supportsStreaming = (provider: LLMProviderId): boolean => {
-  return getLLMClient(provider).supportsStreaming();
-};
+// Helper functions
+export const getAvailableModels = LLMService.getAvailableModels;
+export const getDefaultModel = LLMService.getDefaultModel;
+export const supportsStreaming = LLMService.supportsStreaming;
 
-// Export LLM client interface
-export type { LLMClient, ProviderCapabilities } from "../../types/llm";
-export type { StreamingOptions } from "../../types/llm";
-export { getLLMClient } from "./LLMClientFactory";
-
-// Export provider-specific clients
-export { OpenAIClient } from "./openaiClient";
-export { AnthropicClient } from "./anthropicClient";
-export { GrokClient } from "./grokClient";
-export { GoogleClient } from "./googleClient";
-export { OpenAIStreamClient } from "./openaiStreamClient";
-
-// Export error handling
-export { LLMError, ErrorType } from "./LLMError";
-
-// Export base client - use type export for the class
-export type { BaseClient } from "./clients/BaseClient";
-
-// Export Result type for error handling
-export type { Result } from "../../types/result";
-export { success, tryCatch } from "../../types/result";
+// Default export
+import LLMService from "./LLMClientFactory";
+export default LLMService;

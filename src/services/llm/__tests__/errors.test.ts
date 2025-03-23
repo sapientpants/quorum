@@ -30,28 +30,28 @@ describe("LLMError", () => {
   it("returns the correct user message for AUTHENTICATION", () => {
     const error = new LLMError(LLMErrorType.AUTHENTICATION, "Auth failed");
     expect(error.getUserMessage()).toBe(
-      "Authentication failed. Please check your API key and account status.",
+      "Authentication failed. Please check your API key.",
     );
   });
 
   it("returns the correct user message for RATE_LIMIT", () => {
     const error = new LLMError(LLMErrorType.RATE_LIMIT, "Rate limit exceeded");
     expect(error.getUserMessage()).toBe(
-      "Rate limit exceeded. Please wait a moment and try again.",
+      "Rate limit exceeded. Please try again later.",
     );
   });
 
   it("returns the correct user message for TIMEOUT", () => {
     const error = new LLMError(LLMErrorType.TIMEOUT, "Request timed out");
     expect(error.getUserMessage()).toBe(
-      "The request timed out. Please check your network connection and try again.",
+      "The request timed out. Please try again.",
     );
   });
 
   it("returns the correct user message for CONTENT_FILTER", () => {
     const error = new LLMError(LLMErrorType.CONTENT_FILTER, "Content filtered");
     expect(error.getUserMessage()).toBe(
-      "Your request was filtered by content safety systems. Please modify your prompt.",
+      "Your request was filtered due to content policy violation.",
     );
   });
 
@@ -64,17 +64,21 @@ describe("LLMError", () => {
 
   it("returns the correct user message for API_ERROR", () => {
     const error = new LLMError(LLMErrorType.API_ERROR, "API error details");
-    expect(error.getUserMessage()).toBe("API error: API error details");
+    expect(error.getUserMessage()).toBe(
+      "An error occurred while processing your request: API error details",
+    );
   });
 
   it("returns the correct user message for UNKNOWN", () => {
     const error = new LLMError(LLMErrorType.UNKNOWN, "Unknown error");
-    expect(error.getUserMessage()).toBe("Unknown error");
+    expect(error.getUserMessage()).toBe(
+      "An unexpected error occurred: Unknown error",
+    );
   });
 
   it("returns the correct user message for empty message", () => {
     const error = new LLMError(LLMErrorType.UNKNOWN, "");
-    expect(error.getUserMessage()).toBe("An unknown error occurred.");
+    expect(error.getUserMessage()).toBe("An unexpected error occurred: ");
   });
 
   it("returns the correct suggestions for AUTHENTICATION", () => {
@@ -82,9 +86,11 @@ describe("LLMError", () => {
     const suggestions = error.getSuggestions();
 
     expect(suggestions).toHaveLength(3);
-    expect(suggestions).toContain("Check that your API key is correct");
-    expect(suggestions).toContain("Ensure your account is in good standing");
-    expect(suggestions).toContain("Try regenerating your API key");
+    expect(suggestions).toContain("Verify your API key is correct");
+    expect(suggestions).toContain("Make sure your API key is still valid");
+    expect(suggestions).toContain(
+      "Check if your API key has the necessary permissions",
+    );
   });
 
   it("returns the correct suggestions for RATE_LIMIT", () => {
@@ -92,10 +98,10 @@ describe("LLMError", () => {
     const suggestions = error.getSuggestions();
 
     expect(suggestions).toHaveLength(3);
-    expect(suggestions).toContain("Wait a few minutes before trying again");
-    expect(suggestions).toContain("Consider upgrading your account plan");
+    expect(suggestions).toContain("Wait a minute and try again");
+    expect(suggestions).toContain("Reduce the frequency of requests");
     expect(suggestions).toContain(
-      "Check your usage dashboard for quota information",
+      "Consider upgrading your API plan if available",
     );
   });
 
@@ -104,25 +110,22 @@ describe("LLMError", () => {
     const suggestions = error.getSuggestions();
 
     expect(suggestions).toHaveLength(3);
+    expect(suggestions).toContain("Try again with a shorter prompt");
     expect(suggestions).toContain("Check your internet connection");
-    expect(suggestions).toContain("Try a simpler or shorter prompt");
-    expect(suggestions).toContain(
-      "The service might be experiencing high load",
-    );
+    expect(suggestions).toContain("Try a different model that might be faster");
   });
 
   it("returns the correct suggestions for CONTENT_FILTER", () => {
     const error = new LLMError(LLMErrorType.CONTENT_FILTER, "Content filtered");
     const suggestions = error.getSuggestions();
 
-    expect(suggestions).toHaveLength(3);
+    expect(suggestions).toHaveLength(2);
     expect(suggestions).toContain(
-      "Modify your prompt to comply with content policies",
+      "Modify your request to comply with content policies",
     );
     expect(suggestions).toContain(
-      "Remove potentially sensitive or prohibited content",
+      "Remove any potentially sensitive or prohibited content",
     );
-    expect(suggestions).toContain("Review the provider's content guidelines");
   });
 
   it("returns the correct suggestions for NETWORK", () => {
@@ -133,7 +136,7 @@ describe("LLMError", () => {
     expect(suggestions).toContain("Check your internet connection");
     expect(suggestions).toContain("Try again in a few moments");
     expect(suggestions).toContain(
-      "If the issue persists, contact your network administrator",
+      "Verify the API service is not experiencing an outage",
     );
   });
 
@@ -141,18 +144,24 @@ describe("LLMError", () => {
     const error = new LLMError(LLMErrorType.API_ERROR, "API error details");
     const suggestions = error.getSuggestions();
 
-    expect(suggestions).toHaveLength(2);
-    expect(suggestions).toContain("Try again");
-    expect(suggestions).toContain("If the error persists, report the issue");
+    expect(suggestions).toHaveLength(3);
+    expect(suggestions).toContain("Try again later");
+    expect(suggestions).toContain(
+      "Check if the API service is experiencing issues",
+    );
+    expect(suggestions).toContain("Try with different parameters");
   });
 
   it("returns the correct suggestions for UNKNOWN", () => {
     const error = new LLMError(LLMErrorType.UNKNOWN, "Unknown error");
     const suggestions = error.getSuggestions();
 
-    expect(suggestions).toHaveLength(2);
-    expect(suggestions).toContain("Try again");
-    expect(suggestions).toContain("If the error persists, report the issue");
+    expect(suggestions).toHaveLength(3);
+    expect(suggestions).toContain("Try again later");
+    expect(suggestions).toContain(
+      "Check if the API service is experiencing issues",
+    );
+    expect(suggestions).toContain("Try with different parameters");
   });
 
   it("handles all error types", () => {
@@ -168,6 +177,8 @@ describe("LLMError", () => {
       LLMErrorType.NETWORK,
       LLMErrorType.API_ERROR,
       LLMErrorType.UNKNOWN,
+      LLMErrorType.INVALID_MODEL, // Added missing error types
+      LLMErrorType.UNSUPPORTED_OPERATION,
     ]);
 
     // Check that all error types are tested

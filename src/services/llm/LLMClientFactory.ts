@@ -1,202 +1,134 @@
-import type {
-  LLMClient,
-  ProviderCapabilities,
-  LLMModel,
-  LLMProviderId,
-} from "../../types/llm";
-import { OpenAIClient } from "./openaiClient";
-import { AnthropicClient } from "./anthropicClient";
-import { GrokClient } from "./grokClient";
-import { GoogleClient } from "./googleClient";
-import { LLMError, ErrorType } from "./LLMError";
-import { validateApiKey } from "../../services/apiKeyService";
+import type { LLMClient, LLMProviderId } from "../../types/llm";
+import { AnthropicClient } from "./providers/AnthropicClient";
+import { OpenAIClient } from "./providers/OpenAIClient";
+import { GoogleClient } from "./providers/GoogleClient";
+import { GrokClient } from "./providers/GrokClient";
+import { LLMError, LLMErrorType } from "./errors";
 
-// Registry for LLM clients
-const clientRegistry = new Map<string, () => LLMClient>();
-const clientCache: Record<string, LLMClient> = {};
+// Cache for client instances
+type ClientCache = {
+  [key in LLMProviderId]?: LLMClient;
+};
 
 /**
- * Register an LLM client factory for a provider
- * This allows for extending the system with new providers without modifying existing code
+ * Factory for creating LLM client instances
  */
-function registerLLMClient(provider: string, factory: () => LLMClient): void {
-  clientRegistry.set(provider.toLowerCase(), factory);
+export class LLMClientFactory {
+  private static clientCache: ClientCache = {};
 
-  // Clear cache for this provider if it exists
-  if (clientCache[provider.toLowerCase()]) {
-    delete clientCache[provider.toLowerCase()];
+  /**
+   * Get an LLM client for the specified provider
+   */
+  public static getLLMClient(provider: LLMProviderId): LLMClient {
+    // Check if we have a cached instance
+    if (this.clientCache[provider]) {
+      return this.clientCache[provider]!;
+    }
+
+    // Create a new client instance based on the provider
+    let client: LLMClient;
+
+    switch (provider) {
+      case "openai":
+        client = new OpenAIClient();
+        break;
+      case "anthropic":
+        client = new AnthropicClient();
+        break;
+      case "google":
+        client = new GoogleClient();
+        break;
+      case "grok":
+        client = new GrokClient();
+        break;
+      default:
+        throw new LLMError(
+          LLMErrorType.INVALID_MODEL,
+          `Provider '${provider}' is not supported`,
+          {},
+        );
+    }
+
+    // Cache the client for future use
+    this.clientCache[provider] = client;
+
+    return client;
+  }
+
+  /**
+   * Clear the client cache
+   */
+  public static clearCache(): void {
+    this.clientCache = {};
+  }
+
+  /**
+   * Get available models for a provider
+   */
+  public static getAvailableModels(provider: LLMProviderId): string[] {
+    const client = this.getLLMClient(provider);
+    return client.getAvailableModels();
+  }
+
+  /**
+   * Get the default model for a provider
+   */
+  public static getDefaultModel(provider: LLMProviderId): string {
+    const client = this.getLLMClient(provider);
+    return client.getDefaultModel();
+  }
+
+  /**
+   * Check if a provider supports streaming
+   */
+  public static supportsStreaming(provider: LLMProviderId): boolean {
+    const client = this.getLLMClient(provider);
+    return client.supportsStreaming();
+  }
+
+  /**
+   * Validate an API key for a provider
+   */
+  public static async validateApiKey(
+    provider: LLMProviderId,
+    apiKey: string,
+  ): Promise<boolean> {
+    const client = this.getLLMClient(provider);
+    return await client.validateApiKey(apiKey);
   }
 }
 
 /**
- * Get the appropriate LLM client based on the provider
+ * Helper functions for LLM client operations
  */
-export function getLLMClient(provider: LLMProviderId): LLMClient {
-  const providerKey = provider.toLowerCase();
+export const LLMService = {
+  /**
+   * Get available models for a provider
+   */
+  getAvailableModels: (provider: LLMProviderId): string[] => {
+    return LLMClientFactory.getAvailableModels(provider);
+  },
 
-  // Return cached client if available
-  if (clientCache[providerKey]) {
-    return clientCache[providerKey];
-  }
+  /**
+   * Get the default model for a provider
+   */
+  getDefaultModel: (provider: LLMProviderId): string => {
+    return LLMClientFactory.getDefaultModel(provider);
+  },
 
-  // Check if client is registered
-  const factory = clientRegistry.get(providerKey);
+  /**
+   * Check if a provider supports streaming
+   */
+  supportsStreaming: (provider: LLMProviderId): boolean => {
+    return LLMClientFactory.supportsStreaming(provider);
+  },
 
-  if (factory) {
-    // Create and enhance the client
-    const baseClient = factory();
-    const enhancedClient = createEnhancedClient(baseClient, provider);
+  /**
+   * Get a client for the specified provider
+   */
+  getClient: (provider: LLMProviderId): LLMClient => {
+    return LLMClientFactory.getLLMClient(provider);
+  },
+};
 
-    // Cache the enhanced client
-    clientCache[providerKey] = enhancedClient;
-
-    return enhancedClient;
-  }
-
-  throw new LLMError(
-    ErrorType.INVALID_PROVIDER,
-    `LLM client for provider ${provider} not implemented`,
-  );
-}
-
-/**
- * Create a client with enhanced capabilities
- * This is a helper function to create clients with consistent behavior
- */
-function createEnhancedClient(
-  baseClient: Partial<LLMClient>,
-  provider: LLMProviderId,
-): LLMClient {
-  // Ensure the base client has the required methods
-  if (
-    !baseClient.sendMessage ||
-    !baseClient.getAvailableModels ||
-    !baseClient.getDefaultModel ||
-    !baseClient.getProviderName ||
-    !baseClient.supportsStreaming
-  ) {
-    throw new LLMError(
-      ErrorType.INVALID_PROVIDER,
-      `Invalid client implementation for provider ${provider}`,
-    );
-  }
-
-  // We've already checked that these methods exist, so we can safely use them
-  const sendMessage = baseClient.sendMessage;
-  const getAvailableModels = baseClient.getAvailableModels;
-  const getDefaultModel = baseClient.getDefaultModel;
-  const getProviderName = baseClient.getProviderName;
-  const supportsStreaming = baseClient.supportsStreaming;
-
-  // Create the enhanced client
-  const enhancedClient: LLMClient = {
-    // Required methods from the base client
-    sendMessage,
-    getAvailableModels,
-    getDefaultModel,
-    getProviderName,
-    supportsStreaming,
-
-    // Add validateApiKey method if it doesn't exist
-    validateApiKey:
-      baseClient.validateApiKey ||
-      (async (apiKey: string): Promise<boolean> => {
-        // First do basic format validation
-        const formatValidation = validateApiKey(provider, apiKey);
-        if (!formatValidation.isValid) {
-          console.error(`Invalid API key format for ${provider}`);
-          return false;
-        }
-
-        // Then try to validate with the provider's API
-        try {
-          let url = "https://api.openai.com/v1/models";
-          let headers: Record<string, string> = {
-            Authorization: `Bearer ${apiKey}`,
-          };
-
-          // Use provider-specific endpoint and header format
-          if (provider === "anthropic") {
-            url = "https://api.anthropic.com/v1/models";
-            headers = { "x-api-key": apiKey };
-          } else if (provider === "google") {
-            url = "https://generativelanguage.googleapis.com/v1/models";
-            headers = { "x-goog-api-key": apiKey };
-          } else if (provider === "grok") {
-            url = "https://api.grok.ai/models";
-            headers = { Authorization: `Bearer ${apiKey}` };
-          }
-
-          const response = await fetch(url, { headers });
-          if (!response.ok) {
-            console.error(
-              `API validation failed for ${provider}: ${response.status} ${response.statusText}`,
-            );
-            return false;
-          }
-          return true;
-        } catch (error) {
-          console.error(`Error validating ${provider} API key:`, error);
-          return false;
-        }
-      }),
-
-    // Add getCapabilities method if it doesn't exist
-    getCapabilities:
-      baseClient.getCapabilities ||
-      (() => {
-        const capabilities: ProviderCapabilities = {
-          supportsStreaming: supportsStreaming(),
-          supportsSystemMessages: true,
-          maxContextLength: 4000,
-          supportsFunctionCalling: provider === "openai",
-          supportsVision: provider === "openai" || provider === "anthropic",
-          supportsTool: provider === "openai",
-        };
-        return capabilities;
-      }),
-  };
-
-  return enhancedClient;
-}
-
-// Register built-in clients
-registerLLMClient("openai", () => {
-  const client = new OpenAIClient();
-
-  // Create a client that implements the LLMClient interface
-  const enhancedClient: LLMClient = {
-    sendMessage: client.sendMessage.bind(client),
-    getAvailableModels: () => client.getAvailableModels() as LLMModel[],
-    getDefaultModel: () => client.getDefaultModel() as LLMModel,
-    getProviderName: client.getProviderName.bind(client),
-    supportsStreaming: client.supportsStreaming.bind(client),
-
-    validateApiKey: async (apiKey: string) => {
-      if (!apiKey) return false;
-      try {
-        const response = await fetch("https://api.openai.com/v1/models", {
-          headers: { Authorization: `Bearer ${apiKey}` },
-        });
-        return response.ok;
-      } catch (_error) {
-        return false;
-      }
-    },
-
-    getCapabilities: () => ({
-      supportsStreaming: true,
-      supportsSystemMessages: true,
-      maxContextLength: 16000,
-      supportsFunctionCalling: true,
-      supportsVision: true,
-      supportsTool: true,
-    }),
-  };
-
-  return enhancedClient;
-});
-
-registerLLMClient("anthropic", () => new AnthropicClient());
-registerLLMClient("grok", () => new GrokClient());
-registerLLMClient("google", () => new GoogleClient());
+export default LLMService;
