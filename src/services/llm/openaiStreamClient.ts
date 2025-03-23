@@ -249,25 +249,27 @@ export class OpenAIStreamClient extends BaseClient {
     const requestBody: OpenAIRequest = {
       model,
       messages: openAIMessages,
+      stream: true,
       temperature: settings?.temperature,
       max_tokens: settings?.maxTokens,
       top_p: settings?.topP,
       frequency_penalty: settings?.frequencyPenalty,
       presence_penalty: settings?.presencePenalty,
-      stream: true, // Always stream
+    };
+
+    const options: RequestInit = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify(requestBody),
+      signal: abortSignal,
     };
 
     return {
-      url: "https://api.openai.com/v1/chat/completions",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(requestBody),
-        signal: abortSignal,
-      },
+      url: `${this.baseUrl}/chat/completions`,
+      options,
       body: requestBody,
     };
   }

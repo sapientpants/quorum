@@ -42,12 +42,12 @@ export function createParticipant(
     id: data.id,
     name: data.name,
     type: "llm",
-    provider: data.provider || "openai",
-    model: data.model || "gpt-4o",
-    systemPrompt: data.systemPrompt || "",
+    provider: data.provider ?? "openai",
+    model: data.model ?? "gpt-4o",
+    systemPrompt: data.systemPrompt ?? "",
     settings: {
-      temperature: data.settings?.temperature || 0.7,
-      maxTokens: data.settings?.maxTokens || 1000,
+      temperature: data.settings?.temperature ?? 0.7,
+      maxTokens: data.settings?.maxTokens ?? 1000,
     },
   };
 }

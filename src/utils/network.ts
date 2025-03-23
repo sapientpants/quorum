@@ -141,7 +141,7 @@ async function getConnectionQualityWithNetworkInfo(): Promise<ConnectionQuality 
   // Check effective type (4g, 3g, 2g, etc.)
   if (connection?.effectiveType) {
     return (
-      CONNECTION_TYPE_QUALITY[connection.effectiveType] ||
+      CONNECTION_TYPE_QUALITY[connection.effectiveType] ??
       ConnectionQuality.UNKNOWN
     );
   }

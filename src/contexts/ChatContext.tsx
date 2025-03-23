@@ -66,6 +66,32 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     return true;
   }, [activeProvider, activeModel, apiKeys, setError]);
 
+  // Helper function to update AI message with error
+  const handleAIMessageError = useCallback(
+    (aiMessageId: string, error: Error) => {
+      updateAIMessage(aiMessageId, {
+        text: `Error: ${error.message}`,
+        status: "error",
+        error,
+      });
+      setError(error.message);
+      setIsLoading(false);
+    },
+    [updateAIMessage, setError, setIsLoading],
+  );
+
+  // Helper function to update AI message on success
+  const handleAIMessageSuccess = useCallback(
+    (aiMessageId: string, text: string) => {
+      updateAIMessage(aiMessageId, {
+        text,
+        status: "sent",
+      });
+      setIsLoading(false);
+    },
+    [updateAIMessage, setIsLoading],
+  );
+
   // Helper function to handle streaming response
   const handleStreamingResponse = useCallback(
     async (userMessage: Message, aiMessageId: string) => {
@@ -84,27 +110,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         settings,
         {
           onToken: (token: string) => {
-            updateAIMessage(aiMessageId, {
-              text:
-                messages.find((m) => m.id === aiMessageId)?.text + token ||
-                token,
-            });
+            const currentText = messages.find((m) => m.id === aiMessageId)?.text ?? "";
+            updateAIMessage(aiMessageId, { text: currentText + token });
           },
-          onComplete: () => {
-            updateAIMessage(aiMessageId, {
-              status: "sent",
-            });
-            setIsLoading(false);
-          },
-          onError: (err: LLMError) => {
-            updateAIMessage(aiMessageId, {
-              text: `Error: ${err.message}`,
-              status: "error",
-              error: err,
-            });
-            setError(err.message);
-            setIsLoading(false);
-          },
+          onComplete: () => handleAIMessageSuccess(aiMessageId, ""),
+          onError: (err: LLMError) => handleAIMessageError(aiMessageId, err),
         },
       );
     },
@@ -115,10 +125,33 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       apiKeys,
       settings,
       streamMessage,
-      updateAIMessage,
-      setIsLoading,
-      setError,
+      handleAIMessageSuccess,
+      handleAIMessageError,
     ],
+  );
+
+  // Helper function to make API request
+  const makeApiRequest = useCallback(
+    async (userMessage: Message, modelToUse: string) => {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, userMessage],
+          provider: activeProvider?.id,
+          apiKey: apiKeys[activeProvider?.id ?? ""],
+          model: modelToUse,
+          settings,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+    [messages, activeProvider, apiKeys, settings],
   );
 
   // Helper function to handle standard response
@@ -132,59 +165,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       const modelToUse = activeModel || activeProvider.models[0];
 
       try {
-        const response = await fetch("/api/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            messages: [...messages, userMessage],
-            provider: activeProvider.id,
-            apiKey: apiKeys[activeProvider.id],
-            model: modelToUse,
-            settings,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        // Update the AI response
-        updateAIMessage(aiMessageId, {
-          text: data.text,
-          status: "sent",
-        });
-        setIsLoading(false);
+        const data = await makeApiRequest(userMessage, modelToUse);
+        handleAIMessageSuccess(aiMessageId, data.text);
       } catch (error) {
         console.error(`Error calling ${activeProvider?.id}:`, error);
-
-        // Update the AI message with error
-        updateAIMessage(aiMessageId, {
-          text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
-          status: "error",
-          error: error instanceof Error ? error : new Error("Unknown error"),
-        });
-
-        setError(
-          error instanceof Error
-            ? error.message
-            : `An error occurred while calling the ${activeProvider?.id} API`,
-        );
-        setIsLoading(false);
+        const finalError = error instanceof Error ? error : new Error("Unknown error");
+        handleAIMessageError(aiMessageId, finalError);
       }
     },
     [
-      messages,
       activeProvider,
       activeModel,
-      apiKeys,
-      settings,
-      updateAIMessage,
-      setIsLoading,
-      setError,
+      makeApiRequest,
+      handleAIMessageSuccess,
+      handleAIMessageError,
     ],
   );
 

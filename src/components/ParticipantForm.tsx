@@ -95,6 +95,14 @@ export function ParticipantForm({
     });
   }
 
+  // Helper function to determine icon based on advanced settings state
+  const getAdvancedSettingsIcon = () => {
+    if (showAdvanced) {
+      return "solar:alt-arrow-up-linear";
+    }
+    return "solar:alt-arrow-down-linear";
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onFormSubmit)}
@@ -227,11 +235,7 @@ export function ParticipantForm({
           onClick={() => setShowAdvanced(!showAdvanced)}
         >
           <Icon
-            icon={
-              showAdvanced
-                ? "solar:alt-arrow-up-linear"
-                : "solar:alt-arrow-down-linear"
-            }
+            icon={getAdvancedSettingsIcon()}
             className="w-4 h-4"
           />
           {t("participantForm.advancedSettings")}

@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 interface ApiKeyInputProps {
-  onApiKeyChange: (apiKey: string) => void;
-  initialApiKey?: string;
+  readonly onApiKeyChange: (apiKey: string) => void;
+  readonly initialApiKey?: string;
 }
 
 export function ApiKeyInput({
   onApiKeyChange,
   initialApiKey = "",
-}: ApiKeyInputProps) {
+}: Readonly<ApiKeyInputProps>) {
   const { t } = useTranslation();
   const [apiKey, setApiKey] = useState(initialApiKey);
   const [isVisible, setIsVisible] = useState(false);

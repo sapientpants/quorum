@@ -18,14 +18,18 @@ export type OpenAIModel =
   | "o3-mini"
   | "gpt-4o"
   | "gpt-4o-mini"
-  | string;
+  | `gpt-4-${string}`
+  | `gpt-3.5-${string}`;
 export type AnthropicModel =
   | "claude-3.7-sonnet"
   | "claude-3.5-sonnet"
   | "claude-3.5-haiku"
-  | string;
-export type GrokModel = "grok-2" | "grok-3" | string;
-type GoogleModel = "gemini-2.0-pro" | "gemini-2.0-flash" | string;
+  | `claude-${number}.${number}-${string}`;
+export type GrokModel = "grok-2" | "grok-3" | `grok-${number}`;
+type GoogleModel =
+  | "gemini-2.0-pro"
+  | "gemini-2.0-flash"
+  | `gemini-${number}.${number}-${string}`;
 
 // Combined model type
 export type LLMModel = OpenAIModel | AnthropicModel | GrokModel | GoogleModel;

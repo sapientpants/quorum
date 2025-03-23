@@ -45,12 +45,11 @@ export function LocalizedText({
   children,
 }: LocalizedTextProps) {
   const { t } = useTranslation();
-  const TagComponent = Component as ElementType;
   return (
-    <TagComponent className={className}>
+    <Component className={className}>
       {t(textKey, params)}
       {children}
-    </TagComponent>
+    </Component>
   );
 }
 
@@ -81,27 +80,19 @@ export function LocalizedList({
   itemClassName,
 }: LocalizedListProps) {
   const { t } = useTranslation();
-  const TagComponent = Component as ElementType;
-  const ItemTagComponent = ItemComponent as ElementType;
 
   return (
-    <TagComponent className={className}>
+    <Component className={className}>
       {items.map((item, index) => {
-        // Construct the full translation key
-        const fullKey =
-          typeof item === "number"
-            ? `${keyPrefix}.${index}`
-            : `${keyPrefix}.${item}`;
-
-        // Use item value as part of key when possible for better list reconciliation
+        const fullKey = `${keyPrefix}.${typeof item === "number" ? index : item}`;
         const itemKey = typeof item === "string" ? item : `item-${index}`;
 
         return (
-          <ItemTagComponent key={itemKey} className={itemClassName}>
+          <ItemComponent key={itemKey} className={itemClassName}>
             {t(fullKey)}
-          </ItemTagComponent>
+          </ItemComponent>
         );
       })}
-    </TagComponent>
+    </Component>
   );
 }
