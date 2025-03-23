@@ -340,12 +340,7 @@ export class OpenAIStreamClient extends BaseClient {
           const jsonStr = line.slice(6); // Remove 'data: ' prefix
           const json = JSON.parse(jsonStr);
 
-          if (
-            json.choices &&
-            json.choices.length > 0 &&
-            json.choices[0].delta &&
-            json.choices[0].delta.content
-          ) {
+          if (json.choices?.[0]?.delta?.content) {
             yield {
               done: false,
               token: json.choices[0].delta.content,
