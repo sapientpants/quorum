@@ -94,6 +94,24 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
     return selectedParticipantIds.includes(participantId);
   };
 
+  // Get submit button text based on form state
+  const getSubmitButtonText = () => {
+    if (isSubmitting) {
+      return (
+        <>
+          <span className="loading loading-spinner loading-xs"></span>
+          {t("common.buttons.saving")}
+        </>
+      );
+    }
+    
+    if (initialData) {
+      return t("templateForm.buttons.update");
+    }
+    
+    return t("templateForm.buttons.create");
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Template Name */}
@@ -241,16 +259,7 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
           className="btn btn-primary"
           disabled={isSubmitting}
         >
-          {isSubmitting ? (
-            <>
-              <span className="loading loading-spinner loading-xs"></span>
-              {t("common.buttons.saving")}
-            </>
-          ) : initialData ? (
-            t("templateForm.buttons.update")
-          ) : (
-            t("templateForm.buttons.create")
-          )}
+          {getSubmitButtonText()}
         </button>
       </div>
     </form>

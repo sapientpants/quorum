@@ -5,6 +5,16 @@ import { StreamingResponse } from "../types/streaming";
 import { OpenAIStreamClient } from "../services/llm/openaiStreamClient";
 import { LLMError, ErrorType } from "../services/llm/LLMError";
 
+// Helper function to create LLMError from any exception
+function createLLMErrorFromException(err: unknown): LLMError {
+  if (err instanceof LLMError) {
+    return err;
+  }
+  
+  const errorMessage = err instanceof Error ? err.message : "Unknown error";
+  return new LLMError(ErrorType.API_ERROR, errorMessage);
+};
+
 /**
  * Hook for using streaming LLM responses with async iterables
  */
@@ -137,13 +147,7 @@ export function useStreamingLLM() {
       } catch (err) {
         console.error(`Error streaming from ${provider}:`, err);
 
-        const llmError =
-          err instanceof LLMError
-            ? err
-            : new LLMError(
-                ErrorType.API_ERROR,
-                err instanceof Error ? err.message : "Unknown error",
-              );
+        const llmError = createLLMErrorFromException(err);
 
         setError(llmError);
         callbacks?.onError?.(llmError);

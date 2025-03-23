@@ -4,6 +4,20 @@ import { AppLayout } from "../components/layouts/AppLayout";
 import { PageLoader } from "../components/ui/PageLoader";
 import { usePreferencesStore } from "../store/preferencesStore";
 
+// Helper function to determine the redirect path based on wizard step
+function getRedirectPathForWizardStep(step: number): string {
+  switch (step) {
+    case 0:
+      return "/security";
+    case 1:
+      return "/apiKeys";
+    case 2:
+      return "/participants";
+    default:
+      return "/";
+  }
+}
+
 // Lazy-loaded pages
 const Welcome = React.lazy(() =>
   import("../pages/Welcome").then((mod) => ({ default: mod.Welcome })),
@@ -49,14 +63,7 @@ function WizardStepGuard({
 
   // If the user hasn't completed the wizard, redirect to the appropriate step
   if (wizardStep < requiredStep) {
-    const redirectPath =
-      wizardStep === 0
-        ? "/security"
-        : wizardStep === 1
-          ? "/apiKeys"
-          : wizardStep === 2
-            ? "/participants"
-            : "/";
+    const redirectPath = getRedirectPathForWizardStep(wizardStep);
     return <Navigate to={redirectPath} replace />;
   }
 
