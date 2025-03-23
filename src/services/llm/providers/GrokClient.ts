@@ -171,8 +171,7 @@ export class GrokClient extends BaseClient {
       return null;
     }
 
-    const typedChunk = chunk as GrokStreamChunk;
-    return typedChunk.choices[0].delta?.content || null;
+    return chunk.choices[0].delta?.content ?? null;
   }
 
   /**
