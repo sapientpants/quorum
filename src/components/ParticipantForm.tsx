@@ -234,10 +234,7 @@ export function ParticipantForm({
           className="btn btn-ghost btn-sm gap-2 h-auto py-2 px-3"
           onClick={() => setShowAdvanced(!showAdvanced)}
         >
-          <Icon
-            icon={getAdvancedSettingsIcon()}
-            className="w-4 h-4"
-          />
+          <Icon icon={getAdvancedSettingsIcon()} className="w-4 h-4" />
           {t("participantForm.advancedSettings")}
         </button>
 

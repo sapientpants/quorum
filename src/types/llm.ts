@@ -13,34 +13,31 @@ export interface LLMProvider {
 }
 
 // Model types by provider
-export type OpenAIModel = 
-  | `gpt-4${string}` 
-  | `gpt-3.5-turbo${string}` 
-  | "gpt-4" 
-  | "gpt-3.5-turbo" 
+export type OpenAIModel =
+  | `gpt-4${string}`
+  | `gpt-3.5-turbo${string}`
+  | "gpt-4"
+  | "gpt-3.5-turbo"
   | "gpt-4o"
   | "gpt-4o-mini"
   | "gpt-4.5"
   | "o3-mini";
 
-export type AnthropicModel = 
-  | `claude-${number}.${number}-${string}` 
-  | "claude-3-opus" 
+export type AnthropicModel =
+  | `claude-${number}.${number}-${string}`
+  | "claude-3-opus"
   | "claude-3-sonnet"
   | "claude-3.5-sonnet"
   | "claude-3.5-haiku"
   | "claude-3.7-sonnet";
 
-export type GoogleModel = 
-  | `gemini-${number}.${number}-${string}` 
+export type GoogleModel =
+  | `gemini-${number}.${number}-${string}`
   | "gemini-pro"
   | "gemini-2.0-pro"
   | "gemini-2.0-flash";
 
-export type GrokModel = 
-  | `grok-${number}` 
-  | "grok-2" 
-  | "grok-3";
+export type GrokModel = `grok-${number}` | "grok-2" | "grok-3";
 
 // Combined model type
 export type LLMModel = OpenAIModel | AnthropicModel | GoogleModel | GrokModel;

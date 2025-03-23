@@ -7,13 +7,21 @@ import { createTranslationMock } from "../../../vitest.setup";
 describe("ProviderSelector", () => {
   // Mock providers for testing
   const mockProviders: LLMProvider[] = [
-    { id: "openai", displayName: "OpenAI", models: ["gpt-4o", "gpt-3.5-turbo"] as LLMModel[] },
+    {
+      id: "openai",
+      displayName: "OpenAI",
+      models: ["gpt-4o", "gpt-3.5-turbo"] as LLMModel[],
+    },
     {
       id: "anthropic",
       displayName: "Anthropic",
       models: ["claude-3-opus", "claude-3-sonnet"] as LLMModel[],
     },
-    { id: "google", displayName: "Google", models: ["gemini-pro"] as LLMModel[] },
+    {
+      id: "google",
+      displayName: "Google",
+      models: ["gemini-pro"] as LLMModel[],
+    },
   ];
 
   const mockOnSelect = vi.fn();
@@ -68,7 +76,7 @@ describe("ProviderSelector", () => {
     // Find the Anthropic button (should be active)
     const anthropicButton = screen.getByText("Anthropic").closest("button");
     expect(anthropicButton).toHaveClass("btn-primary");
-  
+
     // Check that other buttons are not active
     const openaiButton = screen.getByText("OpenAI").closest("button");
     expect(openaiButton).not.toHaveClass("btn-primary");

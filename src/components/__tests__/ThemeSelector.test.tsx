@@ -96,7 +96,7 @@ describe("ThemeSelector", () => {
 
   it.skip("calls toggleTheme when clicked", () => {
     const toggleThemeMock = vi.fn();
-    
+
     render(
       <ThemeContext.Provider
         value={{
@@ -137,7 +137,7 @@ describe("ThemeSelector", () => {
 
   it("has the correct props for the button to toggle theme", () => {
     const toggleThemeMock = vi.fn();
-    
+
     render(
       <ThemeContext.Provider
         value={{
@@ -156,7 +156,7 @@ describe("ThemeSelector", () => {
 
     // Find the button
     const button = screen.getByRole("button");
-    
+
     // Check if it has the correct aria-label
     expect(button).toHaveAttribute("aria-label", expect.any(String));
   });

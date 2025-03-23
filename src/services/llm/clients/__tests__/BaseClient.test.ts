@@ -6,13 +6,17 @@ import type {
   LLMSettings,
   StreamingOptions,
   ProviderCapabilities,
+  LLMModel,
 } from "../../../../types/llm";
 
 // Create a concrete implementation of the abstract BaseClient for testing
 class TestClient extends BaseClient {
   protected readonly providerName = "test-provider";
-  protected readonly defaultModelName = "test-model";
-  protected readonly availableModels = ["test-model", "test-model-2"];
+  protected readonly defaultModelName = "test-model" as `test-model` & LLMModel;
+  protected readonly availableModels = [
+    "test-model" as `test-model` & LLMModel,
+    "test-model-2" as `test-model-2` & LLMModel,
+  ];
   protected readonly capabilities: ProviderCapabilities = {
     supportsStreaming: true,
     supportsSystemMessages: true,
@@ -29,7 +33,7 @@ class TestClient extends BaseClient {
   async sendMessage(
     _messages: Message[],
     apiKey: string,
-    _model: string,
+    _model: LLMModel,
     _settings?: LLMSettings,
     streamingOptions?: StreamingOptions,
   ): Promise<string> {
@@ -90,7 +94,7 @@ describe("BaseClient", () => {
   it("initializes with custom values", () => {
     const customClient = new TestClient({
       apiKey: "test-key",
-      model: "custom-model",
+      model: "custom-model" as `custom-model` & LLMModel,
       baseUrl: "https://custom-api.test-provider.com",
     });
 
@@ -202,14 +206,20 @@ describe("BaseClient", () => {
     );
 
     // Use a simpler approach with callbacks instead of async iterators
-    await client.sendMessage(messages, "valid-key", "test-model", undefined, {
-      onToken: (token) => {
-        streamingResponses.push(token);
+    await client.sendMessage(
+      messages,
+      "valid-key",
+      "test-model" as `test-model` & LLMModel,
+      undefined,
+      {
+        onToken: (token) => {
+          streamingResponses.push(token);
+        },
+        onComplete: () => {
+          // Do nothing
+        },
       },
-      onComplete: () => {
-        // Do nothing
-      },
-    });
+    );
 
     // Check that we received the expected chunks
     expect(streamingResponses).toEqual(["Hello, ", "world!"]);
@@ -236,7 +246,7 @@ describe("BaseClient", () => {
     for await (const chunk of client.streamMessage(
       messages,
       "valid-key",
-      "test-model",
+      "test-model" as `test-model` & LLMModel,
     )) {
       if (chunk.done && chunk.error) {
         error = chunk.error;

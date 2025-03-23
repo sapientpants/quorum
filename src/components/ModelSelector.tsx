@@ -7,7 +7,11 @@ export interface ModelSelectorProps {
   selectedModel?: LLMModel;
 }
 
-function ModelSelector({ models, selectedModel, onSelect }: ModelSelectorProps) {
+function ModelSelector({
+  models,
+  selectedModel,
+  onSelect,
+}: ModelSelectorProps) {
   const { t } = useTranslation();
 
   if (models.length === 0) {

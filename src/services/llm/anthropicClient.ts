@@ -5,7 +5,7 @@ import type {
   StreamingOptions,
   ProviderCapabilities,
   AnthropicModel,
-  LLMModel
+  LLMModel,
 } from "../../types/llm";
 import type { StreamingResponse } from "../../types/streaming";
 
@@ -358,7 +358,7 @@ export class AnthropicClient implements LLMClient {
           messages: [{ role: "user", content: "test" }],
           max_tokens: 1,
         },
-        apiKey
+        apiKey,
       );
       return true;
     } catch (_error) {

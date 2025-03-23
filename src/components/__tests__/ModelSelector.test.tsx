@@ -82,7 +82,11 @@ describe("ModelSelector", () => {
 
   it("renders nothing when models array is empty", () => {
     const { container } = render(
-      <ModelSelector models={[]} selectedModel={undefined} onSelect={mockOnSelect} />,
+      <ModelSelector
+        models={[]}
+        selectedModel={undefined}
+        onSelect={mockOnSelect}
+      />,
     );
 
     // Check that nothing is rendered

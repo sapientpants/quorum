@@ -110,7 +110,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         settings,
         {
           onToken: (token: string) => {
-            const currentText = messages.find((m) => m.id === aiMessageId)?.text ?? "";
+            const currentText =
+              messages.find((m) => m.id === aiMessageId)?.text ?? "";
             updateAIMessage(aiMessageId, { text: currentText + token });
           },
           onComplete: () => handleAIMessageSuccess(aiMessageId, ""),
@@ -169,7 +170,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         handleAIMessageSuccess(aiMessageId, data.text);
       } catch (error) {
         console.error(`Error calling ${activeProvider?.id}:`, error);
-        const finalError = error instanceof Error ? error : new Error("Unknown error");
+        const finalError =
+          error instanceof Error ? error : new Error("Unknown error");
         handleAIMessageError(aiMessageId, finalError);
       }
     },

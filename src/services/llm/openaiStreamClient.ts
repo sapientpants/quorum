@@ -1,5 +1,10 @@
 import type { Message } from "../../types/chat";
-import type { LLMSettings, StreamingOptions, OpenAIModel, LLMModel } from "../../types/llm";
+import type {
+  LLMSettings,
+  StreamingOptions,
+  OpenAIModel,
+  LLMModel,
+} from "../../types/llm";
 import type { StreamingResponse } from "../../types/streaming";
 import { BaseClient } from "./clients/BaseClient";
 import { LLMError, ErrorType } from "./LLMError";

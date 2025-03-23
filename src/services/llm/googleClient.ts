@@ -5,7 +5,7 @@ import type {
   StreamingOptions,
   ProviderCapabilities,
   GoogleModel,
-  LLMModel
+  LLMModel,
 } from "../../types/llm";
 import type { StreamingResponse } from "../../types/streaming";
 

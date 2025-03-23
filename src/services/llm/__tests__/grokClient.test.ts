@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { GrokClient } from "../grokClient";
 import type { Message } from "../../../types/chat";
-import type { LLMSettings, StreamingOptions } from "../../../types/llm";
+import type {
+  LLMSettings,
+  StreamingOptions,
+  LLMModel,
+} from "../../../types/llm";
 
 // Mock fetch
 global.fetch = vi.fn();
@@ -63,7 +67,11 @@ describe("GrokClient", () => {
     ];
 
     await expect(
-      client.sendMessage(messages, "test-key", "unsupported-model" as any),
+      client.sendMessage(
+        messages,
+        "test-key",
+        "unsupported-model" as unknown as LLMModel,
+      ),
     ).rejects.toThrow("Model unsupported-model is not available");
   });
 

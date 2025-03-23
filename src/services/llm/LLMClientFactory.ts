@@ -1,4 +1,8 @@
-import type { LLMClient, ProviderCapabilities, LLMModel } from "../../types/llm";
+import type {
+  LLMClient,
+  ProviderCapabilities,
+  LLMModel,
+} from "../../types/llm";
 import { OpenAIClient } from "./openaiClient";
 import { AnthropicClient } from "./anthropicClient";
 import { GrokClient } from "./grokClient";
@@ -15,10 +19,7 @@ const clientCache: Record<string, LLMClient> = {};
  * Register an LLM client factory for a provider
  * This allows for extending the system with new providers without modifying existing code
  */
-function registerLLMClient(
-  provider: string,
-  factory: () => LLMClient,
-): void {
+function registerLLMClient(provider: string, factory: () => LLMClient): void {
   clientRegistry.set(provider.toLowerCase(), factory);
 
   // Clear cache for this provider if it exists
@@ -140,7 +141,7 @@ function createEnhancedClient(
 // Register built-in clients
 registerLLMClient("openai", () => {
   const client = new OpenAIClient();
-  
+
   // Create a client that implements the LLMClient interface
   const enhancedClient: LLMClient = {
     sendMessage: client.sendMessage.bind(client),
@@ -148,7 +149,7 @@ registerLLMClient("openai", () => {
     getDefaultModel: () => client.getDefaultModel() as LLMModel,
     getProviderName: client.getProviderName.bind(client),
     supportsStreaming: client.supportsStreaming.bind(client),
-    
+
     validateApiKey: async (apiKey: string) => {
       if (!apiKey) return false;
       try {
@@ -160,7 +161,7 @@ registerLLMClient("openai", () => {
         return false;
       }
     },
-    
+
     getCapabilities: () => ({
       supportsStreaming: true,
       supportsSystemMessages: true,
@@ -170,7 +171,7 @@ registerLLMClient("openai", () => {
       supportsTool: true,
     }),
   };
-  
+
   return enhancedClient;
 });
 
