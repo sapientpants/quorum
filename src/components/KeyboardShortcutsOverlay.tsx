@@ -63,7 +63,7 @@ function ShortcutList({
             <span className="text-sm">{shortcut.description}</span>
             <div className="flex gap-1">
               {shortcut.keys.map((key, keyIndex) => (
-                <React.Fragment key={keyIndex}>
+                <React.Fragment key={`key-${key}-${keyIndex}`}>
                   <KeyboardKey>{key}</KeyboardKey>
                   {keyIndex < shortcut.keys.length - 1 && (
                     <span className="mx-1">+</span>

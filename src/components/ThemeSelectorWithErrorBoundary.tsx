@@ -16,7 +16,7 @@ function ThemeSelectorFallback() {
       size="sm"
       className="flex items-center gap-1 px-2"
       aria-label={t("theme.toggle")}
-      onClick={toggleTheme}
+      onPress={toggleTheme}
     >
       <Icon
         icon={isDark ? "solar:moon-linear" : "solar:sun-linear"}

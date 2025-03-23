@@ -81,13 +81,13 @@ export class GoogleClient implements LLMClient {
 
       const data = await response.json();
 
-      if (!data.candidates || !data.candidates[0]?.content?.parts) {
+      if (!data.candidates?.[0]?.content?.parts) {
         throw new GoogleError("Invalid response format from Google API");
       }
 
       // Extract the response text from the first candidate's parts
       const responseText = data.candidates[0].content.parts
-        .map((part: { text?: string }) => part.text || "")
+        .map((part: { text?: string }) => part.text ?? "")
         .join("");
 
       return responseText;

@@ -103,6 +103,14 @@ export function ParticipantForm({
     return "solar:alt-arrow-down-linear";
   };
 
+  // Helper function to render the appropriate button text
+  const renderButtonText = () => {
+    if (initialData?.name) {
+      return t("participantForm.buttons.update");
+    }
+    return t("participantForm.buttons.create");
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onFormSubmit)}
@@ -319,10 +327,8 @@ export function ParticipantForm({
               <span className="loading loading-spinner loading-sm"></span>
               {t("common.buttons.saving")}
             </>
-          ) : initialData?.name ? (
-            t("participantForm.buttons.update")
           ) : (
-            t("participantForm.buttons.create")
+            renderButtonText()
           )}
         </button>
       </div>
