@@ -27,6 +27,54 @@ interface KeyboardShortcutsOverlayProps {
   onOpenChange?: (open: boolean) => void;
 }
 
+// Helper component to render a keyboard key
+function KeyboardKey({ children }: { children: React.ReactNode }) {
+  return (
+    <kbd className="px-2 py-1.5 text-xs font-semibold text-foreground bg-accent rounded border shadow-sm inline-flex items-center justify-center min-w-8">
+      {children}
+    </kbd>
+  );
+}
+
+// Component to render a list of shortcuts filtered by platform
+function ShortcutList({ 
+  shortcuts, 
+  platform 
+}: { 
+  shortcuts: Shortcut[],
+  platform: "mac" | "windows" | "linux" | "all"
+}) {
+  return (
+    <>
+      {shortcuts
+        .filter(
+          (shortcut) =>
+            shortcut.platform === platform ||
+            shortcut.platform === "all" ||
+            !shortcut.platform,
+        )
+        .map((shortcut, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between py-2 border-b border-border last:border-0"
+          >
+            <span className="text-sm">{shortcut.description}</span>
+            <div className="flex gap-1">
+              {shortcut.keys.map((key, keyIndex) => (
+                <React.Fragment key={keyIndex}>
+                  <KeyboardKey>{key}</KeyboardKey>
+                  {keyIndex < shortcut.keys.length - 1 && (
+                    <span className="mx-1">+</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        ))}
+    </>
+  );
+}
+
 export function KeyboardShortcutsOverlay({
   isOpen: externalIsOpen,
   onOpenChange: externalOnOpenChange,
@@ -236,43 +284,9 @@ export function KeyboardShortcutsOverlay({
     },
   ];
 
-  // Helper function to render a keyboard key
-  function KeyboardKey({ children }: { children: React.ReactNode }) {
-    return (
-      <kbd className="px-2 py-1.5 text-xs font-semibold text-foreground bg-accent rounded border shadow-sm inline-flex items-center justify-center min-w-8">
-        {children}
-      </kbd>
-    );
-  }
 
-  // Render each shortcut
-  function renderShortcuts(shortcuts: Shortcut[]) {
-    return shortcuts
-      .filter(
-        (shortcut) =>
-          shortcut.platform === platform ||
-          shortcut.platform === "all" ||
-          !shortcut.platform,
-      )
-      .map((shortcut, index) => (
-        <div
-          key={index}
-          className="flex items-center justify-between py-2 border-b border-border last:border-0"
-        >
-          <span className="text-sm">{shortcut.description}</span>
-          <div className="flex gap-1">
-            {shortcut.keys.map((key, keyIndex) => (
-              <React.Fragment key={keyIndex}>
-                <KeyboardKey>{key}</KeyboardKey>
-                {keyIndex < shortcut.keys.length - 1 && (
-                  <span className="mx-1">+</span>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-      ));
-  }
+
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange || setInternalIsOpen}>
@@ -300,7 +314,7 @@ export function KeyboardShortcutsOverlay({
             <TabsContent key={category.id} value={category.id} className="mt-4">
               <ScrollArea className="h-[340px] pr-4">
                 <div className="space-y-1">
-                  {renderShortcuts(category.shortcuts)}
+                  <ShortcutList shortcuts={category.shortcuts} platform={platform} />
                 </div>
               </ScrollArea>
             </TabsContent>
