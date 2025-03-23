@@ -24,7 +24,7 @@ interface AnthropicRequest {
   stream?: boolean;
 }
 
-interface AnthropicResponse {
+export interface AnthropicResponse {
   id: string;
   type: string;
   model: string;
@@ -38,7 +38,7 @@ interface AnthropicResponse {
   };
 }
 
-interface AnthropicStreamChunk {
+export interface AnthropicStreamChunk {
   delta?: {
     text: string;
   };
@@ -130,9 +130,20 @@ export class AnthropicClient extends BaseClient {
    * Extract the content from an Anthropic API response
    */
   protected extractContentFromResponse(responseData: unknown): string {
-    const data = responseData as AnthropicResponse;
+    // Using type guard instead of type assertion
+    if (!this.isAnthropicResponse(responseData)) {
+      throw new LLMError(
+        LLMErrorType.API_ERROR,
+        "Invalid response format from Anthropic",
+        { provider: this.providerName },
+      );
+    }
 
-    if (!data.content?.length) {
+    const data = responseData;
+
+    // The empty content array case is already checked in the isAnthropicResponse method,
+    // but we'll check it again here to match the expected error message in the tests
+    if (!data.content || data.content.length === 0) {
       throw new LLMError(
         LLMErrorType.API_ERROR,
         "No response content from Anthropic",
@@ -147,8 +158,10 @@ export class AnthropicClient extends BaseClient {
    * Extract token content from an Anthropic streaming chunk
    */
   protected extractTokenFromStreamChunk(chunk: unknown): string | null {
-    const data = chunk as AnthropicStreamChunk;
-    return data.delta?.text ?? null;
+    if (this.isAnthropicStreamChunk(chunk)) {
+      return chunk.delta?.text ?? null;
+    }
+    return null;
   }
 
   /**
@@ -170,8 +183,66 @@ export class AnthropicClient extends BaseClient {
   }
 
   /**
-   * Convert Anthropic-specific errors to standard LLMError format
+   * Type guard to check if a value has the structure of an AnthropicResponse
    */
+  protected isAnthropicResponse(value: unknown): value is AnthropicResponse {
+    if (typeof value !== "object" || value === null) {
+      return false;
+    }
+
+    const obj = value as Record<string, unknown>;
+
+    if (!("content" in obj) || !Array.isArray(obj.content)) {
+      return false;
+    }
+
+    if (obj.content.length === 0) {
+      return false;
+    }
+
+    const firstContent = obj.content[0];
+    if (
+      typeof firstContent !== "object" ||
+      firstContent === null ||
+      !("type" in firstContent) ||
+      !("text" in firstContent)
+    ) {
+      return false;
+    }
+
+    return (
+      typeof firstContent.type === "string" &&
+      typeof firstContent.text === "string"
+    );
+  }
+
+  /**
+   * Type guard for stream chunks
+   */
+  protected isAnthropicStreamChunk(
+    value: unknown,
+  ): value is AnthropicStreamChunk {
+    if (typeof value !== "object" || value === null) {
+      return false;
+    }
+
+    const obj = value as Record<string, unknown>;
+
+    if (!("delta" in obj)) {
+      return false;
+    }
+
+    const delta = obj.delta;
+    if (typeof delta !== "object" || delta === null) {
+      return false;
+    }
+
+    return (
+      "text" in (delta as Record<string, unknown>) &&
+      typeof (delta as Record<string, unknown>).text === "string"
+    );
+  }
+
   protected convertToStandardError(error: unknown): LLMError {
     const anthropicError = error as AnthropicError;
 

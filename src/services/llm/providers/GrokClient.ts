@@ -7,47 +7,12 @@ import type {
 } from "../../../types/llm";
 import { BaseClient } from "../base/BaseClient";
 import { LLMError, LLMErrorType } from "../errors";
-
-// Grok-specific interfaces
-interface GrokMessage {
-  role: "system" | "user" | "assistant";
-  content: string;
-}
-
-interface GrokRequest {
-  model: string;
-  messages: GrokMessage[];
-  temperature?: number;
-  max_tokens?: number;
-  top_p?: number;
-  stream?: boolean;
-}
-
-interface GrokResponse {
-  id: string;
-  model: string;
-  choices: {
-    index: number;
-    message: {
-      role: string;
-      content: string;
-    };
-    finish_reason: string;
-  }[];
-  usage: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
-interface GrokStreamChunk {
-  choices: {
-    delta?: {
-      content: string;
-    };
-  }[];
-}
+import type {
+  GrokMessage,
+  GrokRequest,
+  GrokResponse,
+  GrokStreamChunk,
+} from "./types";
 
 // Provider-specific error type
 export class GrokError extends Error {
@@ -120,12 +85,74 @@ export class GrokClient extends BaseClient {
   }
 
   /**
+   * Type guard to check if a value has the structure of a GrokResponse
+   */
+  protected isGrokResponse(value: unknown): value is GrokResponse {
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      "choices" in value &&
+      Array.isArray((value as Record<string, unknown>).choices)
+    ) {
+      const choices = (value as Record<string, unknown>).choices as unknown[];
+      if (choices.length > 0) {
+        const firstChoice = choices[0] as Record<string, unknown>;
+        return (
+          typeof firstChoice === "object" &&
+          firstChoice !== null &&
+          "message" in firstChoice &&
+          typeof firstChoice.message === "object" &&
+          firstChoice.message !== null &&
+          "content" in (firstChoice.message as Record<string, unknown>) &&
+          typeof (firstChoice.message as Record<string, unknown>).content ===
+            "string"
+        );
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Type guard for stream chunks
+   */
+  protected isGrokStreamChunk(value: unknown): value is GrokStreamChunk {
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      "choices" in value &&
+      Array.isArray((value as Record<string, unknown>).choices)
+    ) {
+      const choices = (value as Record<string, unknown>).choices as unknown[];
+      if (choices.length > 0) {
+        const firstChoice = choices[0] as Record<string, unknown>;
+        return (
+          typeof firstChoice === "object" &&
+          firstChoice !== null &&
+          "delta" in firstChoice &&
+          typeof firstChoice.delta === "object" &&
+          firstChoice.delta !== null &&
+          "content" in (firstChoice.delta as Record<string, unknown>) &&
+          typeof (firstChoice.delta as Record<string, unknown>).content ===
+            "string"
+        );
+      }
+    }
+    return false;
+  }
+
+  /**
    * Extract the content from a Grok API response
    */
   protected extractContentFromResponse(responseData: unknown): string {
-    const data = responseData as GrokResponse;
+    if (!this.isGrokResponse(responseData)) {
+      throw new LLMError(
+        LLMErrorType.API_ERROR,
+        "Invalid response format from Grok",
+        { provider: this.providerName },
+      );
+    }
 
-    if (!data.choices || data.choices.length === 0) {
+    if (!responseData.choices || responseData.choices.length === 0) {
       throw new LLMError(
         LLMErrorType.API_ERROR,
         "No response content from Grok",
@@ -133,20 +160,19 @@ export class GrokClient extends BaseClient {
       );
     }
 
-    return data.choices[0].message.content;
+    return responseData.choices[0].message.content;
   }
 
   /**
    * Extract token content from a Grok streaming chunk
    */
   protected extractTokenFromStreamChunk(chunk: unknown): string | null {
-    const data = chunk as GrokStreamChunk;
-
-    if (data.choices?.[0]?.delta?.content) {
-      return data.choices[0].delta.content;
+    if (!this.isGrokStreamChunk(chunk)) {
+      return null;
     }
 
-    return null;
+    const typedChunk = chunk as GrokStreamChunk;
+    return typedChunk.choices[0].delta?.content || null;
   }
 
   /**

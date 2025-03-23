@@ -80,6 +80,16 @@ export class AnthropicClient implements LLMClient {
 
   private readonly defaultModel: AnthropicModel = "claude-3.7-sonnet";
 
+  /**
+   * Type guard to check if a model is a supported Anthropic model
+   */
+  private isAnthropicModel(model: LLMModel): model is AnthropicModel {
+    // Check if the model string exists in our supported models array
+    return this.supportedModels.some(
+      (supportedModel) => supportedModel === model,
+    );
+  }
+
   // Convert our app's message format to Anthropic's format
   private convertToAnthropicMessages(messages: Message[]): {
     messages: AnthropicMessage[];
@@ -118,7 +128,7 @@ export class AnthropicClient implements LLMClient {
       throw new AnthropicAuthError();
     }
 
-    if (!this.supportedModels.includes(model as AnthropicModel)) {
+    if (!this.isAnthropicModel(model)) {
       throw new AnthropicModelError(
         `Model ${model} is not available. Available models: ${this.supportedModels.join(", ")}`,
       );
