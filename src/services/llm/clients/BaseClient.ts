@@ -230,7 +230,7 @@ export abstract class BaseClient implements LLMClient {
             requestId: errorBody.request_id ?? errorBody.requestId ?? null,
           },
         );
-      } else if (errorMessage && errorMessage.includes("timeout")) {
+      } else if (errorMessage?.includes("timeout")) {
         llmError = new LLMError(
           LLMErrorType.TIMEOUT,
           "Request timed out. Please try again.",
@@ -241,10 +241,9 @@ export abstract class BaseClient implements LLMClient {
           },
         );
       } else if (
-        errorMessage &&
-        (errorMessage.includes("network") ||
-          errorMessage.includes("connection") ||
-          errorMessage.includes("offline"))
+        errorMessage?.includes("network") ||
+        errorMessage?.includes("connection") ||
+        errorMessage?.includes("offline")
       ) {
         llmError = new LLMError(
           LLMErrorType.NETWORK,

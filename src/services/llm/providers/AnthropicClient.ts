@@ -148,7 +148,7 @@ export class AnthropicClient extends BaseClient {
    */
   protected extractTokenFromStreamChunk(chunk: unknown): string | null {
     const data = chunk as AnthropicStreamChunk;
-    return data.delta?.text || null;
+    return data.delta?.text ?? null;
   }
 
   /**

@@ -22,7 +22,7 @@ export class LLMClientFactory {
   public static getLLMClient(provider: LLMProviderId): LLMClient {
     // Check if we have a cached instance
     if (this.clientCache[provider]) {
-      return this.clientCache[provider]!;
+      return this.clientCache[provider];
     }
 
     // Create a new client instance based on the provider
