@@ -9,9 +9,9 @@ import { LLM_PROVIDERS } from "../types/llm";
 import { useTranslation } from "react-i18next";
 
 interface ParticipantFormProps {
-  initialData?: Partial<Participant>;
-  onSubmit: (data: Omit<Participant, "id">) => void;
-  onCancel: () => void;
+  readonly initialData?: Partial<Participant>;
+  readonly onSubmit: (data: Omit<Participant, "id">) => void;
+  readonly onCancel: () => void;
 }
 
 // Default values remain the same since they're not displayed text

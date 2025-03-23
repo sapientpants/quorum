@@ -27,8 +27,8 @@ export function createTemplate(
   return {
     id: crypto.randomUUID(),
     name: data.name,
-    description: data.description || "",
-    participantIds: data.participantIds || [],
+    description: data.description ?? "",
+    participantIds: data.participantIds ?? [],
     defaultConversationStarter: data.defaultConversationStarter,
     createdAt: now,
     updatedAt: now,

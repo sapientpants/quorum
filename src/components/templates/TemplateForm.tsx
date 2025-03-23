@@ -19,9 +19,9 @@ const templateFormSchema = z.object({
 type TemplateFormValues = z.infer<typeof templateFormSchema>;
 
 interface TemplateFormProps {
-  initialData?: Template;
-  onCancel: () => void;
-  onSuccess?: () => void;
+  readonly initialData?: Template;
+  readonly onCancel: () => void;
+  readonly onSuccess?: () => void;
 }
 
 function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
@@ -43,10 +43,10 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
   } = useForm<TemplateFormValues>({
     resolver: zodResolver(templateFormSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      description: initialData?.description || "",
-      participantIds: initialData?.participantIds || [],
-      defaultConversationStarter: initialData?.defaultConversationStarter || "",
+      name: initialData?.name ?? "",
+      description: initialData?.description ?? "",
+      participantIds: initialData?.participantIds ?? [],
+      defaultConversationStarter: initialData?.defaultConversationStarter ?? "",
     },
   });
 

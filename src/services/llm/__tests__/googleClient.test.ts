@@ -3,7 +3,7 @@ import { GoogleClient } from "../googleClient";
 import { GOOGLE_MODELS } from "../../../types/llm";
 import type { GoogleModel } from "../../../types/llm";
 import type { Message } from "../../../types/chat";
-import type { LLMSettings, StreamingOptions } from "../../../types/llm";
+import type { LLMSettings } from "../../../types/llm";
 
 describe("GoogleClient", () => {
   let client: GoogleClient;
@@ -13,10 +13,26 @@ describe("GoogleClient", () => {
     client = new GoogleClient();
     // Mock console.log to prevent it from cluttering the test output
     consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    // Mock the fetch function to avoid real API calls
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          candidates: [
+            {
+              content: {
+                parts: [{ text: "Response from Google Gemini API" }],
+              },
+            },
+          ],
+        }),
+    } as Response);
   });
 
   afterEach(() => {
     consoleSpy.mockRestore();
+    vi.restoreAllMocks();
   });
 
   it("returns the correct provider name", () => {
@@ -83,25 +99,14 @@ describe("GoogleClient", () => {
       maxTokens: 100,
     };
 
-    const streamingOptions: StreamingOptions = {
-      onToken: vi.fn(),
-      onComplete: vi.fn(),
-      onError: vi.fn(),
-    };
-
     await client.sendMessage(
       messages,
       "test-key",
       "gemini-2.0-pro" as GoogleModel,
       settings,
-      streamingOptions,
     );
 
     expect(consoleSpy).toHaveBeenCalledWith("Using settings:", settings);
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Using streaming options:",
-      streamingOptions,
-    );
     expect(consoleSpy).toHaveBeenCalledWith(
       "Processing messages:",
       messages.length,

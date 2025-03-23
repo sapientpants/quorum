@@ -10,6 +10,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { ScrollArea } from "./ui/scroll-area";
 
+type Platform = "mac" | "windows" | "linux" | "all";
+
 interface ShortcutCategory {
   id: string;
   name: string;
@@ -19,7 +21,7 @@ interface ShortcutCategory {
 interface Shortcut {
   keys: string[];
   description: string;
-  platform?: "mac" | "windows" | "linux" | "all";
+  platform?: Platform;
 }
 
 interface KeyboardShortcutsOverlayProps {
@@ -28,7 +30,7 @@ interface KeyboardShortcutsOverlayProps {
 }
 
 // Helper component to render a keyboard key
-function KeyboardKey({ children }: { children: React.ReactNode }) {
+function KeyboardKey({ children }: { readonly children: React.ReactNode }) {
   return (
     <kbd className="px-2 py-1.5 text-xs font-semibold text-foreground bg-accent rounded border shadow-sm inline-flex items-center justify-center min-w-8">
       {children}
@@ -41,8 +43,8 @@ function ShortcutList({
   shortcuts,
   platform,
 }: {
-  shortcuts: Shortcut[];
-  platform: "mac" | "windows" | "linux" | "all";
+  readonly shortcuts: Shortcut[];
+  readonly platform: Platform;
 }) {
   return (
     <>
@@ -53,9 +55,9 @@ function ShortcutList({
             shortcut.platform === "all" ||
             !shortcut.platform,
         )
-        .map((shortcut, index) => (
+        .map((shortcut) => (
           <div
-            key={`${shortcut.description}-${index}`}
+            key={`${shortcut.description}-${shortcut.keys.join("-")}`}
             className="flex items-center justify-between py-2 border-b border-border last:border-0"
           >
             <span className="text-sm">{shortcut.description}</span>
@@ -80,9 +82,7 @@ export function KeyboardShortcutsOverlay({
   onOpenChange: externalOnOpenChange,
 }: KeyboardShortcutsOverlayProps = {}) {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
-  const [platform, setPlatform] = useState<"mac" | "windows" | "linux" | "all">(
-    "all",
-  );
+  const [platform, setPlatform] = useState<Platform>("all");
   const [activeTab, setActiveTab] = useState("general");
 
   // Determine if we're using internal or external state

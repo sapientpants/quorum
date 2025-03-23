@@ -2,7 +2,6 @@ import type { Message } from "../../types/chat";
 import type {
   LLMClient,
   LLMSettings,
-  StreamingOptions,
   ProviderCapabilities,
   GoogleModel,
   LLMModel,
@@ -34,7 +33,6 @@ export class GoogleClient implements LLMClient {
     apiKey: string,
     model: LLMModel = this.defaultModel as LLMModel,
     settings?: LLMSettings,
-    streamingOptions?: StreamingOptions,
   ): Promise<string> {
     if (!apiKey) throw new GoogleError("API key is required");
     if (!this.supportedModels.includes(model as GoogleModel)) {
@@ -42,13 +40,57 @@ export class GoogleClient implements LLMClient {
     }
 
     try {
-      // TODO: Implement actual API call to Google's Gemini API
-      // This is a placeholder that should be replaced with actual implementation
+      const apiUrl = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`;
+
+      // Log settings and messages for test coverage
       console.log("Using settings:", settings);
-      console.log("Using streaming options:", streamingOptions);
       console.log("Processing messages:", messages.length);
 
-      return "Response from Google Gemini API";
+      // Convert our messages format to Google's format
+      const formattedMessages = messages.map((msg) => ({
+        role: msg.role === "assistant" ? "model" : msg.role,
+        parts: [{ text: msg.text }],
+      }));
+
+      const requestBody = {
+        contents: formattedMessages,
+        generationConfig: {
+          temperature: settings?.temperature ?? 0.7,
+          maxOutputTokens: settings?.maxTokens ?? 800,
+          topP: 0.95,
+          topK: 40,
+        },
+      };
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new GoogleError(
+          `Google API error: ${response.status} ${response.statusText}`,
+          String(response.status),
+          errorData,
+        );
+      }
+
+      const data = await response.json();
+
+      if (!data.candidates || !data.candidates[0]?.content?.parts) {
+        throw new GoogleError("Invalid response format from Google API");
+      }
+
+      // Extract the response text from the first candidate's parts
+      const responseText = data.candidates[0].content.parts
+        .map((part: { text?: string }) => part.text || "")
+        .join("");
+
+      return responseText;
     } catch (error) {
       throw new GoogleError(
         "Failed to send message to Google API",

@@ -55,8 +55,8 @@ function WizardStepGuard({
   children,
   requiredStep,
 }: {
-  children: React.ReactNode;
-  requiredStep: number;
+  readonly children: React.ReactNode;
+  readonly requiredStep: number;
 }) {
   const { preferences } = usePreferencesStore();
   const wizardStep = preferences.wizardStep || 0;
@@ -71,7 +71,11 @@ function WizardStepGuard({
 }
 
 // Route guard for completed wizard
-function CompletedWizardGuard({ children }: { children: React.ReactNode }) {
+function CompletedWizardGuard({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   const { preferences } = usePreferencesStore();
   const wizardCompleted = preferences.wizardCompleted;
 

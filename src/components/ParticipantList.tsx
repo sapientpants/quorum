@@ -21,9 +21,9 @@ import { useParticipantsStore } from "../store/participants";
 import type { Participant } from "../types/participant";
 
 interface ParticipantCardProps {
-  participant: Participant;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
+  readonly participant: Participant;
+  readonly onEdit: (id: string) => void;
+  readonly onDelete: (id: string) => void;
 }
 
 function ParticipantCard({
@@ -97,7 +97,7 @@ function ParticipantCard({
 }
 
 interface SortableParticipantProps extends ParticipantCardProps {
-  id: string;
+  readonly id: string;
 }
 
 function SortableParticipant({ id, ...props }: SortableParticipantProps) {
@@ -135,9 +135,9 @@ function SortableParticipant({ id, ...props }: SortableParticipantProps) {
 }
 
 interface ConfirmDeleteProps {
-  participant: Participant;
-  onConfirm: () => void;
-  onCancel: () => void;
+  readonly participant: Participant;
+  readonly onConfirm: () => void;
+  readonly onCancel: () => void;
 }
 
 function ConfirmDelete({

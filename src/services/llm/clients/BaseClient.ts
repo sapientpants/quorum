@@ -1,7 +1,11 @@
 import type { Message } from "../../../types/chat";
-import type { LLMSettings, LLMModel } from "../../../types/llm";
-import type { LLMClient, StreamingOptions } from "../../../types/llm";
-import type { ProviderCapabilities } from "../../../types/llm";
+import type {
+  LLMSettings,
+  LLMModel,
+  LLMClient,
+  StreamingOptions,
+  ProviderCapabilities,
+} from "../../../types/llm";
 import type { StreamingResponse } from "../../../types/streaming";
 import { LLMChatMessage, LLMResponse, LLMConfig } from "../types";
 import { LLMError, LLMErrorType } from "../errors";
@@ -181,7 +185,7 @@ export abstract class BaseClient implements LLMClient {
         data?: unknown;
       };
       const status =
-        errorObj.status || errorObj.statusCode || errorObj.response?.status;
+        errorObj.status ?? errorObj.statusCode ?? errorObj.response?.status;
       const errorBody = (errorObj.response?.data || errorObj.data || {}) as {
         request_id?: string;
         requestId?: string;

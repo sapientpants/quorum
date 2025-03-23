@@ -15,8 +15,8 @@ import { Label } from "./ui/label";
 import { useTranslation } from "react-i18next";
 
 interface ApiKeyManagerProps {
-  onApiKeyChange: (provider: string, apiKey: string) => void;
-  storageOption?: ApiKeyStorageOptions;
+  readonly onApiKeyChange: (provider: string, apiKey: string) => void;
+  readonly storageOption?: ApiKeyStorageOptions;
 }
 
 function ApiKeyManager({

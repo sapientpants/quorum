@@ -23,11 +23,11 @@ import {
  */
 interface ApiKeySetupProps {
   /** Callback function to execute when setup is complete */
-  onComplete: () => void | Promise<void>;
+  readonly onComplete: () => void | Promise<void>;
   /** Initial API keys to populate the form with */
-  initialKeys?: ApiKey[];
+  readonly initialKeys?: ApiKey[];
   /** Storage type for the API keys */
-  storageType?: ApiKeyStorageOptions["storage"];
+  readonly storageType?: ApiKeyStorageOptions["storage"];
 }
 
 /**

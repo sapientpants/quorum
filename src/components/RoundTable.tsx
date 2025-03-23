@@ -4,20 +4,20 @@ import type { Participant } from "../types/participant";
 import { useTranslation } from "react-i18next";
 
 interface RoundTableProps {
-  participants: Participant[];
-  activeParticipantId: string | null;
-  onParticipantClick: (id: string) => void;
-  className?: string;
+  readonly participants: Participant[];
+  readonly activeParticipantId: string | null;
+  readonly onParticipantClick: (id: string) => void;
+  readonly className?: string;
 }
 
 interface ParticipantNodeProps {
-  participant: Participant;
-  index: number;
-  total: number;
-  size: number;
-  isActive: boolean;
-  onClick: () => void;
-  isThinking?: boolean;
+  readonly participant: Participant;
+  readonly index: number;
+  readonly total: number;
+  readonly size: number;
+  readonly isActive: boolean;
+  readonly onClick: () => void;
+  readonly isThinking?: boolean;
 }
 
 function ParticipantNode({

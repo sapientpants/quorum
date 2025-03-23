@@ -16,10 +16,10 @@ const advancedSettingsSchema = z.object({
 type AdvancedSettingsData = z.infer<typeof advancedSettingsSchema>;
 
 interface ParticipantAdvancedSettingsProps {
-  isOpen: boolean;
-  onClose: () => void;
-  initialSettings: Partial<AdvancedSettingsData>;
-  onSave: (settings: AdvancedSettingsData) => void;
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
+  readonly initialSettings: Partial<AdvancedSettingsData>;
+  readonly onSave: (settings: AdvancedSettingsData) => void;
 }
 
 export function ParticipantAdvancedSettings({
@@ -39,11 +39,11 @@ export function ParticipantAdvancedSettings({
   } = useForm<AdvancedSettingsData>({
     resolver: zodResolver(advancedSettingsSchema),
     defaultValues: {
-      temperature: initialSettings.temperature || 0.7,
-      maxTokens: initialSettings.maxTokens || 1000,
-      topP: initialSettings.topP || 0.9,
-      presencePenalty: initialSettings.presencePenalty || 0,
-      frequencyPenalty: initialSettings.frequencyPenalty || 0,
+      temperature: initialSettings.temperature ?? 0.7,
+      maxTokens: initialSettings.maxTokens ?? 1000,
+      topP: initialSettings.topP ?? 0.9,
+      presencePenalty: initialSettings.presencePenalty ?? 0,
+      frequencyPenalty: initialSettings.frequencyPenalty ?? 0,
     },
   });
 
