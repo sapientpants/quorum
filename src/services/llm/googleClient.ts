@@ -71,12 +71,12 @@ export class GoogleClient implements LLMClient {
   }
 
   supportsStreaming(): boolean {
-    return false;
+    return true;
   }
 
   getCapabilities(): ProviderCapabilities {
     return {
-      supportsStreaming: false,
+      supportsStreaming: true,
       supportsSystemMessages: true,
       maxContextLength: 32768,
     };

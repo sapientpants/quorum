@@ -104,17 +104,39 @@ function createEnhancedClient(
         // First do basic format validation
         const formatValidation = validateApiKey(provider, apiKey);
         if (!formatValidation.isValid) {
+          console.error(`Invalid API key format for ${provider}`);
           return false;
         }
 
         // Then try to validate with the provider's API
         try {
-          const response = await fetch("https://api.openai.com/v1/models", {
-            headers: { Authorization: `Bearer ${apiKey}` },
-          });
-          return response.ok;
-        } catch (_error) {
-          console.error(`Error validating ${provider} API key:`, _error);
+          let url = "https://api.openai.com/v1/models";
+          let headers: Record<string, string> = {
+            Authorization: `Bearer ${apiKey}`,
+          };
+
+          // Use provider-specific endpoint and header format
+          if (provider === "anthropic") {
+            url = "https://api.anthropic.com/v1/models";
+            headers = { "x-api-key": apiKey };
+          } else if (provider === "google") {
+            url = "https://generativelanguage.googleapis.com/v1/models";
+            headers = { "x-goog-api-key": apiKey };
+          } else if (provider === "grok") {
+            url = "https://api.grok.ai/models";
+            headers = { Authorization: `Bearer ${apiKey}` };
+          }
+
+          const response = await fetch(url, { headers });
+          if (!response.ok) {
+            console.error(
+              `API validation failed for ${provider}: ${response.status} ${response.statusText}`,
+            );
+            return false;
+          }
+          return true;
+        } catch (error) {
+          console.error(`Error validating ${provider} API key:`, error);
           return false;
         }
       }),

@@ -99,9 +99,9 @@ describe("ProviderSelector", () => {
     const openaiButton = screen.getByText("OpenAI");
     expect(openaiButton).not.toBeDisabled();
 
-    // Check that other buttons are disabled and show "No API Key" text
-    expect(screen.getByText("Anthropic (No API Key)")).toBeDisabled();
-    expect(screen.getByText("Google (No API Key)")).toBeDisabled();
+    // Check that other buttons are disabled and show "Configure API Key" text
+    expect(screen.getByText("Anthropic (Configure API Key)")).toBeDisabled();
+    expect(screen.getByText("Google (Configure API Key)")).toBeDisabled();
   });
 
   it("calls onSelect when a provider is clicked", () => {
@@ -139,7 +139,7 @@ describe("ProviderSelector", () => {
     );
 
     // Try to click on the disabled Anthropic button
-    const anthropicButton = screen.getByText("Anthropic (No API Key)");
+    const anthropicButton = screen.getByText("Anthropic (Configure API Key)");
     fireEvent.click(anthropicButton);
 
     // Check that onSelect was not called

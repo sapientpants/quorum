@@ -9,10 +9,6 @@ import {
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState(i18n.language || "en");
 
-  const changeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
-  };
-
   useEffect(() => {
     const handleLanguageChanged = (lng: string) => {
       setLanguage(lng);
@@ -25,14 +21,17 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const value = useMemo<LanguageContextType>(
-    () => ({
+  const value = useMemo<LanguageContextType>(() => {
+    const changeLanguage = (lang: string) => {
+      i18n.changeLanguage(lang);
+    };
+
+    return {
       language,
       changeLanguage,
       availableLanguages,
-    }),
-    [language, changeLanguage],
-  );
+    };
+  }, [language]);
 
   return (
     <LanguageContext.Provider value={value}>

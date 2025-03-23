@@ -39,7 +39,6 @@ vi.mock("react", async () => {
   const actual = await vi.importActual("react");
   return {
     ...actual,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     lazy: (_factory: () => Promise<{ default: unknown }>) => {
       const Component = () => <div>Mocked Lazy Component</div>;
       Component.displayName = "MockedLazyComponent";

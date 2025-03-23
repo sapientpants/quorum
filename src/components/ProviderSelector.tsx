@@ -19,20 +19,29 @@ function ProviderSelector({
   return (
     <div>
       <label className="label">
-        <span className="label-text">{t("providerSelector.label")}</span>
+        <span className="label-text">
+          {t("providerSelector.selectProvider")}
+        </span>
       </label>
       <div className="btn-group">
-        {providers.map((provider) => (
-          <button
-            key={provider.id}
-            className={`btn btn-sm ${provider.id === activeProvider?.id ? "btn-primary" : "btn-outline"}`}
-            onClick={() => onSelect(provider)}
-            disabled={!apiKeys[provider.id]}
-          >
-            {provider.displayName}
-            {!apiKeys[provider.id] && ` (${t("providerSelector.noApiKey")})`}
-          </button>
-        ))}
+        {providers.map((provider) => {
+          const isActive = provider.id === activeProvider?.id;
+          const hasApiKey = !!apiKeys[provider.id];
+
+          return (
+            <button
+              key={provider.id}
+              className={`btn btn-sm ${
+                isActive ? "btn-primary bg-primary" : "btn-outline"
+              } ${hasApiKey ? "hover:bg-primary" : ""}`}
+              onClick={() => onSelect(provider)}
+              disabled={!hasApiKey}
+            >
+              {provider.displayName}
+              {!hasApiKey && ` (${t("providerSelector.configureApiKey")})`}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -22,12 +22,6 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
   const [currentProvider, setCurrentProvider] = useState<string | null>(null);
   const { t } = useTranslation();
 
-  // Clear error helper
-  const clearError = () => {
-    setApiError(null);
-    setShowApiErrorModal(false);
-  };
-
   // Monitor online status
   useEffect(() => {
     const handleOnline = () => {
@@ -87,8 +81,14 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
   }, [apiError]);
 
   // The value provided to consumers
-  const value = useMemo<ErrorContextType>(
-    () => ({
+  const value = useMemo<ErrorContextType>(() => {
+    // Moved clearError inside useMemo to avoid dependency array issues
+    const clearError = () => {
+      setApiError(null);
+      setShowApiErrorModal(false);
+    };
+
+    return {
       apiError,
       setApiError,
       showApiErrorModal,
@@ -99,19 +99,17 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
       currentProvider,
       setCurrentProvider,
       clearError,
-    }),
-    [
-      apiError,
-      setApiError,
-      showApiErrorModal,
-      setShowApiErrorModal,
-      networkStatus,
-      isLowBandwidth,
-      currentProvider,
-      setCurrentProvider,
-      clearError,
-    ],
-  );
+    };
+  }, [
+    apiError,
+    setApiError,
+    showApiErrorModal,
+    setShowApiErrorModal,
+    networkStatus,
+    isLowBandwidth,
+    currentProvider,
+    setCurrentProvider,
+  ]);
 
   return (
     <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>

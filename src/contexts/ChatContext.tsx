@@ -128,6 +128,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       streamMessage,
       handleAIMessageSuccess,
       handleAIMessageError,
+      updateAIMessage,
+      setError,
     ],
   );
 
@@ -181,6 +183,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       makeApiRequest,
       handleAIMessageSuccess,
       handleAIMessageError,
+      setError,
     ],
   );
 
