@@ -104,11 +104,11 @@ function TemplateForm({ initialData, onCancel, onSuccess }: TemplateFormProps) {
         </>
       );
     }
-    
+
     if (initialData) {
       return t("templateForm.buttons.update");
     }
-    
+
     return t("templateForm.buttons.create");
   };
 

@@ -10,10 +10,10 @@ function createLLMErrorFromException(err: unknown): LLMError {
   if (err instanceof LLMError) {
     return err;
   }
-  
+
   const errorMessage = err instanceof Error ? err.message : "Unknown error";
   return new LLMError(ErrorType.API_ERROR, errorMessage);
-};
+}
 
 /**
  * Hook for using streaming LLM responses with async iterables

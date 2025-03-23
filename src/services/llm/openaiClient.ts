@@ -173,7 +173,10 @@ export class OpenAIClient implements LLMClient {
   /**
    * Make a streaming request to the OpenAI API
    */
-  private async makeStreamRequest(requestBody: OpenAIRequest, apiKey: string): Promise<Response> {
+  private async makeStreamRequest(
+    requestBody: OpenAIRequest,
+    apiKey: string,
+  ): Promise<Response> {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -198,7 +201,7 @@ export class OpenAIClient implements LLMClient {
    */
   private async processResponseStream(
     responseBody: ReadableStream<Uint8Array>,
-    streamingOptions: StreamingOptions
+    streamingOptions: StreamingOptions,
   ): Promise<string> {
     const reader = responseBody.getReader();
     const decoder = new TextDecoder("utf-8");
@@ -234,7 +237,7 @@ export class OpenAIClient implements LLMClient {
   private getValidLinesFromChunk(chunk: string): string[] {
     return chunk
       .split("\n")
-      .filter(line => line.trim() !== "" && line.trim() !== "data: [DONE]");
+      .filter((line) => line.trim() !== "" && line.trim() !== "data: [DONE]");
   }
 
   /**
@@ -243,7 +246,7 @@ export class OpenAIClient implements LLMClient {
   private processStreamLines(
     lines: string[],
     currentResult: string,
-    streamingOptions: StreamingOptions
+    streamingOptions: StreamingOptions,
   ): string {
     let result = currentResult;
 

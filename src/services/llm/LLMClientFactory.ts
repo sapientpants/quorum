@@ -107,39 +107,42 @@ function createEnhancedClient(
         }
 
         // Then try to validate with the provider's API
-          try {
-            // Make a request to validate the API key
-            let response: Response;
+        try {
+          // Make a request to validate the API key
+          let response: Response;
 
-            switch (provider) {
-              case "openai":
-                response = await fetch("https://api.openai.com/v1/models", { 
-                  headers: { Authorization: `Bearer ${apiKey}` }
-                });
-                break;
+          switch (provider) {
+            case "openai":
+              response = await fetch("https://api.openai.com/v1/models", {
+                headers: { Authorization: `Bearer ${apiKey}` },
+              });
+              break;
 
-              case "anthropic":
-                response = await fetch("https://api.anthropic.com/v1/models", { 
-                  headers: { "x-api-key": apiKey }
-                });
-                break;
+            case "anthropic":
+              response = await fetch("https://api.anthropic.com/v1/models", {
+                headers: { "x-api-key": apiKey },
+              });
+              break;
 
-              case "grok":
-                response = await fetch("https://api.grok.x/v1/models", { 
-                  headers: { Authorization: `Bearer ${apiKey}` }
-                });
-                break;
+            case "grok":
+              response = await fetch("https://api.grok.x/v1/models", {
+                headers: { Authorization: `Bearer ${apiKey}` },
+              });
+              break;
 
-              case "google":
-                response = await fetch("https://generativelanguage.googleapis.com/v1/models", { 
-                  headers: { "x-goog-api-key": apiKey }
-                });
-                break;
+            case "google":
+              response = await fetch(
+                "https://generativelanguage.googleapis.com/v1/models",
+                {
+                  headers: { "x-goog-api-key": apiKey },
+                },
+              );
+              break;
 
-              default:
-                // For unknown providers, assume the key is valid
-                response = new Response(null, { status: 200 });
-            }
+            default:
+              // For unknown providers, assume the key is valid
+              response = new Response(null, { status: 200 });
+          }
 
           if (!response.ok) {
             console.error(

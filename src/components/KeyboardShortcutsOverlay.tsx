@@ -37,12 +37,12 @@ function KeyboardKey({ children }: { children: React.ReactNode }) {
 }
 
 // Component to render a list of shortcuts filtered by platform
-function ShortcutList({ 
-  shortcuts, 
-  platform 
-}: { 
-  shortcuts: Shortcut[],
-  platform: "mac" | "windows" | "linux" | "all"
+function ShortcutList({
+  shortcuts,
+  platform,
+}: {
+  shortcuts: Shortcut[];
+  platform: "mac" | "windows" | "linux" | "all";
 }) {
   return (
     <>
@@ -55,7 +55,7 @@ function ShortcutList({
         )
         .map((shortcut, index) => (
           <div
-            key={index}
+            key={`${shortcut.description}-${index}`}
             className="flex items-center justify-between py-2 border-b border-border last:border-0"
           >
             <span className="text-sm">{shortcut.description}</span>
@@ -284,10 +284,6 @@ export function KeyboardShortcutsOverlay({
     },
   ];
 
-
-
-
-
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange || setInternalIsOpen}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden">
@@ -314,7 +310,10 @@ export function KeyboardShortcutsOverlay({
             <TabsContent key={category.id} value={category.id} className="mt-4">
               <ScrollArea className="h-[340px] pr-4">
                 <div className="space-y-1">
-                  <ShortcutList shortcuts={category.shortcuts} platform={platform} />
+                  <ShortcutList
+                    shortcuts={category.shortcuts}
+                    platform={platform}
+                  />
                 </div>
               </ScrollArea>
             </TabsContent>

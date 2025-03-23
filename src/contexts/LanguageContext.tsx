@@ -25,11 +25,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const value = useMemo<LanguageContextType>(() => ({
-    language,
-    changeLanguage,
-    availableLanguages,
-  }), [language, changeLanguage]);
+  const value = useMemo<LanguageContextType>(
+    () => ({
+      language,
+      changeLanguage,
+      availableLanguages,
+    }),
+    [language, changeLanguage],
+  );
 
   return (
     <LanguageContext.Provider value={value}>

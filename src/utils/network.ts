@@ -109,9 +109,10 @@ export async function getConnectionQuality(): Promise<ConnectionQuality> {
 
   try {
     // Try different methods to determine connection quality in order of preference
-    const quality = await getConnectionQualityWithNetworkInfo() || 
-                    await getConnectionQualityWithPing() || 
-                    ConnectionQuality.UNKNOWN;
+    const quality =
+      (await getConnectionQualityWithNetworkInfo()) ||
+      (await getConnectionQualityWithPing()) ||
+      ConnectionQuality.UNKNOWN;
     return quality;
   } catch (error) {
     console.error("Error checking connection quality:", error);
@@ -139,7 +140,10 @@ async function getConnectionQualityWithNetworkInfo(): Promise<ConnectionQuality 
 
   // Check effective type (4g, 3g, 2g, etc.)
   if (connection?.effectiveType) {
-    return CONNECTION_TYPE_QUALITY[connection.effectiveType] || ConnectionQuality.UNKNOWN;
+    return (
+      CONNECTION_TYPE_QUALITY[connection.effectiveType] ||
+      ConnectionQuality.UNKNOWN
+    );
   }
 
   // Check downlink speed (in Mbps)

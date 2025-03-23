@@ -87,28 +87,31 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
   }, [apiError]);
 
   // The value provided to consumers
-  const value = useMemo<ErrorContextType>(() => ({
-    apiError,
-    setApiError,
-    showApiErrorModal,
-    setShowApiErrorModal,
-    networkStatus,
-    isOnline: navigator.onLine,
-    isLowBandwidth,
-    currentProvider,
-    setCurrentProvider,
-    clearError,
-  }), [
-    apiError,
-    setApiError,
-    showApiErrorModal,
-    setShowApiErrorModal,
-    networkStatus,
-    isLowBandwidth,
-    currentProvider,
-    setCurrentProvider,
-    clearError
-  ]);
+  const value = useMemo<ErrorContextType>(
+    () => ({
+      apiError,
+      setApiError,
+      showApiErrorModal,
+      setShowApiErrorModal,
+      networkStatus,
+      isOnline: navigator.onLine,
+      isLowBandwidth,
+      currentProvider,
+      setCurrentProvider,
+      clearError,
+    }),
+    [
+      apiError,
+      setApiError,
+      showApiErrorModal,
+      setShowApiErrorModal,
+      networkStatus,
+      isLowBandwidth,
+      currentProvider,
+      setCurrentProvider,
+      clearError,
+    ],
+  );
 
   return (
     <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>

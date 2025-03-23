@@ -10,11 +10,16 @@ export function WizardProgress({
   totalSteps,
 }: WizardProgressProps) {
   const { t } = useTranslation();
-  const stepLabels = [
+  // Define all possible step labels
+  const allStepLabels = [
     t("wizard.steps.security", "Security"),
     t("wizard.steps.apiKeys", "API Keys"),
     t("wizard.steps.participants", "Participants"),
+    t("wizard.steps.confirmation", "Confirmation"),
   ];
+
+  // Use only the number of steps needed based on totalSteps
+  const stepLabels = allStepLabels.slice(0, totalSteps);
 
   return (
     <div className="wizard-progress">
@@ -28,8 +33,8 @@ export function WizardProgress({
 
       {/* Step indicators */}
       <div className="flex justify-between mt-2">
-        {Array.from({ length: totalSteps }).map((_, index) => (
-          <div key={index} className="flex flex-col items-center">
+        {stepLabels.map((label, index) => (
+          <div key={`step-${label}`} className="flex flex-col items-center">
             <div
               className={`w-4 h-4 rounded-full transition-colors duration-300 ${
                 index <= currentStep
@@ -44,7 +49,7 @@ export function WizardProgress({
                   : "text-muted-foreground"
               }`}
             >
-              {stepLabels[index]}
+              {label}
             </span>
           </div>
         ))}

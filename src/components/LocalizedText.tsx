@@ -93,8 +93,11 @@ export function LocalizedList({
             ? `${keyPrefix}.${index}`
             : `${keyPrefix}.${item}`;
 
+        // Use item value as part of key when possible for better list reconciliation
+        const itemKey = typeof item === "string" ? item : `item-${index}`;
+
         return (
-          <ItemTagComponent key={index} className={itemClassName}>
+          <ItemTagComponent key={itemKey} className={itemClassName}>
             {t(fullKey)}
           </ItemTagComponent>
         );

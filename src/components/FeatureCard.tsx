@@ -25,7 +25,7 @@ export function FeatureCard({
     if (!icon) {
       return null;
     }
-    
+
     if (typeof icon === "string") {
       return (
         <div className="feature-icon">
@@ -38,7 +38,7 @@ export function FeatureCard({
         </div>
       );
     }
-    
+
     return <div className="feature-icon">{icon}</div>;
   };
 
