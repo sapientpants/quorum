@@ -1,4 +1,4 @@
-import { useCallback, ReactNode } from "react";
+import { useCallback, ReactNode, useMemo } from "react";
 import { useChatState } from "../hooks/useChatState";
 import { useProviderSelection } from "../hooks/useProviderSelection";
 import { useSettings } from "../hooks/useSettings";
@@ -245,7 +245,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   );
 
   // Create the context value
-  const value: ChatContextValue = {
+  const value = useMemo<ChatContextValue>(() => ({
     // Messages
     messages,
     isLoading,
@@ -275,7 +275,30 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     handleRetry,
     clearError,
     abortStream,
-  };
+  }), [
+    messages,
+    isLoading,
+    error,
+    activeProvider,
+    setActiveProvider,
+    activeModel,
+    setActiveModel,
+    availableModels,
+    apiKeys,
+    handleApiKeyChange,
+    isProviderConfigured,
+    isStreamingSupported,
+    supportedProviders,
+    settings,
+    setSettings,
+    useStreaming,
+    setUseStreaming,
+    addUserMessage,
+    sendMessage,
+    handleRetry,
+    clearError,
+    abortStream
+  ]);
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 }
