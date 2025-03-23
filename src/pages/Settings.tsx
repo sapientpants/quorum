@@ -91,7 +91,7 @@ export function Settings() {
         if (key) {
           try {
             // Try to parse as JSON first
-            exportObj[key] = JSON.parse(localStorage.getItem(key) || "");
+            exportObj[key] = JSON.parse(localStorage.getItem(key) ?? "");
           } catch {
             // If not valid JSON, store as string
             exportObj[key] = localStorage.getItem(key);

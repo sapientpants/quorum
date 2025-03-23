@@ -1,8 +1,8 @@
 import type { Message } from "../types/chat";
 
-interface ChatMessageProps {
-  message: Message;
-  onRetry?: (messageId: string) => void;
+interface ChatMessageProps{
+  readonly message: Message;
+  readonly onRetry?: (messageId: string) => void;
 }
 
 export function ChatMessage({ message, onRetry }: ChatMessageProps) {
@@ -105,7 +105,7 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
             Retry
           </button>
           <span className="text-xs text-error">
-            {message.error?.message || "Error sending message"}
+            {message.error?.message ?? "Error sending message"}
           </span>
         </div>
       )}

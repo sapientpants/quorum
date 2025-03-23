@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 import { useTheme } from "../hooks/useTheme";
 import { ThemeContext } from "./contexts/ThemeContextDefinition";
 
-interface ThemeProviderProps {
-  children: ReactNode;
+interface ThemeProviderProps{
+  readonly children: ReactNode;
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {

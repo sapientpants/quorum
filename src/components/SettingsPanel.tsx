@@ -1,11 +1,11 @@
 import type { LLMSettings } from "../types/llm";
 
-interface SettingsPanelProps {
-  settings: LLMSettings;
-  onSettingsChange: (settings: LLMSettings) => void;
-  useStreaming: boolean;
-  onStreamingChange: (useStreaming: boolean) => void;
-  isStreamingSupported: boolean;
+interface SettingsPanelProps{
+  readonly settings: LLMSettings;
+  readonly onSettingsChange: (settings: LLMSettings) => void;
+  readonly useStreaming: boolean;
+  readonly onStreamingChange: (useStreaming: boolean) => void;
+  readonly isStreamingSupported: boolean;
 }
 
 function SettingsPanel({

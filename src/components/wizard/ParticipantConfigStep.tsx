@@ -7,9 +7,9 @@ import { useParticipantsStore } from "../../store/participants";
 import type { Participant, LLMParticipant } from "../../types/participant";
 import { v4 as uuidv4 } from "uuid";
 
-interface ParticipantConfigStepProps {
-  onNext: () => void;
-  onBack: () => void;
+interface ParticipantConfigStepProps{
+  readonly onNext: () => void;
+  readonly onBack: () => void;
 }
 
 export function ParticipantConfigStep({
@@ -67,7 +67,7 @@ export function ParticipantConfigStep({
               // Only LLM participants have provider and model
               const isLLM = participant.type === "llm";
               const llmParticipant = isLLM
-                ? (participant as LLMParticipant)
+                ? participant
                 : null;
 
               return (

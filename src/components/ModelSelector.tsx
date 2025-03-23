@@ -1,10 +1,10 @@
 import { LLMModel } from "@/types/llm";
 import { useTranslation } from "react-i18next";
 
-export interface ModelSelectorProps {
-  models: LLMModel[];
-  onSelect: (model: LLMModel) => void;
-  selectedModel?: LLMModel;
+export interface ModelSelectorProps{
+  readonly models: LLMModel[];
+  readonly onSelect: (model: LLMModel) => void;
+  readonly selectedModel?: LLMModel;
 }
 
 function ModelSelector({

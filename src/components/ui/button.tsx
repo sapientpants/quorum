@@ -1,9 +1,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "default" | "outline" | "ghost" | "error";
-  size?: "default" | "sm" | "lg";
+interface ButtonProps{
+  readonly variant?: "primary" | "default" | "outline" | "ghost" | "error";
+  readonly size?: "default" | "sm" | "lg";
+  readonly className?: string;
+  [key: string]: any;
 }
 
 export function Button({

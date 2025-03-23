@@ -87,7 +87,7 @@ function ApiKeyManager({
         savedKeys.forEach((key) => {
           if (!providerMap.has(key.provider)) {
             providerMap.set(key.provider, key.key);
-            keyMap[key.provider as LLMProviderId] = key.key;
+            keyMap[key.provider] = key.key;
             onApiKeyChange(key.provider, key.key);
           }
         });
@@ -158,7 +158,7 @@ function ApiKeyManager({
 
   // Clear all API keys
   function handleClearAllKeys() {
-    if (confirm(t("settings.apiKeyManager.clearConfirmation"))) {
+      if (confirm(t("settings.apiKeyManager.clearConfirmation"))) {
       clearApiKeys({ storage: storageType });
 
       // Reset state

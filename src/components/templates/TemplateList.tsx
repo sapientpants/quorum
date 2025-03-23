@@ -5,8 +5,8 @@ import TemplateCard from "./TemplateCard";
 import TemplateForm from "./TemplateForm";
 import { DeleteConfirmationModal } from "../ui/DeleteConfirmationModal";
 
-interface TemplateListProps {
-  onUseTemplate: (templateId: string) => void;
+interface TemplateListProps{
+  readonly onUseTemplate: (templateId: string) => void;
 }
 
 function TemplateList({ onUseTemplate }: TemplateListProps) {

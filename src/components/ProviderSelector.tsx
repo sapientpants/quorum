@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import type { LLMProvider } from "../types/llm";
 
-interface ProviderSelectorProps {
-  providers: LLMProvider[];
-  activeProvider: LLMProvider | null;
-  onSelect: (provider: LLMProvider) => void;
-  apiKeys: Record<string, string>;
+interface ProviderSelectorProps{
+  readonly providers: LLMProvider[];
+  readonly activeProvider: LLMProvider | null;
+  readonly onSelect: (provider: LLMProvider) => void;
+  readonly apiKeys: Record<string, string>;
 }
 
 function ProviderSelector({

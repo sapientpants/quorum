@@ -2,10 +2,10 @@ import { ChatMessage } from "./ChatMessage";
 import { ChatScrollAnchor } from "./ChatScrollAnchor";
 import type { Message } from "../types/chat";
 
-interface ChatListProps {
-  messages: Message[];
-  isLoading?: boolean;
-  onRetry?: (messageId: string) => void;
+interface ChatListProps{
+  readonly messages: Message[];
+  readonly isLoading?: boolean;
+  readonly onRetry?: (messageId: string) => void;
 }
 
 export function ChatList({

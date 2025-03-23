@@ -2,9 +2,9 @@
 
 import * as React from "react";
 
-interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-  children: React.ReactNode;
+interface ScrollAreaProps{
+  readonly className?: string;
+  readonly children: React.ReactNode;
 }
 
 export function ScrollArea({ className, children, ...props }: ScrollAreaProps) {

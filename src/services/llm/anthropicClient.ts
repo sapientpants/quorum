@@ -110,7 +110,7 @@ export class AnthropicClient implements LLMClient {
   async sendMessage(
     messages: Message[],
     apiKey: string,
-    model: LLMModel = this.defaultModel as LLMModel,
+    model: LLMModel = this.defaultModel,
     settings?: LLMSettings,
     streamingOptions?: StreamingOptions,
   ): Promise<string> {
@@ -118,7 +118,7 @@ export class AnthropicClient implements LLMClient {
       throw new AnthropicAuthError();
     }
 
-    if (!this.supportedModels.includes(model as AnthropicModel)) {
+    if (!this.supportedModels.includes(model)) {
       throw new AnthropicModelError(
         `Model ${model} is not available. Available models: ${this.supportedModels.join(", ")}`,
       );
@@ -131,7 +131,7 @@ export class AnthropicClient implements LLMClient {
       model,
       messages: anthropicMessages,
       system,
-      max_tokens: settings?.maxTokens || 1000,
+      max_tokens: settings?.maxTokens ?? 1000,
       temperature: settings?.temperature,
       top_p: settings?.topP,
       stream: !!streamingOptions,
@@ -231,7 +231,7 @@ export class AnthropicClient implements LLMClient {
 
       try {
         const data = JSON.parse(line.slice(5));
-        const content = data.delta?.text || "";
+        const content = data.delta?.text ?? "";
 
         if (content) {
           const newFullText = fullText + content;
@@ -323,11 +323,11 @@ export class AnthropicClient implements LLMClient {
   }
 
   getAvailableModels(): LLMModel[] {
-    return this.supportedModels as LLMModel[];
+    return this.supportedModels;
   }
 
   getDefaultModel(): LLMModel {
-    return this.defaultModel as LLMModel;
+    return this.defaultModel;
   }
 
   getProviderName(): string {

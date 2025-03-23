@@ -1,14 +1,14 @@
 import { ReactNode } from "react";
 import { Icon } from "@iconify/react";
 
-interface FeatureCardProps {
-  title: string;
-  description: string;
-  icon?: string | ReactNode;
-  iconColor?: string;
-  badgeText?: string;
-  badgeColor?: string;
-  className?: string;
+interface FeatureCardProps{
+  readonly title: string;
+  readonly description: string;
+  readonly icon?: string | ReactNode;
+  readonly iconColor?: string;
+  readonly badgeText?: string;
+  readonly badgeColor?: string;
+  readonly className?: string;
 }
 
 export function FeatureCard({

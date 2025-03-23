@@ -47,7 +47,7 @@ export function ApiErrorModal() {
 
   // Determine if error is LLMError
   const isLLMError = apiError instanceof LLMError;
-  const errorType = isLLMError ? (apiError as LLMError).type : "unknown";
+  const errorType = isLLMError ? apiError.type : "unknown";
   const errorMessage = apiError.message;
 
   // Get provider icon
@@ -128,7 +128,7 @@ export function ApiErrorModal() {
     let details = `${t("errors.technicalDetails.error")}: ${errorMessage}\n`;
 
     if (isLLMError) {
-      const llmError = apiError as LLMError;
+      const llmError = apiError;
       details += `${t("errors.technicalDetails.type")}: ${llmError.type}\n`;
 
       if (llmError.statusCode) {
@@ -149,8 +149,8 @@ export function ApiErrorModal() {
 
   // Get status code text
   const getStatusCode = () => {
-    if (isLLMError && (apiError as LLMError).statusCode) {
-      return `${(apiError as LLMError).statusCode}`;
+    if (isLLMError && apiError.statusCode) {
+      return `${apiError.statusCode}`;
     }
     return "";
   };

@@ -4,12 +4,12 @@ import type { Template } from "../../types/template";
 import type { Participant } from "../../types/participant";
 import { useParticipantsStore } from "../../store/participants";
 
-interface TemplateCardProps {
-  template: Template;
-  onUse: (templateId: string) => void;
-  onEdit: (templateId: string) => void;
-  onDelete: (templateId: string) => void;
-  onShare?: (templateId: string) => void;
+interface TemplateCardProps{
+  readonly template: Template;
+  readonly onUse: (templateId: string) => void;
+  readonly onEdit: (templateId: string) => void;
+  readonly onDelete: (templateId: string) => void;
+  readonly onShare?: (templateId: string) => void;
 }
 
 function TemplateCard({

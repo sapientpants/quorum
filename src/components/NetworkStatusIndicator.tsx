@@ -8,9 +8,9 @@ import { cn } from "@/lib/utils";
 /**
  * NetworkStatusIndicator props
  */
-interface NetworkStatusIndicatorProps {
-  position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
-  showToasts?: boolean;
+interface NetworkStatusIndicatorProps{
+  readonly position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
+  readonly showToasts?: boolean;
 }
 
 /**

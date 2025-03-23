@@ -1,10 +1,10 @@
-interface DeleteConfirmationModalProps {
-  title: string;
-  message: string;
-  confirmLabel: string;
-  cancelLabel: string;
-  onConfirm: () => void;
-  onCancel: () => void;
+interface DeleteConfirmationModalProps{
+  readonly title: string;
+  readonly message: string;
+  readonly confirmLabel: string;
+  readonly cancelLabel: string;
+  readonly onConfirm: () => void;
+  readonly onCancel: () => void;
 }
 
 export function DeleteConfirmationModal({

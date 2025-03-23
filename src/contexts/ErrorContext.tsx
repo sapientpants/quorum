@@ -8,8 +8,8 @@ import {
   ErrorContextType,
 } from "./contexts/ErrorContextDefinition";
 
-interface ErrorProviderProps {
-  children: ReactNode;
+interface ErrorProviderProps{
+  readonly children: ReactNode;
 }
 
 export function ErrorProvider({ children }: ErrorProviderProps) {

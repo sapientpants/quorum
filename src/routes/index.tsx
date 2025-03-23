@@ -59,7 +59,7 @@ function WizardStepGuard({
   readonly requiredStep: number;
 }) {
   const { preferences } = usePreferencesStore();
-  const wizardStep = preferences.wizardStep || 0;
+  const wizardStep = preferences.wizardStep ?? 0;
 
   // If the user hasn't completed the wizard, redirect to the appropriate step
   if (wizardStep < requiredStep) {

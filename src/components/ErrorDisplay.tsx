@@ -1,6 +1,6 @@
-interface ErrorDisplayProps {
-  error: string | null;
-  onDismiss?: () => void;
+interface ErrorDisplayProps{
+  readonly error: string | null;
+  readonly onDismiss?: () => void;
 }
 
 function ErrorDisplay({ error, onDismiss }: ErrorDisplayProps) {

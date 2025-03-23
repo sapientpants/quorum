@@ -186,7 +186,7 @@ export abstract class BaseClient implements LLMClient {
       };
       const status =
         errorObj.status ?? errorObj.statusCode ?? errorObj.response?.status;
-      const errorBody = (errorObj.response?.data || errorObj.data || {}) as {
+      const errorBody = (errorObj.response?.data ?? errorObj.data ?? {}) as {
         request_id?: string;
         requestId?: string;
         error?: {
