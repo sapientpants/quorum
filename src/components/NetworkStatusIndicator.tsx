@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
  */
 interface NetworkStatusIndicatorProps {
   readonly position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
-  readonly showToasts?: boolean;
 }
 
 /**

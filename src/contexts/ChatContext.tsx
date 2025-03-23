@@ -10,7 +10,7 @@ import { Message } from "../types/chat";
 /**
  * Chat context provider component
  */
-export function ChatProvider({ children }: { children: ReactNode }) {
+export function ChatProvider({ children }: { readonly children: ReactNode }) {
   // Use our custom hooks for state management
   const {
     messages,

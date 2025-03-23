@@ -6,7 +6,11 @@ import {
   availableLanguages,
 } from "./contexts/LanguageContextDefinition";
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
+export function LanguageProvider({
+  children,
+}: {
+  readonly children: ReactNode;
+}) {
   const [language, setLanguage] = useState(i18n.language || "en");
 
   useEffect(() => {

@@ -264,9 +264,7 @@ export abstract class BaseClient implements LLMClient {
     }
 
     // If an error handler is set, use it
-    if (this.setError) {
-      this.setError(llmError, this.providerName);
-    }
+    this.setError?.(llmError, this.providerName);
 
     throw llmError;
   }
