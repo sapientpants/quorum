@@ -33,6 +33,7 @@ dist-ssr
 coverage
 sonar-report.xml
 test-results.json
+.scannerwork/
 
 # Claude AI
 .claude
