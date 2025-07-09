@@ -9,7 +9,11 @@ import Config
 
 config :quorum,
   ecto_repos: [Quorum.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [
+    binary_id: true,
+    migration: true,
+    timestamp_type: :utc_datetime
+  ]
 
 # Configures the endpoint
 config :quorum, QuorumWeb.Endpoint,

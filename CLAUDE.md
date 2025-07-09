@@ -66,3 +66,22 @@ This is a Phoenix LiveView application following standard Phoenix conventions:
 - Integration tests for full user workflows
 - Use `describe` blocks to group related tests
 - Prefer `conn_test` and `live_test` helpers
+
+### Database & UUIDv7
+This project uses PostgreSQL with UUIDv7 as the primary key format for all tables:
+
+- **Primary Keys**: All tables use UUIDv7 via `UUIDv7.Type` from the uuidv7 library
+- **Base Schema**: Use `use Quorum.Schema` instead of `use Ecto.Schema` in all schemas
+- **Benefits**: Time-ordered UUIDs provide better database performance and built-in timestamp information
+- **Example**:
+  ```elixir
+  defmodule Quorum.SomeContext.SomeSchema do
+    use Quorum.Schema  # Not Ecto.Schema!
+
+    schema "some_table" do
+      field :name, :string
+      timestamps()
+    end
+  end
+  ```
+- **Migrations**: Generated migrations automatically use `:binary_id` for primary/foreign keys
