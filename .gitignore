@@ -40,3 +40,8 @@ npm-debug.log
 
 # Phoenix secret configs
 /config/*.secret.exs
+
+# Claude local config
+.claude/memory.md
+.claude/settings.local.json
+.claude/*.local.*
